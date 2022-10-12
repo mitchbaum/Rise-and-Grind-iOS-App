@@ -1,4 +1,5 @@
 <img src="https://user-images.githubusercontent.com/71997310/195446667-a330011b-bf29-4e90-b278-0946664c7a07.png" width="128"/>
+<img src="https://user-images.githubusercontent.com/71997310/195443430-7f152b3c-24df-4e0f-ad29-21c5e555c12b.png" width="128"/>
 
 # Rise and Grind iOS App
 
