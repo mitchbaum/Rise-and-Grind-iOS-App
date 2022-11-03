@@ -12,7 +12,14 @@ import FirebaseDatabase
 import JGProgressHUD
 import FirebaseStorage
 
+//custom delegation
+protocol NewExerciseControllerDelegate {
+    func fetchCategories()
+}
+
+
 class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+    var delegate: NewExerciseControllerDelegate?
     var sets = [String]()
     let userDefaults = UserDefaults.standard
     let db = Firestore.firestore()
@@ -20,7 +27,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
     var weight = [String]()
     var reps = [String]()
     
-    var categories = [Category]()
+    var categories = [" "]
     var categoryStrings = [String]()
     
     var categoryCollectionReference: CollectionReference!
@@ -39,6 +46,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         tableView.register(WeightRepsCell.self, forCellReuseIdentifier: WeightRepsCell.identifier)
         
         tableView.backgroundColor = .darkGray
+        tableView.separatorColor = .darkGray
         tableView.tableFooterView = UIView()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(handleAdd))
@@ -93,8 +101,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
                                                                                                          "reps" : reps,
                                                                                                          "notes" : notes])
         }
-
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
     }
     
     @objc private func handleButtonPressed(sender:UIButton) {
@@ -122,6 +129,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
     
     
     func fetchCategories() {
+        print("fetchCategories() NewExerciseController")
         categoryStrings = []
         guard let uid = Auth.auth().currentUser?.uid else { return }
         db.collection("Users").document(uid).collection("Category").getDocuments { (snapshot, error) in
@@ -133,12 +141,8 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
                     let data = document.data()
                     
                     let name = data["name"] as? String ?? "No category found"
-                    
-                    let newCategory = Category(name: name)
-                    print("name ", name)
-                    print("newCategory ", newCategory)
-                    
-                    self.categories.append(newCategory)
+
+                    self.categories.append(name)
                     self.categoryStrings.append(name)
                 }
             }

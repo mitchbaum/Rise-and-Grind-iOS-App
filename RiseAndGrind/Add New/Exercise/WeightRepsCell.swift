@@ -85,10 +85,24 @@ class WeightRepsCell: UITableViewCell {
         return textField
     }()
     
+    let cardView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 5
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         // color of table view cell
-        //backgroundColor = UIColor.lightBlue
+        backgroundColor = .darkGray
+        
+        addSubview(cardView)
+        cardView.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
+        cardView.leftAnchor.constraint(equalTo: leftAnchor, constant: 5).isActive = true
+        cardView.rightAnchor.constraint(equalTo: rightAnchor, constant: -5).isActive = true
+        cardView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
         
         addSubview(weightLabel)
         weightLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 16).isActive = true

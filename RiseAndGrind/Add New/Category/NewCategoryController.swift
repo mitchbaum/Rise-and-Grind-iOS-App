@@ -18,6 +18,8 @@ protocol newCategoryControllerDelegate {
 
 class NewCategoryController: UITableViewController {
     
+    var delegate: newCategoryControllerDelegate?
+    
     //create variable to reference the firebase data so we can read, wirte and update it
     let db = Firestore.firestore()
     
@@ -31,6 +33,7 @@ class NewCategoryController: UITableViewController {
         navigationItem.title = "New Category"
         navigationItem.largeTitleDisplayMode = .never
         tableView.backgroundColor = .darkGray
+        tableView.separatorColor = .darkGray
         tableView.tableFooterView = UIView()
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
         
@@ -63,7 +66,9 @@ class NewCategoryController: UITableViewController {
             }
         }
         
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+                        self.delegate?.fetchCategories()
+                    }
     }
     
     func fetchCategories() {

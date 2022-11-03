@@ -11,7 +11,14 @@ import FirebaseAuth
 import Firebase
 import FirebaseStorage
 
+//custom delegation
+protocol SettingsControllerDelegate {
+    func fetchCategories()
+}
+
+
 class SettingsController: UIViewController {
+    var delegate: SettingsControllerDelegate?
     
     let db = Firestore.firestore()
     
@@ -69,7 +76,7 @@ class SettingsController: UIViewController {
             sort = "Last Modified"
         }
         db.collection("Users").document(uid).updateData(["sort" : sort])
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
     }
     
 

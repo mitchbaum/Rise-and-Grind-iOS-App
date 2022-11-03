@@ -14,7 +14,7 @@ import LBTATools
 import JGProgressHUD
 
 
-class HomeController: UITableViewController {
+class HomeController: UITableViewController, newCategoryControllerDelegate, WorkoutControllerDelegate, NewExerciseControllerDelegate, SettingsControllerDelegate, ReorderControllerDelegate {
     let userDefaults = UserDefaults.standard
     let db = Firestore.firestore()
     
@@ -43,6 +43,7 @@ class HomeController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view.
         
         // creates title of files
@@ -170,7 +171,7 @@ class HomeController: UITableViewController {
     
     // fetches the exercises from Firebase database
     @objc func fetchCategories() {
-        print("fetching categories")
+        print("fetching categories in HomeController")
         guard let uid = Auth.auth().currentUser?.uid else { return }
         //cats = []
         if isSignedIn == true {
@@ -280,6 +281,7 @@ class HomeController: UITableViewController {
         print("reordering exercises..")
         let reorderController = ReorderController()
         let navController = CustomNavigationController(rootViewController: reorderController)
+        reorderController.delegate = self
         self.present(navController, animated: true, completion: nil)
     }
     
@@ -290,12 +292,14 @@ class HomeController: UITableViewController {
             print("new exercise")
             let newExerciseController = NewExerciseController()
             let navController = CustomNavigationController(rootViewController: newExerciseController)
+            newExerciseController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
         let addCategory = UIAlertAction(title: "New Category", style: .default) { action in
             print("new category")
             let newCategoryController = NewCategoryController()
             let navController = CustomNavigationController(rootViewController: newCategoryController)
+            newCategoryController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
         //alert
@@ -318,6 +322,7 @@ class HomeController: UITableViewController {
         print("Settings..")
         let settingsController = SettingsController()
         let navController = CustomNavigationController(rootViewController: settingsController)
+        settingsController.delegate = self
         self.present(navController, animated: true, completion: nil)
         
     }

@@ -19,14 +19,14 @@ extension NewExerciseController {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return categories[row].name
+        return categories[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if categories[row].name == "" {
+        if categories[row] == " " {
             showError(title: "Error", message: "Please select a category!")
         } else {
-            categorySelectorTextField.text = categories[row].name
+            categorySelectorTextField.text = categories[row]
             categorySelectorTextField.resignFirstResponder()
         }
     }

@@ -12,7 +12,14 @@ import FirebaseDatabase
 import JGProgressHUD
 import FirebaseStorage
 
+//custom delegation
+protocol ReorderControllerDelegate {
+    func fetchCategories()
+}
+
+
 class ReorderController: UITableViewController {
+    var delegate: ReorderControllerDelegate?
     let userDefaults = UserDefaults.standard
     var exerciseCollectionRef: CollectionReference!
     
@@ -45,13 +52,13 @@ class ReorderController: UITableViewController {
         tableView.register(ExerciseCell.self, forCellReuseIdentifier: ExerciseCell.identifier)
         
         tableView.backgroundColor = .darkGray
+        tableView.separatorColor = .darkGray
         tableView.tableFooterView = UIView()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         fetchExercises()
         reorder()
-        setupUI()
     }
     
     
@@ -67,7 +74,7 @@ class ReorderController: UITableViewController {
             locationCounter += 1
             
         }
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
     }
     
     func reorder() {
@@ -80,6 +87,9 @@ class ReorderController: UITableViewController {
     
     // fetches the exercises from Firebase database
     func fetchExercises() {
+        if category == nil {
+            return
+        }
         print("fetching exercises")
         exercises = []
 //        print(activeSegment)
@@ -125,13 +135,6 @@ class ReorderController: UITableViewController {
             exercises.sort(by: {$0.timeStamp ?? "" > $1.timeStamp ?? ""})
         }
         tableView.reloadData()
-    }
-    
-
-    
-    func setupUI() {
-        
-       
     }
     
     @objc func handleCancel() {

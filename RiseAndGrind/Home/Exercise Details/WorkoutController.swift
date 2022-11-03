@@ -13,15 +13,17 @@ import FirebaseDatabase
 import JGProgressHUD
 import FirebaseStorage
 
-class WorkoutController: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+protocol WorkoutControllerDelegate {
+    func fetchCategories()
+}
+
+class WorkoutController: UITableViewController {
+    var delegate: WorkoutControllerDelegate?
     var sets = [String]()
     
     
     var weight = [String]()
     var reps = [String]()
-    
-    var categories = [Category]()
-    var categoryStrings = [String]()
     
     var categoryCollectionReference: CollectionReference!
     
@@ -58,13 +60,6 @@ class WorkoutController: UITableViewController, UIPickerViewDelegate, UIPickerVi
         
         categoryCollectionReference = Firestore.firestore().collection("Category")
 
-        print(categories)
-        fetchCategories()
-        print(categories)
-        
-        categorySelectorTextField.inputView = categoryPicker
-        categoryPicker.delegate = self
-        categoryPicker.dataSource = self
         
         fetchSets()
         setupUI()
@@ -100,35 +95,11 @@ class WorkoutController: UITableViewController, UIPickerViewDelegate, UIPickerVi
                                                                                                      "reps" : reps,
                                                                                                      "note" : note])
 
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
     }
     
     
-    
-    
-    func fetchCategories() {
-        categoryStrings = []
-        categoryCollectionReference.getDocuments { (snapshot, error) in
-            if let err = error {
-                debugPrint("Error fetching categories: \(err)")
-            } else {
-                guard let snap = snapshot else { return }
-                for document in snap.documents {
-                    let data = document.data()
-                    
-                    let name = data["name"] as? String ?? "No category found"
-                    
-                    let newCategory = Category(name: name)
-                    print("name ", name)
-                    print("newCategory ", newCategory)
-                    
-                    self.categories.append(newCategory)
-                    self.categoryStrings.append(name)
-                }
-            }
-            
-        }
-    }
+
     
     func fetchSets() {
         let category = categorySelectorTextField.text
@@ -276,13 +247,7 @@ class WorkoutController: UITableViewController, UIPickerViewDelegate, UIPickerVi
         textField.isUserInteractionEnabled = false
         return textField
     }()
-    
-    // create category picker view
-    let categoryPicker: UIPickerView = {
-        let pickerView = UIPickerView()
-        return pickerView
-    }()
-    
+
     // create text field for notes entry
     let notesTextField: UITextField = {
         let textField = UITextField()
@@ -292,7 +257,7 @@ class WorkoutController: UITableViewController, UIPickerViewDelegate, UIPickerVi
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
         textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
-        textField.tintColor = UIColor.clear
+        textField.tintColor = UIColor.lightBlue
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField

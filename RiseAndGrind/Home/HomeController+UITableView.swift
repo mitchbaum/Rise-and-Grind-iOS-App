@@ -55,6 +55,7 @@ extension HomeController {
         let exercise = self.exercises[indexPath.row]
         
         let workoutController = WorkoutController()
+        workoutController.delegate = self
 
         workoutController.nameTextField.text = exercise.name
         workoutController.categorySelectorTextField.text = exercise.category
@@ -123,6 +124,7 @@ extension HomeController {
         var repsArrayLen = weightArray.count
         var weightRepString = ""
         if weightArrayLen != 0 && repsArrayLen != 0 {
+            cell.weightRepsView.backgroundColor = .offWhite
             for i in 0...(weightArrayLen - 1) {
                 if weightMetric as? Int == 0 {
                     // checks if weight is double or int
@@ -142,7 +144,14 @@ extension HomeController {
         let choppedString = String(weightRepString.dropLast(2))
         cell.weightXreps.text = choppedString
         let timestamp = NSDate().timeIntervalSince1970
+        let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         cell.updateLabel.text = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
+        let components = timeSinceUpdate.components(separatedBy: " ")
+        if components[2] == "day" {
+            cell.alertView.backgroundColor = .red
+            cell.updateImageView.tintColor = .red
+            cell.weightXreps.textColor = .red
+        }
         
         if weightMetric as! Int == 0 {
             cell.formatLabel.text = "(LBS x reps)"

@@ -42,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = UIColor.lightBlue
         // makes text "cancel" button white color
         UINavigationBar.appearance().tintColor = .white
+        UIWindow.appearance().overrideUserInterfaceStyle = .light
         
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()

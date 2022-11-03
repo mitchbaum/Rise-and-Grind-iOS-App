@@ -16,5 +16,7 @@ extension UIColor {
     
     // create lightish blue color
     static let coralBlue = UIColor(red: 40/255, green: 215/255, blue: 185/255, alpha: 1)
+    
+    static let offWhite = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1)
 }
 

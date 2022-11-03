@@ -46,6 +46,7 @@ class ArchiveController: UITableViewController {
         tableView.register(ArchiveCell.self, forCellReuseIdentifier: ArchiveCell.identifier)
         
         tableView.backgroundColor = .darkGray
+        tableView.separatorColor = .darkGray
         tableView.tableFooterView = UIView()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(handleDone))
