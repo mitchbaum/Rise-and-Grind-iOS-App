@@ -13,6 +13,8 @@ Created using Swift, UIKit, Google Cloud - Firebase
 - Login or create an account to store your workouts and access them on any iOS device
 - Categorize exercises by muscle group 
 - Last modified label
+- Red exercises mean the exercise needs to be updated (time to increase the weight)
+- Blue exercises mean the exercise is current and does not need to be updated yet
 - Easily see sets, weights, and reps from home page for each exercise
 - Customize the order of exercises within the workout
 - Display weights used in LBS or KG
@@ -30,8 +32,10 @@ Download the app here: https://apps.apple.com/us/app/rise-and-grind/id1606246183
 <img src="https://user-images.githubusercontent.com/71997310/195449083-a46f8f40-297d-453f-9866-ef7ef299f80d.PNG" width="200"/>
 
 ### My Workouts
-- View complete list of exercises filterable by workout category using the segmented control
-<img src="https://user-images.githubusercontent.com/71997310/195449121-5cbd806f-8002-4e0c-ab8a-0b3a3e93dc74.PNG" width="200"/>
+- View complete list of exercises filterable by workout category using the picker drop down
+- Exercises in red need to be updated (time to increase the weight!)
+- Exercises in blue do not need to be updated yet
+<img src="https://user-images.githubusercontent.com/71997310/200144675-29bc1f2b-0704-41c5-a60c-00857e06d184.PNG" width="200"/>
 
 ### Modify Exercise
 - Modify the exercise by tapping on the exercise you would like to edit. You can archive an exercise from here too
@@ -39,19 +43,19 @@ Download the app here: https://apps.apple.com/us/app/rise-and-grind/id1606246183
 
 ### Archive
 - View the archive for this exercise
-<img src="https://user-images.githubusercontent.com/71997310/195449197-1d9979c8-af3d-43d3-af70-b6c0b1b4e683.PNG" width="200"/>
+<img src="https://user-images.githubusercontent.com/71997310/200144671-1650c3a0-1543-4f87-9667-1e51b531c276.PNG" width="200"/>
 
 ### Reorder Workout
 - Customize the order of exercises in the workout by dragging the cells into the order you want
-<img src="https://user-images.githubusercontent.com/71997310/195449218-6f863a51-87ac-45c2-a4d8-1e178502418b.PNG" width="200"/>
+<img src="https://user-images.githubusercontent.com/71997310/200144678-9afbc89b-46ae-4cf8-83e2-fe50541709fe.PNG" width="200"/>
 
 ### New Category
 - Add a new category (workout) by giving it a name
-<img src="https://user-images.githubusercontent.com/71997310/195449261-c3e857d2-5521-4ccf-9316-fb8f6f0672c2.PNG" width="200"/>
+<img src="https://user-images.githubusercontent.com/71997310/200144676-18075653-7d70-4cfd-ac01-3c5810901251.PNG" width="200"/>
 
 ### New Exercise
 - Add a new exercise by entering a name, category, note (optional), and sets (tap the "+" icon)
-<img src="https://user-images.githubusercontent.com/71997310/195449301-8c38494d-9138-4550-8369-7a15600d3e1e.PNG" width="200"/>
+<img src="https://user-images.githubusercontent.com/71997310/200144677-c3460149-4b63-4b50-9b85-d28c73ceac78.PNG" width="200"/>
 
 ### Settings
 - Customize your preferences for weight metric and automatic sorting by name or last modified
