@@ -39,7 +39,7 @@ Download the app here: https://apps.apple.com/us/app/rise-and-grind/id1606246183
 
 ### Modify Exercise
 - Modify the exercise by tapping on the exercise you would like to edit. You can archive an exercise from here too
-<img src="https://user-images.githubusercontent.com/71997310/195449159-06b78245-8178-46f1-92c5-48d3e18d8ac3.PNG" width="200"/>
+<img src="https://user-images.githubusercontent.com/71997310/200145008-07440675-b36c-452d-96a3-952d9db21ea4.PNG" width="200"/>
 
 ### Archive
 - View the archive for this exercise
