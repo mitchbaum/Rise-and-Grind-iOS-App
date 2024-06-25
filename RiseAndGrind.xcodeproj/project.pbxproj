@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -797,6 +797,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RiseAndGrind/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -822,6 +823,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = RiseAndGrind/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
