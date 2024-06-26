@@ -182,36 +182,57 @@ extension HomeController {
     
     // delete exercise from tableView and Cloud databae
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, indexPath) in
-            // get the exercise you are swiping on to get delete action
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            let exercise = self.exercises[indexPath.row]
-            let category = self.exercises[indexPath.row].category
-            let name = self.exercises[indexPath.row].name
-            
-            let deleteAction = UIAlertAction(title: "Delete Forever", style: .destructive) { (action) in
-                // remove the exercise from the tableView
-                print("exercise being deleted is: ", exercise)
-                self.exercises.remove(at: indexPath.row)
-                self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).delete()
-                self.tableView.reloadData()
+        guard let uid = Auth.auth().currentUser?.uid else { return [] }
+        let exercise = self.exercises[indexPath.row]
+        let category = exercise.category
+        let name = exercise.name
+        let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
+
+        if exercise.hidden ?? true {
+            let action = UITableViewRowAction(style: .normal, title: "Show") { (_, indexPath) in
+                let hideAction = UIAlertAction(title: "Show Exercise", style: .default) { (action) in
+                    self.exercises[indexPath.row].hidden = false
+                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : false])
+                    self.tableView.reloadData()
+                }
+                let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+                optionMenu.addAction(hideAction)
+                optionMenu.addAction(cancelAction)
+                self.present(optionMenu, animated: true, completion: nil)
+
+                
             }
-            // alert
-            let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-            optionMenu.addAction(deleteAction)
-            optionMenu.addAction(cancelAction)
-            self.present(optionMenu, animated: true, completion: nil)
+            // change color of delete button
+            action.backgroundColor = UIColor.lightBlue
 
             
-        }
-        // change color of delete button
-        deleteAction.backgroundColor = UIColor.red
+            // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
+            return [action]
+        } else {
+            let action = UITableViewRowAction(style: .destructive, title: "Hide") { (_, indexPath) in
 
+                
+                let hideAction = UIAlertAction(title: "Hide Exercise", style: .destructive) { (action) in
+                    if !showHidden {
+                        self.exercises.remove(at: indexPath.row)
+                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    }
+                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : true])
+                    self.tableView.reloadData()
+                }
+                let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+                optionMenu.addAction(hideAction)
+                optionMenu.addAction(cancelAction)
+                self.present(optionMenu, animated: true, completion: nil)
+
+                
+            }
+            action.backgroundColor = UIColor.red
+            return [action]
+        }
         
-        // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
-        return [deleteAction]
     }
 
     

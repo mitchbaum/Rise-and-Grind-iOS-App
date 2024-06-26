@@ -77,6 +77,11 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             UserDefaults.standard.setValue("Name", forKey: "sortMetric")
         }
         
+        let showHidden = userDefaults.object(forKey: "showHidden")
+        if showHidden == nil {
+            UserDefaults.standard.setValue(true, forKey: "showHidden") // default to showing all exercises
+        }
+        
         workoutCategorySelectorTextField.inputView = workoutCategoryPicker
         workoutCategoryPicker.delegate = self
         workoutCategoryPicker.dataSource = self
@@ -104,27 +109,19 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             settings.setTitleTextAttributes(attributes, for: .normal)
             navigationItem.rightBarButtonItems = [plus, settings, reorder]
             
-            let signOut = UIBarButtonItem(title: NSString(string: "👋") as String, style: .plain, target: self, action: #selector(handleSignOut))
-            navigationItem.leftBarButtonItems = [signOut]
             self.userDefaults.setValue([], forKey: "myKey")
             fetchCategories()
             UIHeight = 30.0
             setupUI()
 
         }  else {
-             //user is not logged in
-            // sign in button in right bar
-            //let customSI = UIBarButtonItem(customView: signinButton)
             isSignedIn = false
-            let signIn = UIBarButtonItem(title: NSString(string: "💪") as String, style: .plain, target: self, action: #selector(handleSignIn))
-            navigationItem.leftBarButtonItems = [signIn]
-            navigationItem.rightBarButtonItems = []
-            self.userDefaults.setValue([], forKey: "myKey")
-            self.tableView.reloadData()
-            UIHeight = 0.0
+            let signInController = SignInController()
+            signInController.modalPresentationStyle = .fullScreen
+            present(signInController, animated: true, completion: nil)
             
                 
-            }
+            } 
     }
     
     func sortExercises() {
@@ -142,41 +139,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         }
         tableView.reloadData()
     }
-    
-    
-    
-//    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-//        exercises = []
-//        activeSegment = sender.selectedSegmentIndex
-//        let activeSegmentTitle = sender.titleForSegment(at: sender.selectedSegmentIndex)
-//        UserDefaults.standard.setValue(activeSegmentTitle, forKey: "selectedCategory")
-//        print(activeSegment)
-//        print(catsNameOnly[activeSegment])
-//        guard let uid = Auth.auth().currentUser?.uid else { return }
-//        self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(catsNameOnly[activeSegment]).collection("Exercises")
-//        self.exerciseCollectionRef.getDocuments { (snapshot, error) in
-//            if let err = error {
-//                debugPrint("Error fetching exercises: \(err)")
-//            } else {
-//                guard let snap = snapshot else { return }
-//                for document in snap.documents {
-//                    let data = document.data()
-//                    let name = data["name"] as? String ?? ""
-//                    let category = data["category"] as? String ?? ""
-//                    let timeStamp = data["timestamp"] as? String ?? ""
-//                    let location = data["location"] as? Int ?? 0
-//                    let weight = data["weight"] as? Array ?? []
-//                    let reps = data["reps"] as? Array ?? []
-//                    let note = data["note"] as? String ?? ""
-//
-//                    let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note)
-//                    self.exercises.append(newExercise)
-//                }
-//            }
-//            self.sortExercises()
-//            UserDefaults.standard.setValue(self.locationCounter, forKey: "locationCounter")
-//        }
-//    }
     
     func workoutPickerValueChanged(workout: String) {
         exercises = []
@@ -216,7 +178,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         //cats = []
         if isSignedIn == true {
             catsNameOnly = []
-            exercises = []
             db.collection("Users").document(uid).collection("Category").getDocuments { snapshot, error in
                 if let err = error {
                     debugPrint("error fetching docs: \(err)")
@@ -246,39 +207,59 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     // fetches the exercises from Firebase database
     func fetchExercises() {
         print("fetching exercises")
+        exercises = []
 //        print(activeSegment)
 //        print(catsNameOnly[activeSegment])
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        print(catsNameOnly)
         if catsNameOnly.count != 0 {
             workoutCategorySelectorTextField.text = catsNameOnly[activeSegment]
-            //exercises = []
+            UserDefaults.standard.setValue(catsNameOnly[activeSegment], forKey: "selectedCategory")
+            let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
             self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(catsNameOnly[activeSegment]).collection("Exercises")
-                self.exerciseCollectionRef.getDocuments { (snapshot, error) in
-                    if let err = error {
-                        debugPrint("Error fetching exercises: \(err)")
-                    } else {
-                        guard let snap = snapshot else { return }
-                        for document in snap.documents {
-                            let data = document.data()
-                            let name = data["name"] as? String ?? ""
-                            let category = data["category"] as? String ?? ""
-                            let timeStamp = data["timestamp"] as? String ?? ""
-                            let location = data["location"] as? Int ?? 0
-                            let weight = data["weight"] as? Array ?? []
-                            let reps = data["reps"] as? Array ?? []
-                            let note = data["note"] as? String ?? ""
-                             
-                            let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note)
-                            self.exercises.append(newExercise)
-    
+                if showHidden {
+                    self.exerciseCollectionRef.getDocuments { (snapshot, error) in
+                        if let err = error {
+                            debugPrint("Error fetching exercises: \(err)")
+                        } else {
+                            guard let snap = snapshot else { return }
+                            self.processSnapshot(snap)
                         }
                     }
-                    //self.sortExercises()
+                } else {
+                    self.exerciseCollectionRef.whereField("hidden", isNotEqualTo: true).getDocuments { (snapshot, error) in
+                        if let err = error {
+                            debugPrint("Error fetching exercises: \(err)")
+                        } else {
+                            guard let snap = snapshot else { return }
+                            self.processSnapshot(snap)
+                        }
+                    }
                 }
             }
     }
     
-    @objc private func handleSignOut() {
+    private func processSnapshot(_ snapshot: QuerySnapshot) {
+        for document in snapshot.documents {
+            let data = document.data()
+            let name = data["name"] as? String ?? ""
+            let category = data["category"] as? String ?? ""
+            let timeStamp = data["timestamp"] as? String ?? ""
+            let location = data["location"] as? Int ?? 0
+            let weight = data["weight"] as? Array ?? []
+            let reps = data["reps"] as? Array ?? []
+            let note = data["note"] as? String ?? ""
+            let hidden = data["hidden"] as? Bool ?? false
+             
+            let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note, hidden: hidden)
+            self.exercises.append(newExercise)
+
+        }
+        print(exercises.count)
+        self.sortExercises()
+    }
+    
+    @objc func handleSignOut() {
         print("signing out")
         let signOutAction = UIAlertAction(title: "Sign Out", style: .destructive) { (action) in
             self.hud.textLabel.text = "Signing Out"
@@ -290,8 +271,8 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                 self.viewWillAppear(true)
                 self.exercises = []
                 self.tableView.reloadData()
+                self.workoutCategorySelectorTextField.isHidden = true
                 self.UIHeight = 0.0
-                self.workoutCategorySelectorTextField.text = ""
                 self.downIcon.tintColor = UIColor.darkGray
                 self.setupUI()
                 
@@ -384,7 +365,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }()
     
     
-    let workoutCategorySelectorTextField: UITextField = {
+    var workoutCategorySelectorTextField: UITextField = {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Select workout...",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
@@ -398,7 +379,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         return textField
     }()
     
-    let downIcon: UIImageView = {
+    var downIcon: UIImageView = {
         let imageView = UIImageView(image: #imageLiteral(resourceName: "down-arrow-icon"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         // alters the squashed look to make the image appear normal in the view, fixes aspect ratio
@@ -443,7 +424,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         tableView.tableHeaderView = header
     }
     // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
-    private func showError(title: String, message: String) {
+    func showError(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
