@@ -389,6 +389,14 @@ class WorkoutController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
+    func showError(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+        return
+    }
+    
 
     
     

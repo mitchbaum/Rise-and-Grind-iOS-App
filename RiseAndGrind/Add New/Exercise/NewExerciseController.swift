@@ -72,7 +72,9 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         let category = categorySelectorTextField.text!
         let locationCounter = userDefaults.object(forKey: "locationCounter") ?? 0
         let notes = notesTextField.text!
-        if name == "" {
+        if name.contains("/") {
+            return showError(title: "Unable to Save", message: "/ is a reserved character. Try using \\ instead.")
+        } else if name == "" {
             return showError(title: "Unable to add exercise", message: "Please fill in the name field.")
         } else if category == "" {
             return showError(title: "Unable to add exercise", message: "Please fill in the category field.")
