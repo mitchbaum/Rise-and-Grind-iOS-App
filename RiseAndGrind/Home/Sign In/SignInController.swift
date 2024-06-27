@@ -121,8 +121,9 @@ class SignInController: UIViewController {
         
 
         let createUserController = CreateUserController()
+        let navController = CustomNavigationController(rootViewController: createUserController)
         // push into new viewcontroller
-        navigationController?.pushViewController(createUserController, animated: true)
+        present(navController, animated: true, completion: nil)
 
 
         
