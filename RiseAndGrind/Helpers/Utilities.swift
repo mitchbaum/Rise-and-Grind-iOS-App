@@ -35,6 +35,8 @@ extension Date {
         let hourAgo = calendar.date(byAdding: .hour, value: -1, to: Date())!
         let dayAgo = calendar.date(byAdding: .day, value: -1, to: Date())!
         let weekAgo = calendar.date(byAdding: .day, value: -7, to: Date())!
+        let threeMonthsAgo = calendar.date(byAdding: .month, value: -3, to: Date())!
+        let yearAgo = calendar.date(byAdding: .year, value: -1, to: Date())!
 
         if minuteAgo < self {
 //            let diff = Calendar.current.dateComponents([.second], from: self, to: Date()).second ?? 0
@@ -56,12 +58,27 @@ extension Date {
             } else {
                 return "Updated \(diff) days ago"
             }
+        } else if threeMonthsAgo < self {
+            let diff = Calendar.current.dateComponents([.weekOfYear], from: self, to: Date()).weekOfYear ?? 0
+            if diff == 1 {
+                return "Updated \(diff) week ago"
+            } else {
+                return "Updated \(diff) weeks ago"
+            }
+        } else if yearAgo < self {
+            let diff = Calendar.current.dateComponents([.month], from: self, to: Date()).month ?? 0
+            
+            if diff == 1 {
+                return "Updated \(diff) month ago"
+            } else {
+                return "Updated \(diff) months ago"
+            }
         }
-        let diff = Calendar.current.dateComponents([.weekOfYear], from: self, to: Date()).weekOfYear ?? 0
+        let diff = Calendar.current.dateComponents([.year], from: self, to: Date()).year ?? 0
         if diff == 1 {
-            return "Updated \(diff) week ago"
+            return "Updated \(diff) year ago"
         } else {
-            return "Updated \(diff) weeks ago"
+            return "Updated \(diff) years ago"
         }
     }
     

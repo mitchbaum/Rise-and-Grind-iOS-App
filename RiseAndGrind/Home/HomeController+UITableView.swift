@@ -148,7 +148,8 @@ extension HomeController {
         let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         cell.updateLabel.text = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         let components = timeSinceUpdate.components(separatedBy: " ")
-        if components[2] == "weeks" {
+        let needsUpdating = ["weeks", "month", "months", "year", "years"]
+        if needsUpdating.contains(components[2]) {
             cell.alertView.backgroundColor = .red
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
