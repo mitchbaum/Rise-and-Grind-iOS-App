@@ -258,7 +258,7 @@ class SignInController: UIViewController {
         
         view.addSubview(logInImageView)
         // gives padding of image from top
-        logInImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
+        logInImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60).isActive = true
         logInImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         logInImageView.heightAnchor.constraint(equalToConstant: 125).isActive = true
         logInImageView.widthAnchor.constraint(equalToConstant: 125).isActive = true

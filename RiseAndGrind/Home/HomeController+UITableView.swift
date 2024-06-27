@@ -60,6 +60,7 @@ extension HomeController {
 
         workoutController.nameTextField.text = exercise.name
         workoutController.categorySelectorTextField.text = exercise.category
+        workoutController.lastUpdatedTimestamp = exercise.timeStamp ?? ""
 
         
         print(" workoutController.tableView.numberOfRows(inSection: 0) = \(workoutController.tableView.numberOfRows(inSection: 0))")

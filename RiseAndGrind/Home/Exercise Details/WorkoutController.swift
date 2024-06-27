@@ -31,6 +31,8 @@ class WorkoutController: UITableViewController {
     
     let db = Firestore.firestore()
     
+    var lastUpdatedTimestamp = ""
+    
     // add loading HUD status for when fetching data from server
     let hud: JGProgressHUD = {
         let hud = JGProgressHUD(style: .light)
@@ -167,7 +169,7 @@ class WorkoutController: UITableViewController {
         let id = ref.documentID
         weight = []
         reps = []
-        let currentDateTime = Date()
+        let lastUpdated = Date(timeIntervalSince1970: Double(lastUpdatedTimestamp) ?? 0.0)
         let formatter = DateFormatter()
         
         formatter.timeStyle = .none
@@ -187,7 +189,7 @@ class WorkoutController: UITableViewController {
         db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Archive").document(id).setData(["name" : name,
                                                                                                                                         "id" : id,
                                                                                                      "category" : category,
-                                                                                                     "timestamp" :  formatter.string(from: currentDateTime),
+                                                                                                     "timestamp" :  formatter.string(from: lastUpdated),
                                                                                                      "weight" : weight,
                                                                                                      "reps" : reps,
                                                                                                      "note" : note])
