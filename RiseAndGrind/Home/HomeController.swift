@@ -140,36 +140,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         tableView.reloadData()
     }
     
-    func workoutPickerValueChanged(workout: String) {
-        exercises = []
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(workout).collection("Exercises")
-        self.exerciseCollectionRef.getDocuments { (snapshot, error) in
-            if let err = error {
-                debugPrint("Error fetching exercises: \(err)")
-            } else {
-                guard let snap = snapshot else { return }
-                for document in snap.documents {
-                    let data = document.data()
-                    let name = data["name"] as? String ?? ""
-                    let category = data["category"] as? String ?? ""
-                    let timeStamp = data["timestamp"] as? String ?? ""
-                    let location = data["location"] as? Int ?? 0
-                    let weight = data["weight"] as? Array ?? []
-                    let reps = data["reps"] as? Array ?? []
-                    let note = data["note"] as? String ?? ""
-                    
-                    let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note)
-                    self.exercises.append(newExercise)
-                }
-            }
-            self.sortExercises()
-            UserDefaults.standard.setValue(self.locationCounter, forKey: "locationCounter")
-        }
-        
-    }
-    
-    
     
     // fetches the exercises from Firebase database
     @objc func fetchCategories() {
@@ -208,8 +178,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     func fetchExercises() {
         print("fetching exercises")
         exercises = []
-//        print(activeSegment)
-//        print(catsNameOnly[activeSegment])
         guard let uid = Auth.auth().currentUser?.uid else { return }
         print(catsNameOnly)
         if catsNameOnly.count != 0 {
@@ -223,7 +191,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                             debugPrint("Error fetching exercises: \(err)")
                         } else {
                             guard let snap = snapshot else { return }
-                            self.processSnapshot(snap)
+                            self.processSnapshot(snapshot: snap, uid: uid, category: self.catsNameOnly[self.activeSegment])
                         }
                     }
                 } else {
@@ -232,14 +200,14 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                             debugPrint("Error fetching exercises: \(err)")
                         } else {
                             guard let snap = snapshot else { return }
-                            self.processSnapshot(snap)
+                            self.processSnapshot(snapshot: snap, uid: uid, category: self.catsNameOnly[self.activeSegment])
                         }
                     }
                 }
             }
     }
     
-    private func processSnapshot(_ snapshot: QuerySnapshot) {
+    private func processSnapshot(snapshot: QuerySnapshot, uid: String, category: String) {
         for document in snapshot.documents {
             let data = document.data()
             let name = data["name"] as? String ?? ""
@@ -249,6 +217,10 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             let weight = data["weight"] as? Array ?? []
             let reps = data["reps"] as? Array ?? []
             let note = data["note"] as? String ?? ""
+            if (data["hidden"] == nil) {
+                print("hidden not found! doc is ", name, " adding the hidden field and setting to false")
+                db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).updateData(["hidden": false])
+            }
             let hidden = data["hidden"] as? Bool ?? false
              
             let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note, hidden: hidden)

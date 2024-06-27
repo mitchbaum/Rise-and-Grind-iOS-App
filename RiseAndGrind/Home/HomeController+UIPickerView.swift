@@ -22,12 +22,11 @@ extension HomeController {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        workoutPickerValueChanged(workout: catsNameOnly[row])
         UserDefaults.standard.setValue(catsNameOnly[row], forKey: "selectedCategory")
-        print("row = ", row)
         activeSegment = row
         workoutCategorySelectorTextField.text = catsNameOnly[row]
         workoutCategorySelectorTextField.resignFirstResponder()
+        fetchExercises()
     }
     
     
