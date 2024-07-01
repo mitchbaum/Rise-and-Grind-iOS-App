@@ -182,6 +182,7 @@ extension HomeController {
                 
                 let hideAction = UIAlertAction(title: "Hide Exercise", style: .destructive) { (action) in
                     if !showHidden {
+                        self.exercises[indexPath.row].hidden = true
                         self.exercises.remove(at: indexPath.row)
                         self.tableView.deleteRows(at: [indexPath], with: .automatic)
                     }
