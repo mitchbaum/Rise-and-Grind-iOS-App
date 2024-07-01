@@ -196,12 +196,46 @@ extension HomeController {
 
                 
             }
-            action.backgroundColor = UIColor.red
+            action.backgroundColor = themeColor
             return [action]
         }
         
     }
 
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard let uid = Auth.auth().currentUser?.uid else { return nil }
+        let exercise = self.exercises[indexPath.row]
+        let category = exercise.category
+        let name = exercise.name
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
+            // Remove the exercise from the array
+            self.exercises.remove(at: indexPath.row)
+            let deleteActionAlert = UIAlertAction(title: "Delete Forever", style: .destructive) { (action) in
+
+                self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).delete { error in
+                    if let error = error {
+                        print("Error removing document: \(error)")
+                    } else {
+                        // Delete the row from the table view
+                        tableView.deleteRows(at: [indexPath], with: .fade)
+                        completionHandler(true)
+                    }
+                }
+            }
+
+            // alert
+           let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+           let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+           optionMenu.addAction(deleteActionAlert)
+           optionMenu.addAction(cancelAction)
+           self.present(optionMenu, animated: true, completion: nil)
+        }
+
+        deleteAction.backgroundColor = .red // You can customize the color if needed
+
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
     
     
 }
