@@ -19,7 +19,7 @@ protocol WorkoutControllerDelegate {
 
 class WorkoutController: UITableViewController {
     var delegate: WorkoutControllerDelegate?
-    var sets = [String]()
+    var sets = [Set]()
     
     
     var weight = [String]()
@@ -65,6 +65,7 @@ class WorkoutController: UITableViewController {
         
         fetchSets()
         setupUI()
+        reorder()
     }
     
     
@@ -87,7 +88,6 @@ class WorkoutController: UITableViewController {
             } else {
                 weight.append(cell.weightTextField.text ?? "")
             }
-            //weight.append(cell.weightTextField.text ?? "0")
             reps.append(cell.repsTextField.text ?? "-")
         }
         db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).updateData(["name" : name,
@@ -127,15 +127,15 @@ class WorkoutController: UITableViewController {
                 }
             }
             if setCount > 0 {
-                for _ in 0...(setCount - 1) {
-                    self.sets.append("set added")
+                for i in 0...(setCount - 1) {
+                    print(i)
+                    self.sets.append(Set(weight: weightList[i], reps: repsList[i]))
                 }
                 self.tableView.reloadData()
             }
             let setCell: [WeightRepsCell] = self.tableView.visibleCells as? [WeightRepsCell] ?? []
             var i = 0
             for cell in setCell {
-                print("setCell.count = \(setCell.count)")
                 cell.weightTextField.text = weightList[i]
                 cell.repsTextField.text = repsList[i]
                 i += 1
@@ -146,13 +146,18 @@ class WorkoutController: UITableViewController {
 
     
     @objc private func handleButtonPressed(sender:UIButton) {
-        print("Plus button pressed")
         // add animation to the button
         Utilities.animateView(sender)
-        sets.append("Set added")
-
+        let set = Set(weight: "0", reps: "0")
         
-        tableView.reloadData()
+        sets.append(set)
+        let indexPath = IndexPath(row: sets.count - 1, section: 0)
+        tableView.beginUpdates()
+        tableView.insertRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+        
+        // Optionally scroll to the bottom to show the new item
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
     }
     
     @objc func handleArchiveThisButton(sender:UIButton) {
@@ -395,6 +400,14 @@ class WorkoutController: UITableViewController {
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
         return
+    }
+    
+    func reorder() {
+        if tableView.isEditing {
+            tableView.isEditing = false
+        } else {
+            tableView.isEditing = true
+        }
     }
     
 

@@ -6,3 +6,7 @@
 //
 
 import Foundation
+struct Set {
+    var weight: String?
+    var reps: String?
+}
