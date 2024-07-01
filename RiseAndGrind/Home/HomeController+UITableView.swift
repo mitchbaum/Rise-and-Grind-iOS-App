@@ -12,46 +12,9 @@ import FirebaseAuth
 
 extension HomeController {
     
-//    // creates style of header
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let categorySCArray = userDefaults.object(forKey: "myKey")
-//        let sc = UISegmentedControl(items: categorySCArray as! [String])
-//
-//        sc.selectedSegmentIndex = activeSegment
-//        sc.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
-//        sc.translatesAutoresizingMaskIntoConstraints = true
-//        if sc.numberOfSegments == 0 {
-//            sc.backgroundColor = .darkGray
-//        } else {
-//            sc.backgroundColor = .white
-//            let activeSegmentTitle = sc.titleForSegment(at: sc.selectedSegmentIndex)
-//            UserDefaults.standard.setValue(activeSegmentTitle, forKey: "selectedCategory")
-//        }
-//        // highlighted filter color
-//        sc.selectedSegmentTintColor = UIColor.lightBlue
-//        // changes text color to black for selected button text
-//        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
-//        // changes text color to black for non selected button text
-//        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
-//        return sc
-//    }
-//    
-//    
-//    // creates height of header
-//    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 35
-//    }
-//    
-//    // creates header
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
-//    }
-//    
     // when user taps on row bring them into another view
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // whenever user taps on a file cell, push over the information to the employee view controller
-        print("Selected a cell")
-        //let file = self.files[indexPath.row]\
     
         let exercise = self.exercises[indexPath.row]
         
@@ -100,6 +63,7 @@ extension HomeController {
     // create some cells for the rows
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ExerciseCell.identifier, for: indexPath) as! ExerciseCell
+        let themeColor = Utilities.loadTheme()
         // this if statement seemed to fix the refresh srash bug. No idea why or how.
         if exercises.count == 0{
             //fetchExercises()
@@ -155,9 +119,9 @@ extension HomeController {
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
         } else {
-            cell.alertView.backgroundColor = .lightBlue
-            cell.updateImageView.tintColor = .lightBlue
-            cell.weightXreps.textColor = .lightBlue
+            cell.alertView.backgroundColor = themeColor
+            cell.updateImageView.tintColor = themeColor
+            cell.weightXreps.textColor = themeColor
             
         }
         
@@ -185,6 +149,7 @@ extension HomeController {
     // delete exercise from tableView and Cloud databae
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         guard let uid = Auth.auth().currentUser?.uid else { return [] }
+        let themeColor = Utilities.loadTheme()
         let exercise = self.exercises[indexPath.row]
         let category = exercise.category
         let name = exercise.name
@@ -206,7 +171,7 @@ extension HomeController {
                 
             }
             // change color of delete button
-            action.backgroundColor = UIColor.lightBlue
+            action.backgroundColor = themeColor
 
             
             // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit

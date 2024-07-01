@@ -56,6 +56,7 @@ extension ReorderController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ExerciseCell.identifier, for: indexPath) as! ExerciseCell
         guard let name = exercises[indexPath.row].name else { return cell }
+        let themeColor = Utilities.loadTheme()
         //let timeStamp = exercises[indexPath.row].timeStamp
         cell.name.text = name
         //"125 x 12  |  130 x 10  |  135 x 8"
@@ -99,9 +100,9 @@ extension ReorderController {
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
         } else {
-            cell.alertView.backgroundColor = .lightBlue
-            cell.updateImageView.tintColor = .lightBlue
-            cell.weightXreps.textColor = .lightBlue
+            cell.alertView.backgroundColor = themeColor
+            cell.updateImageView.tintColor = themeColor
+            cell.weightXreps.textColor = themeColor
             
         }
         

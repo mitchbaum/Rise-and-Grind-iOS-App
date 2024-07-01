@@ -131,6 +131,16 @@ extension UIAlertAction {
         set { self.setValue(newValue, forKey: "titleTextColor") }
     }
 }
+extension UINavigationBar {
+
+    func makeContent(color: UIColor) {
+        let attributes: [NSAttributedString.Key: Any]? = [.foregroundColor: color]
+
+        self.titleTextAttributes = attributes
+        self.topItem?.leftBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
+        self.topItem?.rightBarButtonItem?.setTitleTextAttributes(attributes, for: .normal)
+    }
+}
 class Utilities {
     static func timestampConversion(timeStamp: String) -> Date {
         // handle time stamp
@@ -180,6 +190,26 @@ class Utilities {
         let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
+    }
+    
+    static func setThemeColor(color: UIColor) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        
+        if color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            let components: [CGFloat] = [red, green, blue, alpha]
+            print(components)
+            UserDefaults.standard.setValue(components, forKey: "theme")
+        }
+    }
+    
+    static func loadTheme() -> UIColor {
+        guard let array = UserDefaults.standard.object(forKey: "theme") as? [CGFloat], array.count == 4 else { return UIColor.lightBlue }
+        let color = UIColor(red: array[0], green: array[1], blue: array[2], alpha: array[3])
+        
+        return color
     }
     
     

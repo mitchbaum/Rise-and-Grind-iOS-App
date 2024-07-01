@@ -193,11 +193,7 @@ class WorkoutController: UITableViewController {
                                                                                                      "weight" : weight,
                                                                                                      "reps" : reps,
                                                                                                      "note" : note])
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.hud.textLabel.text = "Success!"
-            self.hud.dismiss(afterDelay: 0.75, animated: true)
-        }
+        self.hud.dismiss(animated: true)
     }
     
     @objc func handleOpenArchiveButton(sender:UIButton) {
@@ -228,7 +224,7 @@ class WorkoutController: UITableViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.isUserInteractionEnabled = false
         return textField
     }()
@@ -242,7 +238,7 @@ class WorkoutController: UITableViewController {
         textField.textColor = .darkGray
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.tintColor = UIColor.clear
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -253,13 +249,14 @@ class WorkoutController: UITableViewController {
     // create text field for notes entry
     let notesTextField: UITextField = {
         let textField = UITextField()
+        let color = Utilities.loadTheme()
         textField.attributedPlaceholder = NSAttributedString(string: "Note",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         textField.textColor = .black
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
-        textField.tintColor = UIColor.lightBlue
+        textField.addLine(position: .bottom, color: color, width: 0.5)
+        textField.tintColor = color
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -267,15 +264,16 @@ class WorkoutController: UITableViewController {
     
     let addButton: UIButton = {
         let button = UIButton()
+        let color = Utilities.loadTheme()
         //button.backgroundColor = UIColor.red
         button.layer.borderWidth = 2
-        button.layer.borderColor = UIColor.lightBlue.cgColor
+        button.layer.borderColor = color.cgColor
         button.layer.cornerRadius = 10
         button.setImage(UIImage(named: "add"), for: .normal)
-        button.setTitleColor(UIColor.lightBlue, for: .normal)
-        button.backgroundColor = .lightBlue
+        button.setTitleColor(color, for: .normal)
+        button.backgroundColor = color
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 32.0)
-        button.addTarget(self, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -284,12 +282,12 @@ class WorkoutController: UITableViewController {
     // create button to archive
     let archiveThisButton: UIButton = {
         let button = UIButton()
-
-        button.backgroundColor = .lightBlue
+        let color = Utilities.loadTheme()
+        button.backgroundColor = color
         button.setTitle("Archive Workout", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
-        button.addTarget(self, action: #selector(handleArchiveThisButton(sender:)), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(handleArchiveThisButton(sender:)), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -301,18 +299,18 @@ class WorkoutController: UITableViewController {
     // create button to view archive
     let openArchiveButton: UIButton = {
         let button = UIButton()
-
+        let color = Utilities.loadTheme()
         button.backgroundColor = .white
         //button.tintColor = .lightBlue
         
         button.setTitle("Open Archive", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
-        button.layer.borderColor = UIColor.lightBlue.cgColor
+        button.layer.borderColor = color.cgColor
         button.layer.borderWidth = 1
         button.addTarget(self, action: #selector(handleOpenArchiveButton(sender:)), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
-        button.setTitleColor(.lightBlue, for: .normal)
+        button.setTitleColor(color, for: .normal)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
         // add animation to the button

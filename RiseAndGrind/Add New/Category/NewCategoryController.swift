@@ -120,7 +120,7 @@ class NewCategoryController: UITableViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         return textField
     }()
     

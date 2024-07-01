@@ -18,18 +18,11 @@ class CustomNavigationController: UINavigationController {
     }
 }
 
-// this extension changes the color of the small letters at the very top of the app (time, battery life, wifi, etc) with white. THis class gives us the light content when the user taps to add a new image
-//extension UINavigationController {
-//    open override var perferredStatusBarStyle: UIStatusBarStyle {
-//        return .lightContent
-//    }
-//}
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    let userDefaults = UserDefaults.standard
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -39,6 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().prefersLargeTitles = true
         // creates lighter color shade of red for navigation bar
         // makes navigation bar light red color from the variable we made
+        let colorTheme = Utilities.loadTheme()
+        print(colorTheme)
+        
         UINavigationBar.appearance().barTintColor = UIColor.lightBlue
         // makes text "cancel" button white color
         UINavigationBar.appearance().tintColor = .white
@@ -47,13 +43,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()
             UINavigationBar.appearance().tintColor = .white
-            appearance.backgroundColor = UIColor.lightBlue
+            appearance.backgroundColor = colorTheme
             // makes large navigation bar title color white
             appearance.largeTitleTextAttributes = [.foregroundColor : UIColor.white] //portrait title
             // modifty regular text attributes on view controller as white color. There is a bug where if you scroll down the table view the "files" title at the top turns back to the black default
             appearance.titleTextAttributes = [.foregroundColor : UIColor.white] //landscape title
             
-            UINavigationBar.appearance().tintColor = .white
             UINavigationBar.appearance().standardAppearance = appearance //landscape
             UINavigationBar.appearance().compactAppearance = appearance
             UINavigationBar.appearance().scrollEdgeAppearance = appearance //portrait
@@ -74,6 +69,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.shouldShowToolbarPlaceholder = false
         IQKeyboardManager.shared.toolbarDoneBarButtonItemText = "Done"
         return true
+    }
+    
+    func updateGlobalNavigationBarAppearance(color: UIColor) {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = color
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        
+        // Update the current navigation bar's appearance
+        window?.rootViewController?.children.forEach { viewController in
+            if let navigationController = viewController as? UINavigationController {
+                navigationController.navigationBar.standardAppearance = appearance
+                navigationController.navigationBar.scrollEdgeAppearance = appearance
+                navigationController.navigationBar.compactAppearance = appearance
+            }
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -97,6 +113,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
 
 }

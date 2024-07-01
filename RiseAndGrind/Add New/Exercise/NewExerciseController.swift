@@ -163,7 +163,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         return textField
     }()
 
@@ -176,7 +176,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         textField.textColor = .black
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.tintColor = UIColor.clear
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -197,7 +197,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         textField.textColor = .black
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.tintColor = UIColor.clear
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -206,15 +206,16 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
     
     let addButton: UIButton = {
         let button = UIButton()
+        let color = Utilities.loadTheme()
         //button.backgroundColor = UIColor.red
         button.layer.borderWidth = 2
-        button.layer.borderColor = UIColor.lightBlue.cgColor
+        button.layer.borderColor = color.cgColor
         button.layer.cornerRadius = 10
         button.setImage(UIImage(named: "add"), for: .normal)
-        button.setTitleColor(UIColor.lightBlue, for: .normal)
-        button.backgroundColor = .lightBlue
+        button.setTitleColor(color, for: .normal)
+        button.backgroundColor = color
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 32.0)
-        button.addTarget(self, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

@@ -54,6 +54,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         // creates title of files
         navigationItem.title = "My Workouts"
         
+        
         // register fileCell wiht cellId
         //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
         tableView.register(ExerciseCell.self, forCellReuseIdentifier: ExerciseCell.identifier)
@@ -80,6 +81,11 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         let showHidden = userDefaults.object(forKey: "showHidden")
         if showHidden == nil {
             UserDefaults.standard.setValue(true, forKey: "showHidden") // default to showing all exercises
+        }
+        
+        let theme = userDefaults.object(forKey: "theme")
+        if theme == nil {
+            Utilities.setThemeColor(color: UIColor.lightBlue)
         }
         
         workoutCategorySelectorTextField.inputView = workoutCategoryPicker
@@ -173,6 +179,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             self.tableView.refreshControl?.endRefreshing()
         }
     }
+
     
     // fetches the exercises from Firebase database
     func fetchExercises() {
@@ -285,6 +292,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     // function that handles the plus button in top right corner
     @objc func handleAddWorkout() {
         print("Adding..")
+        let color = Utilities.loadTheme()
         let addWorkout = UIAlertAction(title: "New Exercise", style: .default) { action in
             print("new exercise")
             let newExerciseController = NewExerciseController()
@@ -301,8 +309,8 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         }
         //alert
         // change color of alert text
-        addWorkout.setValue(UIColor.lightBlue, forKey: "titleTextColor")
-        addCategory.setValue(UIColor.lightBlue, forKey: "titleTextColor")
+        addWorkout.setValue(color, forKey: "titleTextColor")
+        addCategory.setValue(color, forKey: "titleTextColor")
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -331,6 +339,22 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         navigationController?.pushViewController(signInController, animated: true)
     }
     
+    func refreshTheme() {
+        let color = Utilities.loadTheme()
+        // Customize navigation bar appearance
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.backgroundColor =  color
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor : UIColor.white] //portrait title
+        // modifty regular text attributes on view controller as white color. There is a bug where if you scroll down the table view the "files" title at the top turns back to the black default
+        navBarAppearance.titleTextAttributes = [.foregroundColor : UIColor.white] //landscape title
+        downIcon.tintColor = color
+        workoutCategorySelectorTextField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
+        
+        // Apply the customized appearance to the navigation bar
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+    }
+    
     let workoutCategoryPicker: UIPickerView = {
         let pickerView = UIPickerView()
         return pickerView
@@ -344,7 +368,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         textField.textColor = .white
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.tintColor = UIColor.clear
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -358,7 +382,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
-        imageView.tintColor = UIColor.lightBlue
+        imageView.tintColor = Utilities.loadTheme()
         return imageView
         
     }()

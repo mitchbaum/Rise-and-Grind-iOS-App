@@ -104,7 +104,7 @@ extension NewCategoryController {
         }
         
 
-        label.backgroundColor = UIColor.lightBlue
+        label.backgroundColor = Utilities.loadTheme()
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 16)
 
