@@ -251,6 +251,9 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                 self.UIHeight = 0.0
                 self.downIcon.tintColor = UIColor.darkGray
                 self.setupUI()
+                let appDelegate = UIApplication.shared.delegate as! AppDelegate
+                Utilities.setThemeColor(color: UIColor.lightBlue)
+                appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.lightBlue)
                 
             } catch let err {
                 self.hud.dismiss(animated: true)
