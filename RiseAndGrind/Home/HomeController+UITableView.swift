@@ -181,12 +181,12 @@ extension HomeController {
 
                 
                 let hideAction = UIAlertAction(title: "Hide Exercise", style: .destructive) { (action) in
+                    self.exercises[indexPath.row].hidden = true
+                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : true])
                     if !showHidden {
-                        self.exercises[indexPath.row].hidden = true
                         self.exercises.remove(at: indexPath.row)
                         self.tableView.deleteRows(at: [indexPath], with: .automatic)
                     }
-                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : true])
                     self.tableView.reloadData()
                 }
                 let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
