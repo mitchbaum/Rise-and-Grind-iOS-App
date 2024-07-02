@@ -236,7 +236,7 @@ class SettingsController: UIViewController {
     
     let themeControl: UISegmentedControl = {
         let activeSegment = Utilities.loadTheme()
-        let types = ["💎","🌲","🍆", "🫦", "👞"]
+        let types = ["💎","🌲","😈", "🎟️", "👞"]
         let sc = UISegmentedControl(items: types)
         // default as first item
         if activeSegment as UIColor == UIColor.lightBlue {
