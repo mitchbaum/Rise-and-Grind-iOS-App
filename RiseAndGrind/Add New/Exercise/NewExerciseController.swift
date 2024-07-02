@@ -70,7 +70,6 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         print("adding new exercise")
         let name = nameTextField.text!
         let category = categorySelectorTextField.text!
-        let locationCounter = userDefaults.object(forKey: "locationCounter") ?? 0
         let note = notesTextField.text!
         if name.contains("/") {
             return showError(title: "Unable to Save", message: "/ is a reserved character. Try using \\ instead.")
@@ -97,7 +96,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
             guard let uid = Auth.auth().currentUser?.uid else { return }
             db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).setData(["name" : name,
                                                                                                          "category" : category,
-                                                                                                         "location" : locationCounter as! Int + 1,
+                                                                                                         "location" : -1,
                                                                                                          "timestamp" : "\(timestamp)",
                                                                                                          "weight" : weight,
                                                                                                          "reps" : reps,

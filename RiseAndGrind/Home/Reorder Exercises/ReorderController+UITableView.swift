@@ -11,28 +11,6 @@ import FirebaseAuth
 
 extension ReorderController {
     
-    
-    // when user taps on row bring them into another view
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // whenever user taps on a file cell, push over the information to the employee view controller
-        print("Selected a cell")
-        //let file = self.files[indexPath.row]\
-    
-        let exercise = self.exercises[indexPath.row]
-        
-        let workoutController = WorkoutController()
-
-        workoutController.nameTextField.text = exercise.name
-        workoutController.categorySelectorTextField.text = exercise.category
-
-        let navController = CustomNavigationController(rootViewController: workoutController)
-        
-        // push into new viewcontroller
-        present(navController, animated: true, completion: nil)
-
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
     // create footer that displays when there are no files in the table
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let label = UILabel()
@@ -95,7 +73,8 @@ extension ReorderController {
         let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         cell.updateLabel.text = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         let components = timeSinceUpdate.components(separatedBy: " ")
-        if components[2] == "weeks" {
+        let needsUpdating = ["weeks", "month", "months", "year", "years"]
+        if needsUpdating.contains(components[2]) {
             cell.alertView.backgroundColor = .red
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
@@ -122,7 +101,6 @@ extension ReorderController {
     
     // add some rows to the tableView
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // returns number of rows as number of files
         return exercises.count
     }
     
@@ -131,7 +109,13 @@ extension ReorderController {
     }
     
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        exercises.swapAt(sourceIndexPath.row, destinationIndexPath.row)
+        tableView.beginUpdates()
+        let movedObject = exercises[sourceIndexPath.row]
+        exercises.remove(at: sourceIndexPath.row)
+        exercises.insert(movedObject, at: destinationIndexPath.row)
+        tableView.endUpdates()
+        tableView.reloadData()
+
     }
     
     // removes editing icon to left of cell when reordering

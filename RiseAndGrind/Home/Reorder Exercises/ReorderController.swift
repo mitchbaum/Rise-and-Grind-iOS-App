@@ -27,7 +27,6 @@ class ReorderController: UITableViewController {
     let db = Firestore.firestore()
     
     var exercises = [Exercise]()
-    var reorderedExercises = [Exercise]()
     
     let category = UserDefaults.standard.object(forKey: "selectedCategory")
     
@@ -66,17 +65,33 @@ class ReorderController: UITableViewController {
     
     
     @objc private func handleSave() {
-        print("saving new ordered workout")
-        var locationCounter = 0
+        for (i, exercise) in exercises.enumerated() {
+            print(i, exercise.name ?? "")
+        }
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        print("handleSave() exercises = ", exercises)
-        for exercise in exercises {
+        // dispatch tracks the completion of asynchronous tasks. Needed to prevent dismissal of viewcontroller while reordering is in progress
+        let dispatchGroup = DispatchGroup()
+        for (i, exercise) in exercises.enumerated() {
+            // Enter the dispatch group
+            dispatchGroup.enter()
             print("name = \(String(describing: exercise.name)) | location =  \(String(describing: exercise.location))")
-            db.collection("Users").document(uid).collection("Category").document(category as! String).collection("Exercises").document(exercise.name ?? "").updateData(["location" : locationCounter])
-            locationCounter += 1
+            db.collection("Users").document(uid).collection("Category").document(category as! String).collection("Exercises").document(exercise.name ?? "").updateData(["location" : i]) { error in
+                if let error = error {
+                    print("Error updating document's order: \(error)")
+                } else {
+                    // Delete the row from the table view
+                    print("done reordering exercise.")
+                    print("index =", i)
+                }
+                dispatchGroup.leave()
+            }
             
         }
-        dismiss(animated: true, completion: {self.delegate?.fetchExercises() })
+
+        dispatchGroup.notify(queue: .main) {
+            print("dismissing")
+            self.dismiss(animated: true, completion: {self.delegate?.fetchExercises() })
+        }
     }
     
     func reorder() {

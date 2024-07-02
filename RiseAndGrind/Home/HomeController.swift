@@ -30,8 +30,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     
     var activeSegment = 0
     
-    var locationCounter = 0
-    
     var isSignedIn = false
     
     var UIHeight = 0.0
@@ -234,7 +232,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             self.exercises.append(newExercise)
 
         }
-        print(exercises.count)
         self.sortExercises()
     }
     
