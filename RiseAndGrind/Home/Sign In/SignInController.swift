@@ -76,7 +76,7 @@ class SignInController: UIViewController {
         
     }
     
-    @objc private func handleLongPress() {
+    @objc private func handleMultiTap() {
         // Handle the long press action
         print("Forgot Password button long pressed for 3 seconds")
         // Call your specific function here
@@ -151,7 +151,7 @@ class SignInController: UIViewController {
         imageView.backgroundColor = .darkGray
 //        imageView.layer.cornerRadius = imageView.frame.width / 3
 //        imageView.layer.borderWidth = 1
-        let tripleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleLongPress))
+        let tripleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleMultiTap))
         tripleTapRecognizer.numberOfTapsRequired = 3
         imageView.addGestureRecognizer(tripleTapRecognizer)
         imageView.isUserInteractionEnabled = true

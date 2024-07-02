@@ -39,6 +39,11 @@ class SettingsController: UIViewController {
         previewTheme(color: themeColor)
         themeControl.addTarget(self, action: #selector(themeControlValueChanged(_:)), for: .valueChanged)
         
+        let tripleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleMultiTap))
+        tripleTapRecognizer.numberOfTapsRequired = 3
+        messageLabel.isUserInteractionEnabled = true
+        messageLabel.addGestureRecognizer(tripleTapRecognizer)
+        
         // add cancel button to dismiss view
         let cancel = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         let save = UIBarButtonItem(title: NSString(string: "Save") as String, style: .plain, target: self, action: #selector(handleSave))
@@ -140,6 +145,35 @@ class SettingsController: UIViewController {
         // Apply the customized appearance to the navigation bar
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+    }
+    
+    @objc private func handleMultiTap() {
+
+        print("Multi tap!")
+        let deleteAccountAction = UIAlertAction(title: "Delete Account", style: .destructive) { (action) in
+            self.hud.textLabel.text = "Deleting Account..."
+            self.hud.show(in: self.view, animated: true)
+            let user = Auth.auth().currentUser
+            user?.delete { error in
+              if let error = error {
+                  self.hud.dismiss(animated: true)
+                  // couldnt sign in
+                  self.showError(title: "Unable to delete account", message: error.localizedDescription)
+              } else {
+                  self.hud.dismiss(animated: true)
+                  let signInController = SignInController()
+                  signInController.modalPresentationStyle = .fullScreen
+                  self.present(signInController, animated: true, completion: nil)
+              }
+            }
+        }
+        // alert
+        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        optionMenu.addAction(deleteAccountAction)
+        optionMenu.addAction(cancelAction)
+        self.present(optionMenu, animated: true, completion: nil)
+       
     }
     
 
@@ -335,5 +369,14 @@ class SettingsController: UIViewController {
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
     }
+    
+    // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
+    private func showError(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+        return
+    }
+    
 
 }
