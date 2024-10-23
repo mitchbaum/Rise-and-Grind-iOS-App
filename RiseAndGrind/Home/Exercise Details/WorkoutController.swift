@@ -19,7 +19,7 @@ protocol WorkoutControllerDelegate {
 
 class WorkoutController: UITableViewController {
     var delegate: WorkoutControllerDelegate?
-    var sets = [String]()
+    var sets = [Set]()
     
     
     var weight = [String]()
@@ -30,6 +30,8 @@ class WorkoutController: UITableViewController {
     var SCIndex = 0
     
     let db = Firestore.firestore()
+    
+    var lastUpdatedTimestamp = ""
     
     // add loading HUD status for when fetching data from server
     let hud: JGProgressHUD = {
@@ -63,6 +65,7 @@ class WorkoutController: UITableViewController {
         
         fetchSets()
         setupUI()
+        reorder()
     }
     
     
@@ -85,7 +88,6 @@ class WorkoutController: UITableViewController {
             } else {
                 weight.append(cell.weightTextField.text ?? "")
             }
-            //weight.append(cell.weightTextField.text ?? "0")
             reps.append(cell.repsTextField.text ?? "-")
         }
         db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).updateData(["name" : name,
@@ -125,15 +127,15 @@ class WorkoutController: UITableViewController {
                 }
             }
             if setCount > 0 {
-                for _ in 0...(setCount - 1) {
-                    self.sets.append("set added")
+                for i in 0...(setCount - 1) {
+                    print(i)
+                    self.sets.append(Set(weight: weightList[i], reps: repsList[i]))
                 }
                 self.tableView.reloadData()
             }
             let setCell: [WeightRepsCell] = self.tableView.visibleCells as? [WeightRepsCell] ?? []
             var i = 0
             for cell in setCell {
-                print("setCell.count = \(setCell.count)")
                 cell.weightTextField.text = weightList[i]
                 cell.repsTextField.text = repsList[i]
                 i += 1
@@ -144,13 +146,18 @@ class WorkoutController: UITableViewController {
 
     
     @objc private func handleButtonPressed(sender:UIButton) {
-        print("Plus button pressed")
         // add animation to the button
         Utilities.animateView(sender)
-        sets.append("Set added")
-
+        let set = Set(weight: "0", reps: "0")
         
-        tableView.reloadData()
+        sets.append(set)
+        let indexPath = IndexPath(row: sets.count - 1, section: 0)
+        tableView.beginUpdates()
+        tableView.insertRows(at: [indexPath], with: .automatic)
+        tableView.endUpdates()
+        
+        // Optionally scroll to the bottom to show the new item
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
     }
     
     @objc func handleArchiveThisButton(sender:UIButton) {
@@ -167,7 +174,7 @@ class WorkoutController: UITableViewController {
         let id = ref.documentID
         weight = []
         reps = []
-        let currentDateTime = Date()
+        let lastUpdated = Date(timeIntervalSince1970: Double(lastUpdatedTimestamp) ?? 0.0)
         let formatter = DateFormatter()
         
         formatter.timeStyle = .none
@@ -187,15 +194,11 @@ class WorkoutController: UITableViewController {
         db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Archive").document(id).setData(["name" : name,
                                                                                                                                         "id" : id,
                                                                                                      "category" : category,
-                                                                                                     "timestamp" :  formatter.string(from: currentDateTime),
+                                                                                                     "timestamp" :  formatter.string(from: lastUpdated),
                                                                                                      "weight" : weight,
                                                                                                      "reps" : reps,
                                                                                                      "note" : note])
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.hud.textLabel.text = "Success!"
-            self.hud.dismiss(afterDelay: 0.75, animated: true)
-        }
+        self.hud.dismiss(animated: true)
     }
     
     @objc func handleOpenArchiveButton(sender:UIButton) {
@@ -226,7 +229,7 @@ class WorkoutController: UITableViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.isUserInteractionEnabled = false
         return textField
     }()
@@ -240,7 +243,7 @@ class WorkoutController: UITableViewController {
         textField.textColor = .darkGray
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         textField.tintColor = UIColor.clear
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -251,13 +254,14 @@ class WorkoutController: UITableViewController {
     // create text field for notes entry
     let notesTextField: UITextField = {
         let textField = UITextField()
+        let color = Utilities.loadTheme()
         textField.attributedPlaceholder = NSAttributedString(string: "Note",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         textField.textColor = .black
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
-        textField.tintColor = UIColor.lightBlue
+        textField.addLine(position: .bottom, color: color, width: 0.5)
+        textField.tintColor = color
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -265,15 +269,16 @@ class WorkoutController: UITableViewController {
     
     let addButton: UIButton = {
         let button = UIButton()
+        let color = Utilities.loadTheme()
         //button.backgroundColor = UIColor.red
         button.layer.borderWidth = 2
-        button.layer.borderColor = UIColor.lightBlue.cgColor
+        button.layer.borderColor = color.cgColor
         button.layer.cornerRadius = 10
         button.setImage(UIImage(named: "add"), for: .normal)
-        button.setTitleColor(UIColor.lightBlue, for: .normal)
-        button.backgroundColor = .lightBlue
+        button.setTitleColor(color, for: .normal)
+        button.backgroundColor = color
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 32.0)
-        button.addTarget(self, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -282,12 +287,12 @@ class WorkoutController: UITableViewController {
     // create button to archive
     let archiveThisButton: UIButton = {
         let button = UIButton()
-
-        button.backgroundColor = .lightBlue
+        let color = Utilities.loadTheme()
+        button.backgroundColor = color
         button.setTitle("Archive Workout", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
-        button.addTarget(self, action: #selector(handleArchiveThisButton(sender:)), for: .touchUpInside)
+        button.addTarget(nil, action: #selector(handleArchiveThisButton(sender:)), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -299,18 +304,18 @@ class WorkoutController: UITableViewController {
     // create button to view archive
     let openArchiveButton: UIButton = {
         let button = UIButton()
-
+        let color = Utilities.loadTheme()
         button.backgroundColor = .white
         //button.tintColor = .lightBlue
         
         button.setTitle("Open Archive", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 10
-        button.layer.borderColor = UIColor.lightBlue.cgColor
+        button.layer.borderColor = color.cgColor
         button.layer.borderWidth = 1
         button.addTarget(self, action: #selector(handleOpenArchiveButton(sender:)), for: .touchUpInside)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
-        button.setTitleColor(.lightBlue, for: .normal)
+        button.setTitleColor(color, for: .normal)
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
         // add animation to the button
@@ -387,6 +392,22 @@ class WorkoutController: UITableViewController {
     
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
+    func showError(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+        return
+    }
+    
+    func reorder() {
+        if tableView.isEditing {
+            tableView.isEditing = false
+        } else {
+            tableView.isEditing = true
+        }
     }
     
 

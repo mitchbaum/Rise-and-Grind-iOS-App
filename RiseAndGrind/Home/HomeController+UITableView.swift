@@ -12,46 +12,9 @@ import FirebaseAuth
 
 extension HomeController {
     
-//    // creates style of header
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let categorySCArray = userDefaults.object(forKey: "myKey")
-//        let sc = UISegmentedControl(items: categorySCArray as! [String])
-//
-//        sc.selectedSegmentIndex = activeSegment
-//        sc.addTarget(self, action: #selector(segmentedControlValueChanged(_:)), for: .valueChanged)
-//        sc.translatesAutoresizingMaskIntoConstraints = true
-//        if sc.numberOfSegments == 0 {
-//            sc.backgroundColor = .darkGray
-//        } else {
-//            sc.backgroundColor = .white
-//            let activeSegmentTitle = sc.titleForSegment(at: sc.selectedSegmentIndex)
-//            UserDefaults.standard.setValue(activeSegmentTitle, forKey: "selectedCategory")
-//        }
-//        // highlighted filter color
-//        sc.selectedSegmentTintColor = UIColor.lightBlue
-//        // changes text color to black for selected button text
-//        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
-//        // changes text color to black for non selected button text
-//        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
-//        return sc
-//    }
-//    
-//    
-//    // creates height of header
-//    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 35
-//    }
-//    
-//    // creates header
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
-//    }
-//    
     // when user taps on row bring them into another view
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // whenever user taps on a file cell, push over the information to the employee view controller
-        print("Selected a cell")
-        //let file = self.files[indexPath.row]\
     
         let exercise = self.exercises[indexPath.row]
         
@@ -60,6 +23,7 @@ extension HomeController {
 
         workoutController.nameTextField.text = exercise.name
         workoutController.categorySelectorTextField.text = exercise.category
+        workoutController.lastUpdatedTimestamp = exercise.timeStamp ?? ""
 
         
         print(" workoutController.tableView.numberOfRows(inSection: 0) = \(workoutController.tableView.numberOfRows(inSection: 0))")
@@ -99,6 +63,7 @@ extension HomeController {
     // create some cells for the rows
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ExerciseCell.identifier, for: indexPath) as! ExerciseCell
+        let themeColor = Utilities.loadTheme()
         // this if statement seemed to fix the refresh srash bug. No idea why or how.
         if exercises.count == 0{
             //fetchExercises()
@@ -148,14 +113,15 @@ extension HomeController {
         let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         cell.updateLabel.text = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
         let components = timeSinceUpdate.components(separatedBy: " ")
-        if components[2] == "weeks" {
+        let needsUpdating = ["weeks", "month", "months", "year", "years"]
+        if needsUpdating.contains(components[2]) {
             cell.alertView.backgroundColor = .red
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
         } else {
-            cell.alertView.backgroundColor = .lightBlue
-            cell.updateImageView.tintColor = .lightBlue
-            cell.weightXreps.textColor = .lightBlue
+            cell.alertView.backgroundColor = themeColor
+            cell.updateImageView.tintColor = themeColor
+            cell.weightXreps.textColor = themeColor
             
         }
         
@@ -182,38 +148,95 @@ extension HomeController {
     
     // delete exercise from tableView and Cloud databae
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, indexPath) in
-            // get the exercise you are swiping on to get delete action
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            let exercise = self.exercises[indexPath.row]
-            let category = self.exercises[indexPath.row].category
-            let name = self.exercises[indexPath.row].name
-            
-            let deleteAction = UIAlertAction(title: "Delete Forever", style: .destructive) { (action) in
-                // remove the exercise from the tableView
-                print("exercise being deleted is: ", exercise)
-                self.exercises.remove(at: indexPath.row)
-                self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).delete()
-                self.tableView.reloadData()
+        guard let uid = Auth.auth().currentUser?.uid else { return [] }
+        let themeColor = Utilities.loadTheme()
+        let exercise = self.exercises[indexPath.row]
+        let category = exercise.category
+        let name = exercise.name
+        let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
+
+        if exercise.hidden ?? true {
+            let action = UITableViewRowAction(style: .normal, title: "Show") { (_, indexPath) in
+                let hideAction = UIAlertAction(title: "Show Exercise", style: .default) { (action) in
+                    self.exercises[indexPath.row].hidden = false
+                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : false])
+                    self.tableView.reloadData()
+                }
+                let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+                optionMenu.addAction(hideAction)
+                optionMenu.addAction(cancelAction)
+                self.present(optionMenu, animated: true, completion: nil)
+
+                
             }
-            // alert
-            let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-            optionMenu.addAction(deleteAction)
-            optionMenu.addAction(cancelAction)
-            self.present(optionMenu, animated: true, completion: nil)
+            // change color of delete button
+            action.backgroundColor = themeColor
 
             
-        }
-        // change color of delete button
-        deleteAction.backgroundColor = UIColor.red
+            // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
+            return [action]
+        } else {
+            let action = UITableViewRowAction(style: .destructive, title: "Hide") { (_, indexPath) in
 
+                
+                let hideAction = UIAlertAction(title: "Hide Exercise", style: .destructive) { (action) in
+                    self.exercises[indexPath.row].hidden = true
+                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : true])
+                    if !showHidden {
+                        self.exercises.remove(at: indexPath.row)
+                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    }
+                    self.tableView.reloadData()
+                }
+                let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+                optionMenu.addAction(hideAction)
+                optionMenu.addAction(cancelAction)
+                self.present(optionMenu, animated: true, completion: nil)
+
+                
+            }
+            action.backgroundColor = themeColor
+            return [action]
+        }
         
-        // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
-        return [deleteAction]
     }
 
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard let uid = Auth.auth().currentUser?.uid else { return nil }
+        let exercise = self.exercises[indexPath.row]
+        let category = exercise.category
+        let name = exercise.name
+
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
+            // Remove the exercise from the array
+            self.exercises.remove(at: indexPath.row)
+            let deleteActionAlert = UIAlertAction(title: "Delete Forever", style: .destructive) { (action) in
+
+                self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).delete { error in
+                    if let error = error {
+                        print("Error removing document: \(error)")
+                    } else {
+                        // Delete the row from the table view
+                        tableView.deleteRows(at: [indexPath], with: .fade)
+                        completionHandler(true)
+                    }
+                }
+            }
+
+            // alert
+           let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+           let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+           optionMenu.addAction(deleteActionAlert)
+           optionMenu.addAction(cancelAction)
+           self.present(optionMenu, animated: true, completion: nil)
+        }
+
+        deleteAction.backgroundColor = .red // You can customize the color if needed
+
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
     
     
 }

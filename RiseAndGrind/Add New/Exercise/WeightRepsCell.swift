@@ -48,7 +48,7 @@ class WeightRepsCell: UITableViewCell {
         textField.textColor = .black
         //textField.layer.borderWidth = 1
         //textField.layer.cornerRadius = 5
-        textField.addLine(position: .bottom, color: .lightBlue, width: 1)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 1)
         textField.setLeftPaddingPoints(4)
         textField.backgroundColor = UIColor.white
         // enable autolayout, without this constraints wont load properly
@@ -77,7 +77,7 @@ class WeightRepsCell: UITableViewCell {
         let textField = UITextField()
         textField.keyboardType = UIKeyboardType.decimalPad
         textField.textColor = .black
-        textField.addLine(position: .bottom, color: .lightBlue, width: 1)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 1)
         textField.setLeftPaddingPoints(4)
         textField.backgroundColor = UIColor.white
         // enable autolayout, without this constraints wont load properly

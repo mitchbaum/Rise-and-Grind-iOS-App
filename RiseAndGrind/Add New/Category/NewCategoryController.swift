@@ -56,6 +56,9 @@ class NewCategoryController: UITableViewController {
         if nameTextField.text != "" {
             print("adding new category")
             let name = nameTextField.text!
+            if name.contains("/") {
+                return showError(title: "Unable to Save", message: "/ is a reserved character. Try using \\ instead.")
+            }
             let catUid = db.collection("Category").document().documentID
 
 
@@ -117,7 +120,7 @@ class NewCategoryController: UITableViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
-        textField.addLine(position: .bottom, color: UIColor.lightBlue, width: 0.5)
+        textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         return textField
     }()
     
@@ -149,4 +152,13 @@ class NewCategoryController: UITableViewController {
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
     }
+    
+    // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
+    func showError(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+        return
+    }
+    
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		055EF643E712B7FDD8506639 /* Pods_RiseAndGrindTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F10912B2FE4286A0BB6CC940 /* Pods_RiseAndGrindTests.framework */; };
 		1D406F73D3AB1528F23D0A45 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCAED394983E8B2B02132148 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */; };
+		74953C9C2C33591100C51AB1 /* SetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74953C9B2C33591100C51AB1 /* SetModel.swift */; };
 		8010F8002783BEB600929CD6 /* NewExerciseController+UIPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F7FF2783BEB600929CD6 /* NewExerciseController+UIPickerView.swift */; };
 		8010F8062783CBC700929CD6 /* CatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F8052783CBC700929CD6 /* CatModel.swift */; };
 		8010F8082783CD3E00929CD6 /* WorkoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F8072783CD3E00929CD6 /* WorkoutController.swift */; };
@@ -74,6 +75,7 @@
 		1E0BF3DDACE616508B3A9A9E /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		395DE4673155F8722383EBB7 /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig"; sourceTree = "<group>"; };
 		5A6D4080D67019106F50BB30 /* Pods-RiseAndGrind.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.debug.xcconfig"; sourceTree = "<group>"; };
+		74953C9B2C33591100C51AB1 /* SetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetModel.swift; sourceTree = "<group>"; };
 		8010F7FF2783BEB600929CD6 /* NewExerciseController+UIPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewExerciseController+UIPickerView.swift"; sourceTree = "<group>"; };
 		8010F8052783CBC700929CD6 /* CatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatModel.swift; sourceTree = "<group>"; };
 		8010F8072783CD3E00929CD6 /* WorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutController.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				8010F8102788EB1600929CD6 /* Archive */,
 				8010F8072783CD3E00929CD6 /* WorkoutController.swift */,
 				8010F80C2787947A00929CD6 /* WorkoutController+UITableView.swift */,
+				74953C9B2C33591100C51AB1 /* SetModel.swift */,
 			);
 			path = "Exercise Details";
 			sourceTree = "<group>";
@@ -590,6 +593,7 @@
 				8045FEE6270A682000DD3393 /* AppDelegate.swift in Sources */,
 				8060463A274C469F009C3D29 /* CategoryCell.swift in Sources */,
 				8045FF24270BD42900DD3393 /* NewCategoryController.swift in Sources */,
+				74953C9C2C33591100C51AB1 /* SetModel.swift in Sources */,
 				8010F8162788EE9600929CD6 /* ArchiveCell.swift in Sources */,
 				8045FF33270E887700DD3393 /* WeightRepsCell.swift in Sources */,
 				8010F8142788EBFE00929CD6 /* ArchiveController+UITableView.swift in Sources */,
@@ -802,7 +806,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mitchbaumgartner.RiseAndGrind;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -828,7 +832,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mitchbaumgartner.RiseAndGrind;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

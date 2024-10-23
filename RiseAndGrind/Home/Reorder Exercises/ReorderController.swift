@@ -14,7 +14,8 @@ import FirebaseStorage
 
 //custom delegation
 protocol ReorderControllerDelegate {
-    func fetchCategories()
+    var exercises: [Exercise] { get set }
+    func fetchExercises()
 }
 
 
@@ -26,7 +27,6 @@ class ReorderController: UITableViewController {
     let db = Firestore.firestore()
     
     var exercises = [Exercise]()
-    var reorderedExercises = [Exercise]()
     
     let category = UserDefaults.standard.object(forKey: "selectedCategory")
     
@@ -43,6 +43,8 @@ class ReorderController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        exercises = delegate?.exercises ?? []
+        
         // creates title of files
         navigationItem.title = "Reorder Workout"
         navigationItem.largeTitleDisplayMode = .never
@@ -57,24 +59,39 @@ class ReorderController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
-        fetchExercises()
         reorder()
     }
     
     
     
     @objc private func handleSave() {
-        print("saving new ordered workout")
-        var locationCounter = 0
+        for (i, exercise) in exercises.enumerated() {
+            print(i, exercise.name ?? "")
+        }
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        print("handleSave() exercises = ", exercises)
-        for exercise in exercises {
+        // dispatch tracks the completion of asynchronous tasks. Needed to prevent dismissal of viewcontroller while reordering is in progress
+        let dispatchGroup = DispatchGroup()
+        for (i, exercise) in exercises.enumerated() {
+            // Enter the dispatch group
+            dispatchGroup.enter()
             print("name = \(String(describing: exercise.name)) | location =  \(String(describing: exercise.location))")
-            db.collection("Users").document(uid).collection("Category").document(category as! String).collection("Exercises").document(exercise.name ?? "").updateData(["location" : locationCounter])
-            locationCounter += 1
+            db.collection("Users").document(uid).collection("Category").document(category as! String).collection("Exercises").document(exercise.name ?? "").updateData(["location" : i]) { error in
+                if let error = error {
+                    print("Error updating document's order: \(error)")
+                } else {
+                    // Delete the row from the table view
+                    print("done reordering exercise.")
+                    print("index =", i)
+                }
+                dispatchGroup.leave()
+            }
             
         }
-        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
+
+        dispatchGroup.notify(queue: .main) {
+            print("dismissing")
+            self.dismiss(animated: true, completion: {self.delegate?.fetchExercises() })
+        }
     }
     
     func reorder() {
@@ -83,58 +100,6 @@ class ReorderController: UITableViewController {
         } else {
             tableView.isEditing = true
         }
-    }
-    
-    // fetches the exercises from Firebase database
-    func fetchExercises() {
-        if category == nil {
-            return
-        }
-        print("fetching exercises")
-        exercises = []
-//        print(activeSegment)
-//        print(catsNameOnly[activeSegment])
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(category as! String).collection("Exercises")
-            self.exerciseCollectionRef.getDocuments { (snapshot, error) in
-                if let err = error {
-                    debugPrint("Error fetching exercises: \(err)")
-                } else {
-                    guard let snap = snapshot else { return }
-                    for document in snap.documents {
-                        let data = document.data()
-                        let name = data["name"] as? String ?? ""
-                        let category = data["category"] as? String ?? ""
-                        let timeStamp = data["timestamp"] as? String ?? ""
-                        let location = data["location"] as? Int ?? 0
-                        let weight = data["weight"] as? Array ?? []
-                        let reps = data["reps"] as? Array ?? []
-                        let note = data["note"] as? String ?? ""
-
-                        let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note)
-                        self.exercises.append(newExercise)
-
-
-                    }
-                    self.sortExercises()
-                }
-            }
-        
-
-    }
-    
-    func sortExercises() {
-        let sortMetric = self.userDefaults.object(forKey: "sortMetric")
-        if sortMetric as! String == "Name" {
-            // ascending
-            exercises.sort(by: {$0.name ?? "" < $1.name ?? ""})
-        } else if sortMetric as! String == "Custom" {
-            exercises.sort(by: {$0.location ?? 0 < $1.location ?? 0})
-        } else {
-            // last modified
-            exercises.sort(by: {$0.timeStamp ?? "" > $1.timeStamp ?? ""})
-        }
-        tableView.reloadData()
     }
     
     @objc func handleCancel() {

@@ -19,6 +19,8 @@ class CreateUserController: UIViewController {
         navigationItem.title = "Create Account"
         view.backgroundColor = .darkGray
         navigationItem.largeTitleDisplayMode = .never
+        // add cancel button to dismiss view
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleCancel))
         
         setupUI()
     }
@@ -270,7 +272,16 @@ class CreateUserController: UIViewController {
     }
     func transitionToHome() {
         let homeController = HomeController()
-        navigationController?.pushViewController(homeController, animated: true)
+        let navigationController = UINavigationController(rootViewController: homeController)
+        navigationController.modalPresentationStyle = .fullScreen
+        // forget about any view controllers behind the controller were transitioning to
+        if let window = UIApplication.shared.windows.first {
+                window.rootViewController = navigationController
+                window.makeKeyAndVisible()
+            }
+    }
+    @objc func handleCancel() {
+        dismiss(animated: true, completion: nil)
     }
     
 }

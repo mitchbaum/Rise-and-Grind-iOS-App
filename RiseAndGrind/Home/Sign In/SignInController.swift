@@ -76,9 +76,32 @@ class SignInController: UIViewController {
         
     }
     
+    @objc private func handleMultiTap() {
+        // Handle the long press action
+        print("Forgot Password button long pressed for 3 seconds")
+        // Call your specific function here
+        Auth.auth().signIn(withEmail: "apptest@gmail.com", password: "password123") { (result, error) in
+            // style hud
+            self.hud.textLabel.text = "Test User Signing In"
+            self.hud.show(in: self.view, animated: true)
+            if error != nil {
+                // dismiss loading hud if there's an error
+                self.hud.dismiss(animated: true)
+                // couldnt sign in
+                self.showError(title: "Unable to sign in", message: error!.localizedDescription)
+            } else {
+                // dismiss loading hud if there's no error
+                self.hud.dismiss(animated: true)
+                self.transitionToHome()
+            }
+        }
+    }
+    
     func transitionToHome() {
         let homeController = HomeController()
-        navigationController?.pushViewController(homeController, animated: true)
+        let navigationController = UINavigationController(rootViewController: homeController)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
     }
     
     func validatefields() -> String? {
@@ -98,8 +121,9 @@ class SignInController: UIViewController {
         
 
         let createUserController = CreateUserController()
+        let navController = CustomNavigationController(rootViewController: createUserController)
         // push into new viewcontroller
-        navigationController?.pushViewController(createUserController, animated: true)
+        present(navController, animated: true, completion: nil)
 
 
         
@@ -127,6 +151,10 @@ class SignInController: UIViewController {
         imageView.backgroundColor = .darkGray
 //        imageView.layer.cornerRadius = imageView.frame.width / 3
 //        imageView.layer.borderWidth = 1
+        let tripleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleMultiTap))
+        tripleTapRecognizer.numberOfTapsRequired = 3
+        imageView.addGestureRecognizer(tripleTapRecognizer)
+        imageView.isUserInteractionEnabled = true
         return imageView
         
     }()
@@ -184,6 +212,8 @@ class SignInController: UIViewController {
     }()
     
     
+    
+    
 
     
     // create button for log in
@@ -228,7 +258,7 @@ class SignInController: UIViewController {
         
         view.addSubview(logInImageView)
         // gives padding of image from top
-        logInImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
+        logInImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 60).isActive = true
         logInImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         logInImageView.heightAnchor.constraint(equalToConstant: 125).isActive = true
         logInImageView.widthAnchor.constraint(equalToConstant: 125).isActive = true

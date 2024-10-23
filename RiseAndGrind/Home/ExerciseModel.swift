@@ -16,4 +16,5 @@ struct Exercise {
     var weight: [Any]
     var reps: [Any]
     var note: String?
+    var hidden: Bool?
 }

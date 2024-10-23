@@ -35,14 +35,9 @@ class ArchiveController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         
-        // creates title of files
-        //navigationItem.title = "Archive"
         navigationItem.largeTitleDisplayMode = .never
-        
-        // register fileCell wiht cellId
-        //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
+
         tableView.register(ArchiveCell.self, forCellReuseIdentifier: ArchiveCell.identifier)
         
         tableView.backgroundColor = .darkGray
@@ -59,8 +54,6 @@ class ArchiveController: UITableViewController {
     // fetches the archive of exercises from Firebase database
     func fetchArchive() {
         contents = []
-//        print(activeSegment)
-//        print(catsNameOnly[activeSegment])
         let name = nameTextField.text
         let category = categoryTextField.text
         let db = Firestore.firestore()
@@ -83,14 +76,28 @@ class ArchiveController: UITableViewController {
                     self.contents.append(newArchive)
                 }
             }
-            //print(self.exercises)
-            self.tableView.reloadData()
+            self.sortContents()
         }
 
     }
     
+    func sortContents() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM d, yyyy"
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        contents.sort { (item1, item2) -> Bool in
+            guard let dateString1 = item1.timeStamp,
+                  let date1 = dateFormatter.date(from: dateString1),
+                  let dateString2 = item2.timeStamp,
+                  let date2 = dateFormatter.date(from: dateString2) else {
+                return false
+            }
+            return date1 > date2
+        }
+        self.tableView.reloadData()
+    }
+    
     @objc private func handleDone() {
-        print("exiting archive")
         dismiss(animated: true, completion: nil)
     }
     

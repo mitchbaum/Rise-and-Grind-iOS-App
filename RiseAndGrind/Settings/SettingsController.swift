@@ -10,10 +10,13 @@ import UIKit
 import FirebaseAuth
 import Firebase
 import FirebaseStorage
+import JGProgressHUD
 
 //custom delegation
-protocol SettingsControllerDelegate {
-    func fetchCategories()
+@objc protocol SettingsControllerDelegate {
+    func fetchExercises()
+    func refreshTheme()
+    @objc func handleSignOut()
 }
 
 
@@ -30,16 +33,41 @@ class SettingsController: UIViewController {
         navigationItem.title = "Settings"
         navigationItem.largeTitleDisplayMode = .never
         view.backgroundColor = UIColor.darkGray
+        UINavigationBarAppearance().backgroundColor = .red
+        
+        let themeColor = Utilities.loadTheme()
+        previewTheme(color: themeColor)
+        themeControl.addTarget(self, action: #selector(themeControlValueChanged(_:)), for: .valueChanged)
+        
+        let tripleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleMultiTap))
+        tripleTapRecognizer.numberOfTapsRequired = 3
+        messageLabel.isUserInteractionEnabled = true
+        messageLabel.addGestureRecognizer(tripleTapRecognizer)
         
         // add cancel button to dismiss view
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
+        let cancel = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         let save = UIBarButtonItem(title: NSString(string: "Save") as String, style: .plain, target: self, action: #selector(handleSave))
+        let signOut = UIBarButtonItem(title: NSString(string: "👋") as String, style: .plain, target: self, action: #selector(handleSignOut))
+        navigationItem.leftBarButtonItems = [signOut, cancel]
         
         navigationItem.rightBarButtonItems = [save]
         fetchSortValue()
         setupUI()
 
     }
+    
+    @objc private func handleSignOut() {
+        dismiss(animated: true, completion: nil)
+            // Ensure delegate is set and call the delegate method
+            delegate?.handleSignOut()
+        }
+    
+    // add loading HUD status for when fetching data from server
+    let hud: JGProgressHUD = {
+        let hud = JGProgressHUD(style: .light)
+        hud.interactionType = .blockAllTouches
+        return hud
+    }()
     
     func fetchSortValue() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -75,14 +103,83 @@ class SettingsController: UIViewController {
             UserDefaults.standard.setValue("Last Modified", forKey: "sortMetric")
             sort = "Last Modified"
         }
+        if showHiddenControl.selectedSegmentIndex == 0 {
+            UserDefaults.standard.setValue(false, forKey: "showHidden")
+        } else {
+            UserDefaults.standard.setValue(true, forKey: "showHidden")
+        }
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        if themeControl.selectedSegmentIndex == 0 {
+            Utilities.setThemeColor(color: UIColor.lightBlue)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.lightBlue)
+        } else if themeControl.selectedSegmentIndex == 1 {
+            Utilities.setThemeColor(color: UIColor.sageGreen)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.sageGreen)
+        } else if themeControl.selectedSegmentIndex == 2 {
+            Utilities.setThemeColor(color: UIColor.lilac)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.lilac)
+        } else if themeControl.selectedSegmentIndex == 3 {
+            Utilities.setThemeColor(color: UIColor.mattePink)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.mattePink)
+        } else {
+            Utilities.setThemeColor(color: UIColor.maroon)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.maroon)
+        }
+        
         db.collection("Users").document(uid).updateData(["sort" : sort])
-        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
+        navigationItem.title = "erere"
+        dismiss(animated: true, completion: {self.delegate?.fetchExercises(); self.delegate?.refreshTheme()})
+    }
+    
+    func previewTheme(color: UIColor) {
+        // Customize navigation bar appearance
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.backgroundColor =  color
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor : UIColor.white] //portrait title
+        // modifty regular text attributes on view controller as white color. There is a bug where if you scroll down the table view the "files" title at the top turns back to the black default
+        navBarAppearance.titleTextAttributes = [.foregroundColor : UIColor.white] //landscape title
+        themeControl.selectedSegmentTintColor = color
+        showHiddenControl.selectedSegmentTintColor = color
+        metricSegmentedControl.selectedSegmentTintColor = color
+        sortSegmentedControl.selectedSegmentTintColor = color
+        // Apply the customized appearance to the navigation bar
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+    }
+    
+    @objc private func handleMultiTap() {
+
+        print("Multi tap!")
+        let deleteAccountAction = UIAlertAction(title: "Delete Account", style: .destructive) { (action) in
+            self.hud.textLabel.text = "Deleting Account..."
+            self.hud.show(in: self.view, animated: true)
+            let user = Auth.auth().currentUser
+            user?.delete { error in
+              if let error = error {
+                  self.hud.dismiss(animated: true)
+                  // couldnt sign in
+                  self.showError(title: "Unable to delete account", message: error.localizedDescription)
+              } else {
+                  self.hud.dismiss(animated: true)
+                  let signInController = SignInController()
+                  signInController.modalPresentationStyle = .fullScreen
+                  self.present(signInController, animated: true, completion: nil)
+              }
+            }
+        }
+        // alert
+        let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        optionMenu.addAction(deleteAccountAction)
+        optionMenu.addAction(cancelAction)
+        self.present(optionMenu, animated: true, completion: nil)
+       
     }
     
 
     let messageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Display weight as:"
+        label.text = "Display Weight As:"
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -96,8 +193,6 @@ class SettingsController: UIViewController {
         sc.selectedSegmentIndex = activeSegment as? Int ?? 0
         sc.overrideUserInterfaceStyle = .light
         sc.translatesAutoresizingMaskIntoConstraints = false
-        // highlighted filter color
-        sc.selectedSegmentTintColor = UIColor.lightBlue
         // changes text color to black for selected button text
         sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         // changes text color to black for non selected button text
@@ -129,8 +224,6 @@ class SettingsController: UIViewController {
         }
         sc.overrideUserInterfaceStyle = .light
         sc.translatesAutoresizingMaskIntoConstraints = false
-        // highlighted filter color
-        sc.selectedSegmentTintColor = UIColor.lightBlue
         // changes text color to black for selected button text
         sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         // changes text color to black for non selected button text
@@ -138,6 +231,87 @@ class SettingsController: UIViewController {
 
         return sc
     }()
+    
+    let showHiddenLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Hidden Exercises Visibility:"
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let showHiddenControl: UISegmentedControl = {
+        let activeSegment = UserDefaults.standard.object(forKey: "showHidden")
+        let types = ["Hide","Show"]
+        let sc = UISegmentedControl(items: types)
+        // default as first item
+        if activeSegment as! Bool == false {
+            sc.selectedSegmentIndex = 0
+        } else {
+            sc.selectedSegmentIndex = 1
+        }
+        sc.overrideUserInterfaceStyle = .light
+        sc.translatesAutoresizingMaskIntoConstraints = false
+        // changes text color to black for selected button text
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
+        // changes text color to black for non selected button text
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
+
+        return sc
+    }()
+    
+    let themeLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Theme:"
+        label.textColor = .black
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let themeControl: UISegmentedControl = {
+        let activeSegment = Utilities.loadTheme()
+        let types = ["💎","🌲","😈", "🎟️", "👞"]
+        let sc = UISegmentedControl(items: types)
+        // default as first item
+        if activeSegment as UIColor == UIColor.lightBlue {
+            sc.selectedSegmentIndex = 0
+        } else if activeSegment as UIColor == UIColor.sageGreen {
+            sc.selectedSegmentIndex = 1
+        } else if activeSegment as UIColor == UIColor.lilac {
+            sc.selectedSegmentIndex = 2
+        } else if activeSegment as UIColor == UIColor.mattePink {
+            sc.selectedSegmentIndex = 3
+        } else {
+            sc.selectedSegmentIndex = 4
+        }
+        sc.overrideUserInterfaceStyle = .light
+        sc.translatesAutoresizingMaskIntoConstraints = false
+        // changes text color to black for selected button text
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
+        // changes text color to black for non selected button text
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
+
+        return sc
+    }()
+    
+    @objc func themeControlValueChanged(_ sender: UISegmentedControl) {
+            switch sender.selectedSegmentIndex {
+            case 0:
+                previewTheme(color: UIColor.lightBlue)
+            case 1:
+                previewTheme(color: UIColor.sageGreen)
+            case 2:
+                previewTheme(color: UIColor.lilac)
+            case 3:
+                previewTheme(color: UIColor.mattePink)
+            case 4:
+                previewTheme(color: UIColor.maroon)
+            default:
+                break
+            }
+        }
+        
+    
     
     
     
@@ -169,8 +343,25 @@ class SettingsController: UIViewController {
         sortSegmentedControl.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         sortSegmentedControl.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
         
+        view.addSubview(showHiddenLabel)
+        showHiddenLabel.topAnchor.constraint(equalTo:  sortSegmentedControl.bottomAnchor, constant: 16).isActive = true
+        showHiddenLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
         
-        silverBackgroundView.bottomAnchor.constraint(equalTo: sortSegmentedControl.bottomAnchor, constant: 16).isActive = true
+        view.addSubview(showHiddenControl)
+        showHiddenControl.topAnchor.constraint(equalTo: showHiddenLabel.bottomAnchor, constant: 16).isActive = true
+        showHiddenControl.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        showHiddenControl.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        
+        view.addSubview(themeLabel)
+        themeLabel.topAnchor.constraint(equalTo:  showHiddenControl.bottomAnchor, constant: 16).isActive = true
+        themeLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        
+        view.addSubview(themeControl)
+        themeControl.topAnchor.constraint(equalTo: themeLabel.bottomAnchor, constant: 16).isActive = true
+        themeControl.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+        themeControl.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -16).isActive = true
+        
+        silverBackgroundView.bottomAnchor.constraint(equalTo: themeControl.bottomAnchor, constant: 16).isActive = true
         
         
     }
@@ -178,5 +369,14 @@ class SettingsController: UIViewController {
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
     }
+    
+    // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
+    private func showError(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
+        return
+    }
+    
 
 }
