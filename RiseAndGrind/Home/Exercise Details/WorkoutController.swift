@@ -56,6 +56,7 @@ class WorkoutController: UITableViewController {
         
         tableView.backgroundColor = .darkGray
         tableView.tableFooterView = UIView()
+//        tableView.setEditing(true, animated: true)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
@@ -65,9 +66,28 @@ class WorkoutController: UITableViewController {
         
         fetchSets()
         setupUI()
-        reorder()
+       // reorder()
     }
     
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: animated)
+    }
+    
+    @objc func toggleEditing(sender:UIButton) {
+        
+        UIView.animate(withDuration: 0.1, animations: {
+            sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
+            }) { _ in
+                // Scale down
+                UIView.animate(withDuration: 0.1) {
+                    sender.transform = CGAffineTransform.identity
+                }
+            }
+        let buttonTitle = !isEditing ? "Swipe to Delete" : "Reorder Sets"
+        reorderSetsButton.setTitle(buttonTitle, for: .normal)
+        setEditing(!isEditing, animated: true)
+    }
     
     
     @objc private func handleSave() {
@@ -322,12 +342,33 @@ class WorkoutController: UITableViewController {
         
         return button
     }()
+    
+    let reorderSetsButton: UIButton = {
+        let button = UIButton()
+        let color = Utilities.loadTheme()
+        button.backgroundColor = .white
+        //button.tintColor = .lightBlue
+        
+        button.setTitle("Reorder Sets", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.layer.borderColor = color.cgColor
+        button.layer.borderWidth = 1
+        button.addTarget(self, action: #selector(toggleEditing(sender:)), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+        button.setTitleColor(color, for: .normal)
+        // enable autolayout
+        button.translatesAutoresizingMaskIntoConstraints = false
+        // add animation to the button
+        
+        return button
+    }()
 
     
     
     func setupUI() {
         
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 266))
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 304))
         header.backgroundColor = .white
 
         let headerTextField = UITextField(frame: header.bounds)
@@ -336,6 +377,7 @@ class WorkoutController: UITableViewController {
         let button = UIButton(frame: header.bounds)
         let archiveThisBtn = UIButton(frame: header.bounds)
         let openArchiveBtn = UIButton(frame: header.bounds)
+        let reorderSetsBtn = UIButton(frame: header.bounds)
         //headerView.backgroundColor = .lightBlue
         header.addSubview(headerTextField)
         //header.addSubview(workoutSC)
@@ -343,6 +385,8 @@ class WorkoutController: UITableViewController {
         header.addSubview(button)
         header.addSubview(archiveThisBtn)
         header.addSubview(openArchiveBtn)
+        header.addSubview(reorderSetsBtn)
+        
         
         
         
@@ -384,6 +428,12 @@ class WorkoutController: UITableViewController {
         openArchiveButton.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 8).isActive = true
         openArchiveButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         openArchiveButton.widthAnchor.constraint(equalToConstant: 155).isActive = true
+        
+        header.addSubview(reorderSetsButton)
+        reorderSetsButton.topAnchor.constraint(equalTo: openArchiveButton.bottomAnchor, constant: 8).isActive = true
+        reorderSetsButton.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 8).isActive = true
+        reorderSetsButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        reorderSetsButton.widthAnchor.constraint(equalToConstant: 155).isActive = true
         
         
         

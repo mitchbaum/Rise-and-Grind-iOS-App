@@ -56,22 +56,25 @@ extension WorkoutController {
     }
     
     // delete exercise set
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteAction = UITableViewRowAction(style: .destructive, title: "Delete") { (_, indexPath) in
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // Delete action
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
             let set = self.sets[indexPath.row]
-            // remove the file from the tableView
-            print("set being deleted is: ", set)
+            
+            // Remove the set from the data source
             self.sets.remove(at: indexPath.row)
-            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-            print("sets after delete = ", self.sets)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            
+            // Call completion handler to indicate action was performed
+            completionHandler(true)
+        }
+        deleteAction.backgroundColor = .red
 
-            }
-        // change color of delete button
-        deleteAction.backgroundColor = UIColor.red
-        
-        // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
-        return [deleteAction]
+        // Return the configuration
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
+    
     
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return true
