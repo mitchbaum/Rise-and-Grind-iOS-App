@@ -23,6 +23,19 @@ class ExerciseCell: UITableViewCell {
         return label
     }()
     
+    let eyeImageView: UIImageView = {
+        let imageView = UIImageView(image: #imageLiteral(resourceName: "eye-off"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = .lightGray
+        // circular picture
+        //imageView.layer.cornerRadius = 30 // this value needs to be half the size of the height to make the image circular
+        imageView.clipsToBounds = true
+//        imageView.layer.borderWidth = 0.8
+        return imageView
+    }()
+    
     let formatLabel: UILabel = {
         let label = UILabel()
         label.text = "(weight x reps)"
@@ -126,11 +139,18 @@ class ExerciseCell: UITableViewCell {
         name.leftAnchor.constraint(equalTo: leftAnchor, constant: 26).isActive = true
         name.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         name.rightAnchor.constraint(equalTo: rightAnchor, constant: -90).isActive = true
+    
         
         addSubview(formatLabel)
         //formatLabel.leftAnchor.constraint(equalTo: name.rightAnchor, constant: 8).isActive = true
         formatLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
         formatLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
+        
+        addSubview(eyeImageView)
+        eyeImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
+        eyeImageView.rightAnchor.constraint(equalTo: formatLabel.leftAnchor, constant: -8).isActive = true
+        eyeImageView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        eyeImageView.widthAnchor.constraint(equalToConstant: 15).isActive = true
 
     
         addSubview(weightRepsView)

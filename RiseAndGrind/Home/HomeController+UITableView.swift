@@ -125,6 +125,13 @@ extension HomeController {
             
         }
         
+        print(exercises[indexPath.row])
+        if exercises[indexPath.row].hidden ?? false {
+            cell.eyeImageView.isHidden = false
+        } else {
+            cell.eyeImageView.isHidden = true
+        }
+        
         if weightMetric as! Int == 0 {
             cell.formatLabel.text = "(LBS x reps)"
         } else {
