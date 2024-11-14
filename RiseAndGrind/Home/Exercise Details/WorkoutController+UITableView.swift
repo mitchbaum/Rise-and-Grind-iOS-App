@@ -41,6 +41,9 @@ extension WorkoutController {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeightRepsCell.identifier, for: indexPath) as! WeightRepsCell
 //        let weight = sets[indexPath.row]
 //        cell.weightLabel.text = weight
+        let set = sets[indexPath.row]
+        cell.weightTextField.text = nil
+        cell.repsTextField.text = nil
         cell.selectionStyle = .none
         return cell
     }

@@ -74,19 +74,9 @@ class WorkoutController: UITableViewController {
         tableView.setEditing(editing, animated: animated)
     }
     
-    @objc func toggleEditing(sender:UIButton) {
-        
-        UIView.animate(withDuration: 0.1, animations: {
-            sender.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-            }) { _ in
-                // Scale down
-                UIView.animate(withDuration: 0.1) {
-                    sender.transform = CGAffineTransform.identity
-                }
-            }
-        let buttonTitle = !isEditing ? "Swipe to Delete" : "Reorder Sets"
-        reorderSetsButton.setTitle(buttonTitle, for: .normal)
-        setEditing(!isEditing, animated: true)
+    @objc func toggleEditing(sender:UISegmentedControl) {
+        let isReordering = sender.selectedSegmentIndex == 1
+        setEditing(isReordering, animated: true)
     }
     
     
@@ -343,32 +333,29 @@ class WorkoutController: UITableViewController {
         return button
     }()
     
-    let reorderSetsButton: UIButton = {
-        let button = UIButton()
+    let reorderSetsControl: UISegmentedControl = {
+        let types = ["Swipe to Delete", "Reorder Sets"]
+        let sc = UISegmentedControl(items: types)
         let color = Utilities.loadTheme()
-        button.backgroundColor = .white
-        //button.tintColor = .lightBlue
+        sc.selectedSegmentIndex = 0
+        sc.overrideUserInterfaceStyle = .light
+        sc.translatesAutoresizingMaskIntoConstraints = false
+        sc.selectedSegmentTintColor = color
+        // changes text color to black for selected button text
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
+        // changes text color to black for non selected button text
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
         
-        button.setTitle("Reorder Sets", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
-        button.layer.borderColor = color.cgColor
-        button.layer.borderWidth = 1
-        button.addTarget(self, action: #selector(toggleEditing(sender:)), for: .touchUpInside)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
-        button.setTitleColor(color, for: .normal)
-        // enable autolayout
-        button.translatesAutoresizingMaskIntoConstraints = false
-        // add animation to the button
-        
-        return button
+        sc.addTarget(self, action: #selector(toggleEditing(sender:)), for: .valueChanged)
+
+        return sc
     }()
 
     
     
     func setupUI() {
         
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 304))
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 312))
         header.backgroundColor = .white
 
         let headerTextField = UITextField(frame: header.bounds)
@@ -429,11 +416,10 @@ class WorkoutController: UITableViewController {
         openArchiveButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         openArchiveButton.widthAnchor.constraint(equalToConstant: 155).isActive = true
         
-        header.addSubview(reorderSetsButton)
-        reorderSetsButton.topAnchor.constraint(equalTo: openArchiveButton.bottomAnchor, constant: 8).isActive = true
-        reorderSetsButton.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 8).isActive = true
-        reorderSetsButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        reorderSetsButton.widthAnchor.constraint(equalToConstant: 155).isActive = true
+        header.addSubview(reorderSetsControl)
+        reorderSetsControl.topAnchor.constraint(equalTo: openArchiveButton.bottomAnchor, constant: 16).isActive = true
+        reorderSetsControl.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 8).isActive = true
+        reorderSetsControl.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -8).isActive = true
         
         
         

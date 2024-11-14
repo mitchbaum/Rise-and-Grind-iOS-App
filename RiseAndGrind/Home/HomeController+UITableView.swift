@@ -125,7 +125,6 @@ extension HomeController {
             
         }
         
-        print(exercises[indexPath.row])
         if exercises[indexPath.row].hidden ?? false {
             cell.eyeImageView.isHidden = false
         } else {
