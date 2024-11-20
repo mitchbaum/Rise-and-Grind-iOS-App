@@ -63,6 +63,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         }
         
+        if #available(iOS 15.0, *) {
+          UITableView.appearance().sectionHeaderTopPadding = 0;
+        }
+        
         FirebaseApp.configure()
         IQKeyboardManager.shared.enable = true
         IQKeyboardManager.shared.enableAutoToolbar = true

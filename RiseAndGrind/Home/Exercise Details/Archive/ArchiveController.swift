@@ -43,8 +43,7 @@ class ArchiveController: UITableViewController {
         tableView.backgroundColor = .darkGray
         tableView.separatorColor = .darkGray
         tableView.tableFooterView = UIView()
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(handleDone))
+
         
         categoryCollectionReference = Firestore.firestore().collection("Category")
         fetchArchive()
@@ -97,9 +96,6 @@ class ArchiveController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    @objc private func handleDone() {
-        dismiss(animated: true, completion: nil)
-    }
     
     // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
     private func showError(title: String, message: String) {

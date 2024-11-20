@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 extension String
 {
@@ -131,6 +132,13 @@ extension UIAlertAction {
         set { self.setValue(newValue, forKey: "titleTextColor") }
     }
 }
+extension Double {
+    func toFixed(_ places: Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
+    }
+}
+
 extension UINavigationBar {
 
     func makeContent(color: UIColor) {
@@ -142,6 +150,15 @@ extension UINavigationBar {
     }
 }
 class Utilities {
+    static func timestampToFormattedDate(timeStamp: String, monthAbbrev: String) -> String {
+        let timeStampString = timeStamp
+        let timeStampDouble = Double(timeStampString) ?? 0.0
+        let date = Date(timeIntervalSince1970: timeStampDouble)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "\(monthAbbrev) d, yyyy"
+        let formattedDate = dateFormatter.string(from: date)
+        return formattedDate
+    }
     static func timestampConversion(timeStamp: String) -> Date {
         // handle time stamp
         // convert firebase timestamp variable from Unic Epoch to date
@@ -210,6 +227,15 @@ class Utilities {
         let color = UIColor(red: array[0], green: array[1], blue: array[2], alpha: array[3])
         
         return color
+    }
+    
+    static func loadThemeSwiftUI() -> Color {
+        guard let array = UserDefaults.standard.object(forKey: "theme") as? [CGFloat], array.count == 4 else {
+            return Color.blue // Default fallback
+        }
+        let color = UIColor(red: array[0], green: array[1], blue: array[2], alpha: array[3])
+        // Convert UIColor to SwiftUI Color
+        return Color(color)
     }
     
     

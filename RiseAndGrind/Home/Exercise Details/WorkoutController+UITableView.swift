@@ -39,9 +39,6 @@ extension WorkoutController {
     // create some cells for the rows
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeightRepsCell.identifier, for: indexPath) as! WeightRepsCell
-//        let weight = sets[indexPath.row]
-//        cell.weightLabel.text = weight
-        let set = sets[indexPath.row]
         cell.weightTextField.text = nil
         cell.repsTextField.text = nil
         cell.selectionStyle = .none
@@ -62,7 +59,6 @@ extension WorkoutController {
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // Delete action
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
-            let set = self.sets[indexPath.row]
             
             // Remove the set from the data source
             self.sets.remove(at: indexPath.row)

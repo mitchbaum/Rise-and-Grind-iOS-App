@@ -90,7 +90,7 @@ extension NewCategoryController {
     
     // creates height of header
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+        return 36
     }
 
     
@@ -106,7 +106,7 @@ extension NewCategoryController {
 
         label.backgroundColor = Utilities.loadTheme()
         label.textColor = .white
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font =  UIFont.systemFont(ofSize: 18)
 
 
 

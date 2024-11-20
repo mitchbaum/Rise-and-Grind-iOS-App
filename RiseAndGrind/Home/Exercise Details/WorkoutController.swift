@@ -30,6 +30,8 @@ class WorkoutController: UITableViewController {
     var SCIndex = 0
     
     let db = Firestore.firestore()
+
+    let weightMetric = UserDefaults.standard.object(forKey: "weightMetric")
     
     var lastUpdatedTimestamp = ""
     
@@ -92,11 +94,18 @@ class WorkoutController: UITableViewController {
         
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        let analyticsRef = db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Analytics").document()
+        let id = analyticsRef.documentID
         for cell in setCell {
             if cell.weightTextField.text == "" {
                 weight.append("0")
             } else {
-                weight.append(cell.weightTextField.text ?? "")
+                if self.weightMetric as? Int == 1 {
+                    weight.append("\((Int((Double(cell.weightTextField.text ?? "") ?? 0.0).rounded() * 2.204623)))") // if KG, always convert to LBS
+                } else {
+                    weight.append(cell.weightTextField.text ?? "")
+                }
+                
             }
             reps.append(cell.repsTextField.text ?? "-")
         }
@@ -106,6 +115,13 @@ class WorkoutController: UITableViewController {
                                                                                                      "weight" : weight,
                                                                                                      "reps" : reps,
                                                                                                      "note" : note])
+        db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Analytics").document(id).setData([
+                                                                                                     "timestamp" : "\(timestamp)",
+                                                                                                     "weight" : weight,
+                                                                                                     "reps" : reps,
+                                                                                                     "id": id
+                                                                                                     ])
+        
 
         dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
     }
@@ -146,6 +162,16 @@ class WorkoutController: UITableViewController {
             let setCell: [WeightRepsCell] = self.tableView.visibleCells as? [WeightRepsCell] ?? []
             var i = 0
             for cell in setCell {
+                if self.weightMetric as? Int == 0 {
+                    if weightList[i].trimmingCharacters(in: .whitespaces).suffix(2) == ".5" {
+                        weightList[i] = "\((Double(weightList[i]) ?? 0.0) * 1.0)"
+                    } else {
+                        weightList[i] = "\((Int((Double(weightList[i]) ?? 0.0) * 1.0)))"
+                    }
+                } else {
+                    weightList[i] = "\((Int((Double(weightList[i]) ?? 0.0) * 0.453592)))"
+
+                }
                 cell.weightTextField.text = weightList[i]
                 cell.repsTextField.text = repsList[i]
                 i += 1
@@ -212,19 +238,33 @@ class WorkoutController: UITableViewController {
     }
     
     @objc func handleOpenArchiveButton(sender:UIButton) {
-        print("opening archive")
         Utilities.animateView(sender)
         
         let archiveController = ArchiveController()
         let navController = CustomNavigationController(rootViewController: archiveController)
         
         archiveController.navigationItem.title = "\(nameTextField.text ?? "") Archive"
-        print("nameTextField = \(nameTextField)")
         archiveController.nameTextField.text = nameTextField.text
         archiveController.categoryTextField.text = categorySelectorTextField.text
         
         // push into new viewcontroller
-        present(navController, animated: true, completion: nil)
+        navigationController?.pushViewController(archiveController, animated: true)
+    }
+    
+    @objc func handleOpenAnalyticsButton(sender:UIButton) {
+        Utilities.animateView(sender)
+        
+        let analyticsController = AnalyticsController()
+        let navController = CustomNavigationController(rootViewController: analyticsController)
+        
+        analyticsController.navigationItem.title = "Analytics"
+        analyticsController.exerciseName = nameTextField.text ?? ""
+        analyticsController.exerciseCategory = categorySelectorTextField.text ?? ""
+        analyticsController.name.text = nameTextField.text
+        analyticsController.category.text = categorySelectorTextField.text
+        
+        // push into new viewcontroller
+        navigationController?.pushViewController(analyticsController, animated: true)
     }
     
 
@@ -333,6 +373,27 @@ class WorkoutController: UITableViewController {
         return button
     }()
     
+    let openAnalyticsButton: UIButton = {
+        let button = UIButton()
+        let color = Utilities.loadTheme()
+        button.backgroundColor = .white
+        //button.tintColor = .lightBlue
+        
+        button.setTitle("Open Analytics", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 10
+        button.layer.borderColor = color.cgColor
+        button.layer.borderWidth = 1
+        button.addTarget(self, action: #selector(handleOpenAnalyticsButton(sender:)), for: .touchUpInside)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16.0)
+        button.setTitleColor(color, for: .normal)
+        // enable autolayout
+        button.translatesAutoresizingMaskIntoConstraints = false
+        // add animation to the button
+        
+        return button
+    }()
+    
     let reorderSetsControl: UISegmentedControl = {
         let types = ["Swipe to Delete", "Reorder Sets"]
         let sc = UISegmentedControl(items: types)
@@ -355,7 +416,7 @@ class WorkoutController: UITableViewController {
     
     func setupUI() {
         
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 312))
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 350))
         header.backgroundColor = .white
 
         let headerTextField = UITextField(frame: header.bounds)
@@ -365,6 +426,7 @@ class WorkoutController: UITableViewController {
         let archiveThisBtn = UIButton(frame: header.bounds)
         let openArchiveBtn = UIButton(frame: header.bounds)
         let reorderSetsBtn = UIButton(frame: header.bounds)
+        let openAnalyticsBtn = UIButton(frame: header.bounds)
         //headerView.backgroundColor = .lightBlue
         header.addSubview(headerTextField)
         //header.addSubview(workoutSC)
@@ -373,6 +435,7 @@ class WorkoutController: UITableViewController {
         header.addSubview(archiveThisBtn)
         header.addSubview(openArchiveBtn)
         header.addSubview(reorderSetsBtn)
+        header.addSubview(openAnalyticsBtn)
         
         
         
@@ -416,8 +479,14 @@ class WorkoutController: UITableViewController {
         openArchiveButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         openArchiveButton.widthAnchor.constraint(equalToConstant: 155).isActive = true
         
+        header.addSubview(openAnalyticsButton)
+        openAnalyticsButton.topAnchor.constraint(equalTo: openArchiveButton.bottomAnchor, constant: 8).isActive = true
+        openAnalyticsButton.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 8).isActive = true
+        openAnalyticsButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        openAnalyticsButton.widthAnchor.constraint(equalToConstant: 155).isActive = true
+        
         header.addSubview(reorderSetsControl)
-        reorderSetsControl.topAnchor.constraint(equalTo: openArchiveButton.bottomAnchor, constant: 16).isActive = true
+        reorderSetsControl.topAnchor.constraint(equalTo: openAnalyticsButton.bottomAnchor, constant: 16).isActive = true
         reorderSetsControl.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 8).isActive = true
         reorderSetsControl.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -8).isActive = true
         

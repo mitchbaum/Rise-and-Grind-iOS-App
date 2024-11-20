@@ -94,6 +94,8 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
                 reps.append(cell.repsTextField.text ?? "-")
             }
             guard let uid = Auth.auth().currentUser?.uid else { return }
+            let analyticsRef = db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Analytics").document()
+            let id = analyticsRef.documentID
             db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).setData(["name" : name,
                                                                                                          "category" : category,
                                                                                                          "location" : -1,
@@ -102,6 +104,12 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
                                                                                                          "reps" : reps,
                                                                                                          "note" : note,
                                                                                                          "hidden": false])
+            db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Analytics").document(id).setData([
+                                                                                                         "timestamp" : "\(timestamp)",
+                                                                                                         "weight" : weight,
+                                                                                                         "reps" : reps,
+                                                                                                         "id" : id
+                                                                                                         ])
         }
         dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
     }

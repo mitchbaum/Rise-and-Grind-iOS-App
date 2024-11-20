@@ -66,9 +66,8 @@ extension ArchiveController {
                 if weightMetric as? Int == 0 {
                     weightRepString += "\((Int((Double(weightArray[i]) ?? 0.0) * 1.0))) x \(repsArray[i]) | "
                 } else {
-                    weightRepString += "\((Int((Double(weightArray[i]) ?? 0.0) * 0.45))) x \(repsArray[i]) | "
+                    weightRepString += "\((Int((Double(weightArray[i]) ?? 0.0) * 0.453592))) x \(repsArray[i]) | "
                 }
-                //weightRepString += "\(weightArray[i]) x \(repsArray[i]) | "
             }
 
             

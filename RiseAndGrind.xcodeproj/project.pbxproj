@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -128,6 +128,10 @@
 		D290DB56347AF0EC5C0A3525 /* Pods_RiseAndGrindTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrindTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		74ECB0892CEBE9BB006F59DD /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		8045FEDF270A682000DD3393 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -194,6 +198,7 @@
 		8010F80B2786822500929CD6 /* Exercise Details */ = {
 			isa = PBXGroup;
 			children = (
+				74ECB0892CEBE9BB006F59DD /* Analytics */,
 				8010F8102788EB1600929CD6 /* Archive */,
 				8010F8072783CD3E00929CD6 /* WorkoutController.swift */,
 				8010F80C2787947A00929CD6 /* WorkoutController+UITableView.swift */,
@@ -363,6 +368,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				74ECB0892CEBE9BB006F59DD /* Analytics */,
 			);
 			name = RiseAndGrind;
 			productName = RiseAndGrind;
