@@ -90,6 +90,10 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         workoutCategoryPicker.delegate = self
         workoutCategoryPicker.dataSource = self
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleImageViewTap))
+        downIcon.isUserInteractionEnabled = true // Enable user interaction on the UIImageView
+        downIcon.addGestureRecognizer(tapGesture)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -97,6 +101,11 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         print("viewWillAppear data loaded")
         checkIfSignedIn()
         tableView.reloadData()
+    }
+    
+    @objc func handleImageViewTap() {
+        // Focus the text field to display the picker view
+        workoutCategorySelectorTextField.becomeFirstResponder()
     }
     
     func checkIfSignedIn() {
