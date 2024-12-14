@@ -131,18 +131,24 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     
     func populateBarBtnItems() -> Array<UIBarButtonItem> {
         var barbuttonitems: [UIBarButtonItem] = []
-        let font = UIFont.systemFont(ofSize: 33)
-        let attributes = [NSAttributedString.Key.font : font]
-        let plus = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(handleAddWorkout))
-        barbuttonitems.append(plus)
-        let settings = UIBarButtonItem(title: NSString(string: "\u{2699}\u{0000FE0E}") as String, style: .plain, target: self, action: #selector(handleSettings))
-        barbuttonitems.append(settings)
+        let more = UIBarButtonItem(
+                image: UIImage(systemName: "square.stack"),
+                style: .plain,
+                target: self,
+                action: #selector(handleAddWorkout)
+            )
+        barbuttonitems.append(more)
         let sortMetric =  userDefaults.object(forKey: "sortMetric")
         if sortMetric as! String == "Custom" {
-            let reorder = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(handleReorderWorkout))
+            let reorder = UIBarButtonItem(
+                    image: UIImage(systemName: "arrow.up.arrow.down.square"),
+                    style: .plain,
+                    target: self,
+                    action: #selector(handleReorderWorkout)
+                )
             barbuttonitems.append(reorder)
         }
-        settings.setTitleTextAttributes(attributes, for: .normal)
+        
         return barbuttonitems
     }
     func sortExercises() {
@@ -323,10 +329,17 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             newCategoryController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
+        let settings = UIAlertAction(title: "Settings", style: .default) { action in
+            let settingsController = SettingsController()
+            let navController = CustomNavigationController(rootViewController: settingsController)
+            settingsController.delegate = self
+            self.present(navController, animated: true, completion: nil)
+        }
         //alert
         // change color of alert text
         addWorkout.setValue(color, forKey: "titleTextColor")
         addCategory.setValue(color, forKey: "titleTextColor")
+        settings.setValue(color, forKey: "titleTextColor")
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -334,18 +347,9 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         
         optionMenu.addAction(addWorkout)
         optionMenu.addAction(addCategory)
+        optionMenu.addAction(settings)
         optionMenu.addAction(cancelAction)
         self.present(optionMenu, animated: true, completion: nil)
-    }
-    
-    // function that handles the settings button in top right corner
-    @objc func handleSettings() {
-        print("Settings..")
-        let settingsController = SettingsController()
-        let navController = CustomNavigationController(rootViewController: settingsController)
-        settingsController.delegate = self
-        self.present(navController, animated: true, completion: nil)
-        
     }
     
     @objc private func handleSignIn() {
