@@ -70,7 +70,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         if weightMetric == nil {
             UserDefaults.standard.setValue(0, forKey: "weightMetric")
         }
-        
         let sortMetric = userDefaults.object(forKey: "sortMetric")
         if sortMetric == nil {
             UserDefaults.standard.setValue("Name", forKey: "sortMetric")
@@ -113,14 +112,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         // user is signed in 
         if Auth.auth().currentUser != nil {
             isSignedIn = true
-            let reorder = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(handleReorderWorkout))
-            let plus = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(handleAddWorkout))
-            // add settings icon button
-            let settings = UIBarButtonItem(title: NSString(string: "\u{2699}\u{0000FE0E}") as String, style: .plain, target: self, action: #selector(handleSettings))
-            let font = UIFont.systemFont(ofSize: 33) // adjust the size as required
-            let attributes = [NSAttributedString.Key.font : font]
-            settings.setTitleTextAttributes(attributes, for: .normal)
-            navigationItem.rightBarButtonItems = [plus, settings, reorder]
+            navigationItem.rightBarButtonItems = populateBarBtnItems()
             
             self.userDefaults.setValue([], forKey: "myKey")
             fetchCategories()
@@ -137,9 +129,24 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             } 
     }
     
+    func populateBarBtnItems() -> Array<UIBarButtonItem> {
+        var barbuttonitems: [UIBarButtonItem] = []
+        let font = UIFont.systemFont(ofSize: 33)
+        let attributes = [NSAttributedString.Key.font : font]
+        let plus = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(handleAddWorkout))
+        barbuttonitems.append(plus)
+        let settings = UIBarButtonItem(title: NSString(string: "\u{2699}\u{0000FE0E}") as String, style: .plain, target: self, action: #selector(handleSettings))
+        barbuttonitems.append(settings)
+        let sortMetric =  userDefaults.object(forKey: "sortMetric")
+        if sortMetric as! String == "Custom" {
+            let reorder = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(handleReorderWorkout))
+            barbuttonitems.append(reorder)
+        }
+        settings.setTitleTextAttributes(attributes, for: .normal)
+        return barbuttonitems
+    }
     func sortExercises() {
-        print("sorting exercises")
-        let sortMetric = self.userDefaults.object(forKey: "sortMetric")
+        let sortMetric =  userDefaults.object(forKey: "sortMetric")
         if sortMetric as! String == "Name" {
             // ascending
             exercises.sort(by: {$0.name ?? "" < $1.name ?? ""})
@@ -349,6 +356,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }
     
     func refreshTheme() {
+        navigationItem.rightBarButtonItems = populateBarBtnItems() // refresh the barbuttons
         let color = Utilities.loadTheme()
         // Customize navigation bar appearance
         let navBarAppearance = UINavigationBarAppearance()
