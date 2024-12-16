@@ -204,7 +204,7 @@ class SettingsController: UIViewController {
     
     let sortMessageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Sort Exercises By:"
+        label.text = "Order Exercises By:"
         label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

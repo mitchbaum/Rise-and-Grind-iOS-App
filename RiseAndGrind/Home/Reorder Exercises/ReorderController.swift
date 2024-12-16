@@ -46,7 +46,7 @@ class ReorderController: UITableViewController {
         exercises = delegate?.exercises ?? []
         
         // creates title of files
-        navigationItem.title = "Reorder Workout"
+        navigationItem.title = "Custom Workout Order"
         navigationItem.largeTitleDisplayMode = .never
         
         // register fileCell wiht cellId
