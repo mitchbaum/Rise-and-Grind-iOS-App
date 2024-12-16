@@ -40,8 +40,6 @@ class NewCategoryController: UITableViewController {
         tableView.tableFooterView = UIView()
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
         
-        // add cancel button to dismiss view
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(handleAdd))
         
         categoryCollectionReference = Firestore.firestore().collection("Category")
@@ -148,11 +146,7 @@ class NewCategoryController: UITableViewController {
         tableView.tableHeaderView = header
         
     }
-    
-    @objc func handleCancel() {
-        dismiss(animated: true, completion: nil)
-    }
-    
+
     // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code
     func showError(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)

@@ -208,6 +208,10 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         guard let uid = Auth.auth().currentUser?.uid else { return }
         print(catsNameOnly)
         if catsNameOnly.count != 0 {
+            print(activeSegment, catsNameOnly.count, activeSegment > catsNameOnly.count)
+            if activeSegment >= 0 && activeSegment >= catsNameOnly.count {
+                activeSegment = 0
+            }
             workoutCategorySelectorTextField.text = catsNameOnly[activeSegment]
             UserDefaults.standard.setValue(catsNameOnly[activeSegment], forKey: "selectedCategory")
             let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true

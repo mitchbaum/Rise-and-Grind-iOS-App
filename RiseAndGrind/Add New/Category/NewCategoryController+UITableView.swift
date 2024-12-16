@@ -73,6 +73,7 @@ extension NewCategoryController {
                 self.tableView.deleteRows(at: [indexPath], with: .automatic)
                 print("categories after delete = ", self.categories)
                 self.db.collection("Users").document(uid).collection("Category").document(category.name!).delete()
+                self.delegate?.fetchCategories()
             }
             // alert
             let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -80,7 +81,7 @@ extension NewCategoryController {
             optionMenu.addAction(deleteAction)
             optionMenu.addAction(cancelAction)
             self.present(optionMenu, animated: true, completion: nil)
-            }
+        }
         // change color of delete button
         deleteAction.backgroundColor = UIColor.red
         
