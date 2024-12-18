@@ -18,9 +18,8 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     let userDefaults = UserDefaults.standard
     let db = Firestore.firestore()
     
-    let categories = ["Upper", "Lower", "Abs"]
+    var categories = [String]()
     var cats = [Cat]()
-    var catsNameOnly = [String]()
     var catCollectionReference: CollectionReference!
     var exerciseCollectionRef: CollectionReference!
     
@@ -115,7 +114,15 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             navigationItem.rightBarButtonItems = populateBarBtnItems()
             
             self.userDefaults.setValue([], forKey: "myKey")
-            fetchCategories()
+            Task {
+               do {
+                   try await fetchCategories()
+                   fetchExercises(prevSelection: true)
+               } catch {
+                   print("Failed to fetch categories: \(error)")
+               }
+            }
+            
             UIHeight = 30.0
             setupUI()
 
@@ -127,6 +134,15 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             
                 
             } 
+    }
+    
+    func restorePrevCategorySelection() {
+        if let prevCat = UserDefaults.standard.string(forKey: "selectedCategory") {
+            let row = categories.firstIndex(of: prevCat) ?? 0
+            workoutCategoryPicker.selectRow(row, inComponent: 0, animated: false)
+            activeSegment = row
+            workoutCategorySelectorTextField.text = categories[row]
+       }
     }
     
     func populateBarBtnItems() -> Array<UIBarButtonItem> {
@@ -168,33 +184,29 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     
     
     // fetches the exercises from Firebase database
-    @objc func fetchCategories() {
+    @objc func fetchCategories() async throws {
         print("fetching categories in HomeController")
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        //cats = []
+        guard let uid = Auth.auth().currentUser?.uid else { throw URLError(.userAuthenticationRequired) }
         if isSignedIn == true {
-            catsNameOnly = []
-            db.collection("Users").document(uid).collection("Category").getDocuments { snapshot, error in
-                if let err = error {
-                    debugPrint("error fetching docs: \(err)")
-                } else {
-                    guard let snap = snapshot else { return }
-                    for document in snap.documents {
-                        let data = document.data()
-                        let name = data["name"] as? String ?? ""
-
-                        self.catsNameOnly.append(name)
-                    }
-                    self.userDefaults.setValue(self.catsNameOnly, forKey: "myKey")
-                    self.fetchExercises()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        self.tableView.refreshControl?.endRefreshing()
-                        self.sortExercises()
-                        self.tableView.reloadData()
-                    }
-
+            categories = []
+            do {
+                let snapshot = try await db.collection("Users")
+                  .document(uid)
+                  .collection("Category")
+                  .getDocuments()
+              
+                for document in snapshot.documents {
+                    let data = document.data()
+                    let name = data["name"] as? String ?? ""
+                    self.categories.append(name)
                 }
-            }
+            
+                userDefaults.setValue(self.categories, forKey: "myKey")
+    
+              } catch {
+                  debugPrint("Error fetching categories: \(error)")
+                  throw error
+              }
         } else {
             self.tableView.refreshControl?.endRefreshing()
         }
@@ -202,27 +214,29 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
 
     
     // fetches the exercises from Firebase database
-    func fetchExercises() {
+    func fetchExercises(prevSelection: Bool = false) {
         print("fetching exercises")
         exercises = []
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        print(catsNameOnly)
-        if catsNameOnly.count != 0 {
-            print(activeSegment, catsNameOnly.count, activeSegment > catsNameOnly.count)
-            if activeSegment >= 0 && activeSegment >= catsNameOnly.count {
+        if categories.count != 0 {
+            if activeSegment >= 0 && activeSegment >= categories.count {
                 activeSegment = 0
             }
-            workoutCategorySelectorTextField.text = catsNameOnly[activeSegment]
-            UserDefaults.standard.setValue(catsNameOnly[activeSegment], forKey: "selectedCategory")
+            if (prevSelection) {
+                restorePrevCategorySelection()
+            } else {
+                workoutCategorySelectorTextField.text = categories[activeSegment]
+            }
+            UserDefaults.standard.setValue(categories[activeSegment], forKey: "selectedCategory")
             let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
-            self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(catsNameOnly[activeSegment]).collection("Exercises")
+            self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(categories[activeSegment]).collection("Exercises")
                 if showHidden {
                     self.exerciseCollectionRef.getDocuments { (snapshot, error) in
                         if let err = error {
                             debugPrint("Error fetching exercises: \(err)")
                         } else {
                             guard let snap = snapshot else { return }
-                            self.processSnapshot(snapshot: snap, uid: uid, category: self.catsNameOnly[self.activeSegment])
+                            self.processSnapshot(snapshot: snap, uid: uid, category: self.categories[self.activeSegment])
                         }
                     }
                 } else {
@@ -231,7 +245,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                             debugPrint("Error fetching exercises: \(err)")
                         } else {
                             guard let snap = snapshot else { return }
-                            self.processSnapshot(snapshot: snap, uid: uid, category: self.catsNameOnly[self.activeSegment])
+                            self.processSnapshot(snapshot: snap, uid: uid, category: self.categories[self.activeSegment])
                         }
                     }
                 }
@@ -298,7 +312,13 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
 
     @objc func refresh(_ sender: AnyObject) {
         print("refreshing")
-        fetchCategories()
+        Task {
+               do {
+                   try await fetchCategories()
+               } catch {
+                   print("Failed to fetch categories: \(error)")
+               }
+           }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.tableView.refreshControl?.endRefreshing()
             print("reloading data after refresh")

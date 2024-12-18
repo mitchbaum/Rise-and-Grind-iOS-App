@@ -13,7 +13,7 @@ import FirebaseAuth
 
 
 protocol newCategoryControllerDelegate {
-    func fetchCategories()
+    func fetchCategories() async throws
 }
 
 class NewCategoryController: UITableViewController {
@@ -71,8 +71,15 @@ class NewCategoryController: UITableViewController {
         }
         
         dismiss(animated: true) {
-                        self.delegate?.fetchCategories()
+                    Task {
+                            do {
+                                try await self.delegate?.fetchCategories()
+                            } catch {
+                                print("Failed to fetch categories: \(error)")
+                            }
+                        }
                     }
+                    
     }
     
     func fetchCategories() {

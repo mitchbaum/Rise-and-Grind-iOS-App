@@ -73,7 +73,14 @@ extension NewCategoryController {
                 self.tableView.deleteRows(at: [indexPath], with: .automatic)
                 print("categories after delete = ", self.categories)
                 self.db.collection("Users").document(uid).collection("Category").document(category.name!).delete()
-                self.delegate?.fetchCategories()
+                Task {
+                    do {
+                        try await self.delegate?.fetchCategories()
+                    } catch {
+                        print("Failed to fetch categories: \(error)")
+                    }
+                }
+                
             }
             // alert
             let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)

@@ -14,7 +14,7 @@ import JGProgressHUD
 
 //custom delegation
 @objc protocol SettingsControllerDelegate {
-    func fetchExercises()
+    func fetchExercises(prevSelection: Bool)
     func refreshTheme()
     @objc func handleSignOut()
 }
@@ -128,7 +128,7 @@ class SettingsController: UIViewController {
         
         db.collection("Users").document(uid).updateData(["sort" : sort])
         navigationItem.title = "erere"
-        dismiss(animated: true, completion: {self.delegate?.fetchExercises(); self.delegate?.refreshTheme()})
+        dismiss(animated: true, completion: {self.delegate?.fetchExercises(prevSelection: false); self.delegate?.refreshTheme()})
     }
     
     func previewTheme(color: UIColor) {

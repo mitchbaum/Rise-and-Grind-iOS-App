@@ -14,7 +14,7 @@ import JGProgressHUD
 import FirebaseStorage
 
 protocol WorkoutControllerDelegate {
-    func fetchCategories()
+    func fetchExercises(prevSelection: Bool)
 }
 
 class WorkoutController: UITableViewController {
@@ -123,7 +123,9 @@ class WorkoutController: UITableViewController {
                                                                                                      ])
         
 
-        dismiss(animated: true, completion: {self.delegate?.fetchCategories() })
+        dismiss(animated: true, completion: {
+            self.delegate?.fetchExercises(prevSelection: false)
+        })
     }
     
     

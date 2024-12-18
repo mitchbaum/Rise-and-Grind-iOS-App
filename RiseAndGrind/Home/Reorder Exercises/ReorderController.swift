@@ -15,7 +15,7 @@ import FirebaseStorage
 //custom delegation
 protocol ReorderControllerDelegate {
     var exercises: [Exercise] { get set }
-    func fetchExercises()
+    func fetchExercises(prevSelection: Bool)
 }
 
 
@@ -90,7 +90,7 @@ class ReorderController: UITableViewController {
 
         dispatchGroup.notify(queue: .main) {
             print("dismissing")
-            self.dismiss(animated: true, completion: {self.delegate?.fetchExercises() })
+            self.dismiss(animated: true, completion: {self.delegate?.fetchExercises(prevSelection: false) })
         }
     }
     

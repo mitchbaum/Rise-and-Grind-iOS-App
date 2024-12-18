@@ -14,17 +14,18 @@ extension HomeController {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return catsNameOnly.count
+        return categories.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return catsNameOnly[row]
+        return categories[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        UserDefaults.standard.setValue(catsNameOnly[row], forKey: "selectedCategory")
+        UserDefaults.standard.setValue(categories[row], forKey: "selectedCategory")
+        print("in didSelectRow pickerView")
         activeSegment = row
-        workoutCategorySelectorTextField.text = catsNameOnly[row]
+        workoutCategorySelectorTextField.text = categories[row]
         workoutCategorySelectorTextField.resignFirstResponder()
         fetchExercises()
     }
