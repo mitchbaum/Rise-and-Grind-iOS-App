@@ -22,6 +22,8 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     var contents = [Analytics]()
     var graphData: [DataModel] = []
     var categoryCollectionReference: CollectionReference!
+    var chartDataTypeOptions: String = "Weight"
+    var chartIncludeArchiveOption: Bool = false
     
     public var exerciseName: String = ""
     public var exerciseCategory: String = ""
@@ -31,6 +33,13 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         
         navigationItem.largeTitleDisplayMode = .never
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "slider.horizontal.2.square"),
+            style: .plain,
+            target: self,
+            action: #selector(handleOpenOptions)
+        )
 
         // how the tableView variable gets the data from the contents array. 
         tableView.dataSource = self
@@ -48,9 +57,38 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
        
         
         categoryCollectionReference = Firestore.firestore().collection("Category")
-        fetchAnalytics()
-        
+        Task {
+           do {
+               try await fetchOptions()
+               print(chartDataTypeOptions, chartIncludeArchiveOption)
+               fetchAnalytics()
+           } catch {
+               print("Failed to fetch categories: \(error)")
+           }
+        }
         setupUI()
+    }
+    
+    func fetchOptions() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let documentRef = db.collection("Users")
+               .document(uid)
+               .collection("Category")
+               .document(exerciseCategory)
+               .collection("Exercises")
+               .document(exerciseName)
+        do {
+            let snapshot = try await documentRef.getDocument()
+            if let data = snapshot.data() {
+                let chartDataType = data["chartDataType"] as? String
+                let chartIncludeArchive = data["chartIncludeArchive"] as? Bool
+                self.chartDataTypeOptions = chartDataType ?? "Weight"
+                self.chartIncludeArchiveOption = chartIncludeArchive ?? false
+            }
+        } catch {
+            debugPrint("Error fetching exercise: \(error)")
+            throw error
+        }
     }
     
     public func populateChart() {
@@ -120,6 +158,14 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         contents.sort(by: {$0.timeStamp ?? "" > $1.timeStamp ?? ""})
         self.tableView.reloadData()
         populateChart()
+    }
+    
+    @objc func handleOpenOptions() {
+        let optionsController = OptionsController()
+        let navController = CustomNavigationController(rootViewController: optionsController)
+        optionsController.exerciseName = exerciseName
+        optionsController.exerciseCategory = exerciseCategory
+        self.present(navController, animated: true, completion: nil)
     }
     
     private let headerHeight: CGFloat = 340
