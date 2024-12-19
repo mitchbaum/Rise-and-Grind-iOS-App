@@ -14,7 +14,7 @@ import FirebaseStorage
 
 //custom delegation
 protocol NewExerciseControllerDelegate {
-    func fetchExercises(prevSelection: Bool)
+    func fetchExercises()
 }
 
 
@@ -112,7 +112,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
                                                                                                          ])
         }
         dismiss(animated: true, completion: {
-            self.delegate?.fetchExercises(prevSelection: false)
+            self.delegate?.fetchExercises()
         })
     }
     

@@ -117,7 +117,8 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             Task {
                do {
                    try await fetchCategories()
-                   fetchExercises(prevSelection: true)
+                   restorePrevCategorySelection()
+                   fetchExercises()
                } catch {
                    print("Failed to fetch categories: \(error)")
                }
@@ -214,7 +215,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
 
     
     // fetches the exercises from Firebase database
-    func fetchExercises(prevSelection: Bool = false) {
+    func fetchExercises() {
         print("fetching exercises")
         exercises = []
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -222,11 +223,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             if activeSegment >= 0 && activeSegment >= categories.count {
                 activeSegment = 0
             }
-            if (prevSelection) {
-                restorePrevCategorySelection()
-            } else {
-                workoutCategorySelectorTextField.text = categories[activeSegment]
-            }
+            workoutCategorySelectorTextField.text = categories[activeSegment]
             UserDefaults.standard.setValue(categories[activeSegment], forKey: "selectedCategory")
             let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
             self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(categories[activeSegment]).collection("Exercises")
