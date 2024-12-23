@@ -10,5 +10,6 @@ struct Analytics {
     var weight: [Any]
     var reps: [Any]
     var id: String?
+    var archive: Bool
 }
 

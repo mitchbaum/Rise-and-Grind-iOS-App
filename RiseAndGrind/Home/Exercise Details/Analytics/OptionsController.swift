@@ -9,9 +9,12 @@ import Foundation
 import UIKit
 import Firebase
 import FirebaseAuth
+protocol OptionsControllerDelegate {
+    func applyOptions()
+}
 
 class OptionsController: UIViewController {
-    
+    var delegate: OptionsControllerDelegate?
     let db = Firestore.firestore()
     
     public var exerciseName: String = ""
@@ -83,6 +86,7 @@ class OptionsController: UIViewController {
         print("switch value changed \(value)")
         guard let uid = Auth.auth().currentUser?.uid else { return }
         db.collection("Users").document(uid).collection("Category").document(exerciseCategory).collection("Exercises").document(exerciseName).updateData(["chartIncludeArchive": value])
+        self.delegate?.applyOptions()
     }
     
     @objc func dataTypeChanged(sender:UISegmentedControl) {
@@ -99,6 +103,7 @@ class OptionsController: UIViewController {
         }
         
         db.collection("Users").document(uid).collection("Category").document(exerciseCategory).collection("Exercises").document(exerciseName).updateData(["chartDataType": value])
+        self.delegate?.applyOptions()
         
     }
     

@@ -19,7 +19,7 @@ extension AnalyticsController {
     // create footer that displays when there are no files in the table
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let label = UILabel()
-        if contents.count == 0 {
+        if analyticsContents.count == 0 {
             label.text = "Data points empty."
         }
         label.textColor = .white
@@ -32,7 +32,7 @@ extension AnalyticsController {
     
     // create footer that is hidden when no rows are present
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return contents.count == 0 ? 150 : 0
+        return analyticsContents.count == 0 ? 150 : 0
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -41,7 +41,7 @@ extension AnalyticsController {
     
     // add some rows to the tableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return contents.count
+        return analyticsContents.count
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -66,8 +66,8 @@ extension AnalyticsController {
     // create some cells for the rows
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: AnalyticsCell.identifier, for: indexPath) as! AnalyticsCell
-        let weight = contents[indexPath.row].weight
-        let reps = contents[indexPath.row].reps
+        let weight = analyticsContents[indexPath.row].weight
+        let reps = analyticsContents[indexPath.row].reps
         let weightMetric = userDefaults.object(forKey: "weightMetric")
         var weightArray = [String]()
         var repsArray = [String]()
@@ -95,7 +95,7 @@ extension AnalyticsController {
         let choppedString = String(weightRepString.dropLast(2))
         cell.weightXreps.text = choppedString
         
-        let formattedTimestamp = Utilities.timestampToFormattedDate(timeStamp: contents[indexPath.row].timeStamp!, monthAbbrev: "MMMM")
+        let formattedTimestamp = Utilities.timestampToFormattedDate(timeStamp: analyticsContents[indexPath.row].timeStamp!, monthAbbrev: "MMMM")
         cell.updateLabel.text = "Logged: \(formattedTimestamp)"
 
         
@@ -105,21 +105,28 @@ extension AnalyticsController {
         } else {
             cell.formatLabel.text = "(KG x reps)"
         }
+        
+        cell.archiveLabel.text = analyticsContents[indexPath.row].archive ? "Archive" : ""
 
         return cell
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") {  (_, _, completionHandler) in
-            let set = self.contents[indexPath.row]
+        let themeColor = Utilities.loadTheme()
+        let isArchive = self.analyticsContents[indexPath.row].archive
+        let deleteAction = UIContextualAction(style: isArchive ? .normal : .destructive, title: isArchive ? "Hide" : "Delete") {  (_, _, completionHandler) in
+            let set = self.analyticsContents[indexPath.row]
             let name = self.exerciseName
             let category = self.exerciseCategory
             let id = set.id
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            let deleteAction = UIAlertAction(title: "Delete Forever", style: .destructive) { action in
-                self.contents.remove(at: indexPath.row)
+            let deleteAction = UIAlertAction(title: isArchive ? "Hide From Chart" : "Delete Forever", style: .destructive) { action in
+                self.analyticsContents.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Analytics").document(id!).delete()
+                if !isArchive {
+                    self.db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Analytics").document(id!).delete()
+                }
+               
                 self.populateChart()
             }
             
@@ -133,7 +140,7 @@ extension AnalyticsController {
 
         }
         // change color of delete button
-        deleteAction.backgroundColor = UIColor.red
+        deleteAction.backgroundColor = isArchive ? themeColor : UIColor.red
         
         // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])

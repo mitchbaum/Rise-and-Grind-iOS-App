@@ -167,6 +167,19 @@ class Utilities {
         let formattedDate = dateFormatter.string(from: date)
         return formattedDate
     }
+    // takes a date November 18, 2024 returns the timestamp 1692340012.967895
+    static func convertDateToTimestamp(dateString: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMMM d, yyyy" // Match the format of your input date string
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent parsing
+
+        if let date = dateFormatter.date(from: dateString) {
+            let timestamp = date.timeIntervalSince1970
+            return String(timestamp)
+        } else {
+            return nil // Return nil if the date string couldn't be parsed
+        }
+    }
     static func timestampConversion(timeStamp: String) -> Date {
         // handle time stamp
         // convert firebase timestamp variable from Unic Epoch to date

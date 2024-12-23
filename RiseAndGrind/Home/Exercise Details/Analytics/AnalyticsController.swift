@@ -10,7 +10,7 @@ import FirebaseAuth
 import Firebase
 import SwiftUI
 
-class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDataSource, OptionsControllerDelegate {
     
     private var lineGraphData = LineGraphData()
     private var lineGraphController: UIHostingController<LineGraph>?
@@ -19,7 +19,8 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     let userDefaults = UserDefaults.standard
     let db = Firestore.firestore()
     
-    var contents = [Analytics]()
+    var analyticsContents = [Analytics]()
+    var archiveContents = [Analytics]()
     var graphData: [DataModel] = []
     var categoryCollectionReference: CollectionReference!
     var chartDataTypeOptions: String = "Weight"
@@ -44,29 +45,36 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         // how the tableView variable gets the data from the contents array. 
         tableView.dataSource = self
         tableView.delegate = self
-        
-        let weightMetric = userDefaults.object(forKey: "weightMetric")
-        
-        if weightMetric as! Int == 0 {
-            metricLabel.text = "(LBS)"
-        } else {
-            metricLabel.text = "(KG)"
-        }
-        
 
+        applyOptions()
+        setupUI()
+    }
+    
+    func applyOptions() {
+        let weightMetric = userDefaults.object(forKey: "weightMetric")
        
-        
+        var weightText = ""
+        var xaxisText = ""
+        if weightMetric as! Int == 0 {
+            weightText = "(LBS)"
+            xaxisText = "Weight (LBS)"
+        } else {
+            weightText = "(KG)"
+            xaxisText = "Weight (KG)"
+        }
         categoryCollectionReference = Firestore.firestore().collection("Category")
         Task {
            do {
                try await fetchOptions()
-               print(chartDataTypeOptions, chartIncludeArchiveOption)
+               metricLabel.text = chartDataTypeOptions == "Weight" ? weightText : "(" + chartDataTypeOptions + ")"
+               lineGraphData.xAxisLabel = chartDataTypeOptions == "Weight" ? xaxisText : chartDataTypeOptions
+               lineGraphData.dataKey = chartDataTypeOptions
+               
                fetchAnalytics()
            } catch {
                print("Failed to fetch categories: \(error)")
            }
         }
-        setupUI()
     }
     
     func fetchOptions() async throws {
@@ -96,8 +104,7 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM/dd/yyyy" // Adjust based on your timestamp format
-        
-        for analytics in contents {
+        for analytics in analyticsContents {
             if let timeStampString = analytics.timeStamp,
                let timeStampDouble = Double(timeStampString),
                var weightValue = analytics.weight.last as? String,
@@ -116,8 +123,8 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
                 } else {
                     weightValue = "\((Int((Double(weightValue) ?? 0.0) * 0.453592)))"
                 }
-                // Create the DataModel
-                let dataModel = DataModel(id: id, weight: Double(weightValue) ?? 0.0, createdAt: date)
+                let repsValue = analytics.reps.last as? String
+                let dataModel = DataModel(id: id, weight: Double(weightValue) ?? 0.0, reps: Int("\(repsValue ?? "0.0")") ?? 0000, createdAt: date)
                 graphData.append(dataModel)
             }
         }
@@ -127,7 +134,7 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     
     // fetches the analytics of exercises from Firebase database
     func fetchAnalytics() {
-        contents = []
+        analyticsContents = []
         let name = exerciseName
         let category = exerciseCategory
         let db = Firestore.firestore()
@@ -145,17 +152,54 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
                     let weight = data["weight"] as? Array ?? []
                     let reps = data["reps"] as? Array ?? []
                     
-                    let newAnalytic = Analytics(timeStamp: timeStamp, weight: weight, reps: reps, id: id)
-                    self.contents.append(newAnalytic)
+                    let newAnalytic = Analytics(timeStamp: timeStamp, weight: weight, reps: reps, id: id, archive: false)
+                    self.analyticsContents.append(newAnalytic)
                 }
             }
+                if (self.chartIncludeArchiveOption) {
+                    self.fetchArchive()
+                } else {
+                    self.sortContents()
+                }
+            
+        }
+
+    }
+    
+    func fetchArchive() {
+        archiveContents = []
+        let name = exerciseName
+        let category = exerciseCategory
+        let db = Firestore.firestore()
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).collection("Archive")
+            .getDocuments { (snapshot, error) in
+            if let err = error {
+                debugPrint("Error fetching chart archive: \(err)")
+            } else {
+                guard let snap = snapshot else { return }
+                for document in snap.documents {
+                    let data = document.data()
+                    let id = data["id"] as? String ?? ""
+                    let date = data["timestamp"] as? String ?? ""
+                    let weight = data["weight"] as? Array ?? []
+                    let reps = data["reps"] as? Array ?? []
+                    
+                    let timeStamp = Utilities.convertDateToTimestamp(dateString: date)
+                    
+                    let newAnalytic = Analytics(timeStamp: timeStamp, weight: weight, reps: reps, id: id, archive: true)
+                    self.analyticsContents.append(newAnalytic)
+                }
+            }
+            self.analyticsContents.append(contentsOf: self.archiveContents)
             self.sortContents()
         }
 
     }
     
     func sortContents() {
-        contents.sort(by: {$0.timeStamp ?? "" > $1.timeStamp ?? ""})
+        analyticsContents.sort(by: {$0.timeStamp ?? "" > $1.timeStamp ?? ""})
+        print(analyticsContents)
         self.tableView.reloadData()
         populateChart()
     }
@@ -163,8 +207,15 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     @objc func handleOpenOptions() {
         let optionsController = OptionsController()
         let navController = CustomNavigationController(rootViewController: optionsController)
+        optionsController.delegate = self
         optionsController.exerciseName = exerciseName
         optionsController.exerciseCategory = exerciseCategory
+        // Configure sheet presentation
+        if let sheet = navController.sheetPresentationController {
+            sheet.detents = [.medium(), .large()] // Set to medium (half height) and large (full screen)
+            sheet.prefersGrabberVisible = true   // Show grabber at the top of the modal
+            sheet.preferredCornerRadius = 16     // Optional: add corner radius
+        }
         self.present(navController, animated: true, completion: nil)
     }
     

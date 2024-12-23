@@ -42,6 +42,16 @@ class AnalyticsCell: UITableViewCell {
         return label
     }()
     
+    let archiveLabel: UILabel = {
+        let color = Utilities.loadTheme()
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 12)
+        label.textColor = color
+        label.translatesAutoresizingMaskIntoConstraints = false
+        //label.backgroundColor = .blue
+        return label
+    }()
+    
     let cardView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -77,8 +87,11 @@ class AnalyticsCell: UITableViewCell {
         addSubview(updateLabel)
         updateLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: 16).isActive = true
         updateLabel.topAnchor.constraint(equalTo: weightXreps.bottomAnchor, constant: 10).isActive = true
-        updateLabel.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         updateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
+        
+        addSubview(archiveLabel)
+        archiveLabel.topAnchor.constraint(equalTo: weightXreps.bottomAnchor, constant: 10).isActive = true
+        archiveLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
         
         
         
