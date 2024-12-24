@@ -16,7 +16,7 @@ class LineGraphData: ObservableObject {
     @Published var dataKey: String = ""
 }
 
-struct DataModel: Identifiable {
+struct DataModel: Identifiable, Equatable {
     let id: String
     let weight: Double
     let reps: Int
@@ -25,6 +25,7 @@ struct DataModel: Identifiable {
 
 struct LineGraph: View {
     @ObservedObject var data: LineGraphData
+    @State private var scrollPosition: String  = ""
     
     let HEIGHT: CGFloat = 250
     
@@ -61,48 +62,53 @@ struct LineGraph: View {
             return Double(dataModel.reps)
         }
     }
-
+    
+    func reverse(data: [DataModel]) -> [DataModel] {
+        return data.reversed()
+    }
     var body: some View {
         VStack {
-            ScrollView(.horizontal) {
-                Chart(data.list) { dataModel in
-                    LineMark(
-                        x: .value("Month", formatDate(dataModel.createdAt)),
-                        y: .value(data.dataKey, getYValue(dataModel: dataModel))
-                    )
-                    .interpolationMethod(.linear)
-                    .foregroundStyle(Utilities.loadThemeSwiftUI())
-                    
-                    PointMark(
-                        x: .value("Month", formatDate(dataModel.createdAt)),
-                        y: .value(data.dataKey, getYValue(dataModel: dataModel))
-                    )
-                    .foregroundStyle(.green)
-                    .symbolSize(35)
-                    .annotation(position: .overlay,
-                                alignment: .bottomTrailing,
-                                spacing: 8) {
-                        Text(formatPointNumber(key: data.dataKey, num: getYValue(dataModel: dataModel)))
-                            .font(.system(size: 10))
-                            .foregroundColor(.gray)
-                    }
-                }.background(Color.white)
-                    .chartYAxis {
-                        AxisMarks(position: .leading) // Y-axis remains fixed
-                    }
-                    .chartYAxisLabel(position: .top, alignment: .topLeading) {
-                        Text(data.xAxisLabel).italic().padding(.bottom, 6) // Add padding to the Y-axi
-                    }
-                    .chartXAxisLabel(position: .bottom, alignment: .bottomLeading) {
-                        Text("Month/Day/Year").italic()
-                    }
-                    .frame(width: data.list.count > 5 ? CGFloat(data.list.count) * 60 : 300, height: HEIGHT) // Dynamic width for scrolling
+                    Chart(reverse(data: data.list)) { dataModel in
+                        LineMark(
+                            x: .value("Month", formatDate(dataModel.createdAt)),
+                            y: .value(data.dataKey, getYValue(dataModel: dataModel))
+                        )
+                        .interpolationMethod(.linear)
+                        .foregroundStyle(Utilities.loadThemeSwiftUI())
+                        
+                        PointMark(
+                            x: .value("Month", formatDate(dataModel.createdAt)),
+                            y: .value(data.dataKey, getYValue(dataModel: dataModel))
+                        )
+                        .foregroundStyle(.green)
+                        .symbolSize(35)
+                        .annotation(position: .overlay,
+                                    alignment: .bottomTrailing,
+                                    spacing: 8) {
+                            Text(formatPointNumber(key: data.dataKey, num: getYValue(dataModel: dataModel)))
+                                .font(.system(size: 10))
+                                .foregroundColor(.gray)
+                        }
+                    }.background(Color.white)
+                        .chartYAxis {
+                            AxisMarks(position: .trailing) // Y-axis remains fixed
+                        }
+                        .chartScrollableAxes(.horizontal)
+                        .chartXVisibleDomain(length: 5)
+                        .chartScrollPosition(x: $scrollPosition)
+                        .onChange(of: data.list) { _ in
+                            DispatchQueue.main.async {
+                                if let lastDate = reverse(data:data.list).last?.createdAt {
+                                    scrollPosition = formatDate(lastDate)
+                                }
+                            }
+                        }
                 
             }.background(Color.white)
                 .frame(height: HEIGHT) // Set height for the scrolling area
                 
-            
-        }
+        
+        
     }
         
 

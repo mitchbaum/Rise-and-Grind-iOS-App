@@ -54,20 +54,17 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         let weightMetric = userDefaults.object(forKey: "weightMetric")
        
         var weightText = ""
-        var xaxisText = ""
         if weightMetric as! Int == 0 {
-            weightText = "(LBS)"
-            xaxisText = "Weight (LBS)"
+            weightText = "LBS"
         } else {
-            weightText = "(KG)"
-            xaxisText = "Weight (KG)"
+            weightText = "KG"
         }
         categoryCollectionReference = Firestore.firestore().collection("Category")
         Task {
            do {
                try await fetchOptions()
-               metricLabel.text = chartDataTypeOptions == "Weight" ? weightText : "(" + chartDataTypeOptions + ")"
-               lineGraphData.xAxisLabel = chartDataTypeOptions == "Weight" ? xaxisText : chartDataTypeOptions
+               metricLabel.text = chartDataTypeOptions == "Weight" ? weightText : chartDataTypeOptions
+               yaxisLabel.text = "Month/Day/Year"
                lineGraphData.dataKey = chartDataTypeOptions
                
                fetchAnalytics()
@@ -267,6 +264,15 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         return label
     }()
     
+    let yaxisLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.italicSystemFont(ofSize: 12)
+        label.textColor = .lightGray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        //label.backgroundColor = .yellow
+        return label
+    }()
+    
     func setupUI() {
         
         view.addSubview(header)
@@ -280,7 +286,7 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         name.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 16).isActive = true
         
         header.addSubview(metricLabel)
-        metricLabel.topAnchor.constraint(equalTo: header.topAnchor, constant: 16).isActive = true
+        metricLabel.topAnchor.constraint(equalTo: name.bottomAnchor).isActive = true
         metricLabel.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -16).isActive = true
         
         name.rightAnchor.constraint(equalTo: metricLabel.leftAnchor, constant: -16).isActive = true
@@ -300,8 +306,12 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         lineGraph.topAnchor.constraint(equalTo: category.bottomAnchor, constant: 8).isActive = true
         lineGraph.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -16).isActive = true
         lineGraph.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 16).isActive = true
+        
+        header.addSubview(yaxisLabel)
+        yaxisLabel.topAnchor.constraint(equalTo: lineGraph.bottomAnchor, constant: 6).isActive = true
+        yaxisLabel.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -32).isActive = true
        
-        header.bottomAnchor.constraint(equalTo: lineGraph.bottomAnchor, constant: 16).isActive = true
+        header.bottomAnchor.constraint(equalTo: yaxisLabel.bottomAnchor, constant: 16).isActive = true
         
         view.addSubview(tableView)
         tableView.topAnchor.constraint(equalTo: header.bottomAnchor).isActive = true
