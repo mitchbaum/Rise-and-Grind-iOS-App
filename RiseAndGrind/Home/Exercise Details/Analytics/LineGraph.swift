@@ -28,6 +28,7 @@ struct LineGraph: View {
     @State private var scrollPosition: String  = ""
     
     let HEIGHT: CGFloat = 250
+    let CHART_SIZE_IN_SEGMENTS: Int = 5
     
     static var dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -66,6 +67,17 @@ struct LineGraph: View {
     func reverse(data: [DataModel]) -> [DataModel] {
         return data.reversed()
     }
+    
+    func elementFromEnd(data: [DataModel]) -> DataModel? {
+        // Calculate the index of the element CHART_SIZE_IN_SEGMENTS from the end
+        let indexFromEnd = data.count - CHART_SIZE_IN_SEGMENTS
+        
+        if indexFromEnd >= 0 {
+            return data[indexFromEnd]
+        } else {
+            return data.first! // Return the first element if the array has fewer than CHART_SIZE_IN_SEGMENTS elements
+        }
+    }
     var body: some View {
         VStack {
                     Chart(reverse(data: data.list)) { dataModel in
@@ -94,14 +106,18 @@ struct LineGraph: View {
                             AxisMarks(position: .trailing) // Y-axis remains fixed
                         }
                         .chartScrollableAxes(.horizontal)
-                        .chartXVisibleDomain(length: 5)
-                        .chartScrollPosition(x: $scrollPosition)
-                        .onChange(of: data.list) { _ in
+                        .chartXVisibleDomain(length: CHART_SIZE_IN_SEGMENTS)
+                        .onChange(of: data.list) { view in
                             DispatchQueue.main.async {
-                                if let lastDate = reverse(data:data.list).last?.createdAt {
-                                    scrollPosition = formatDate(lastDate)
+                                if let graphStartDate = elementFromEnd(data: reverse(data:data.list))?.createdAt {
+                                    scrollPosition = formatDate(graphStartDate)
+                                    
                                 }
+                                
                             }
+                        }
+                        .if(!scrollPosition.isEmpty) { view in
+                            view.chartScrollPosition(initialX: scrollPosition)
                         }
                 
             }.background(Color.white)
