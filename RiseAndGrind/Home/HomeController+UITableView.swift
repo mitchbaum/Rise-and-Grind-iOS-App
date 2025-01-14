@@ -26,7 +26,6 @@ extension HomeController {
         workoutController.lastUpdatedTimestamp = exercise.timeStamp ?? ""
 
         
-        print(" workoutController.tableView.numberOfRows(inSection: 0) = \(workoutController.tableView.numberOfRows(inSection: 0))")
         let navController = CustomNavigationController(rootViewController: workoutController)
         
         // push into new viewcontroller

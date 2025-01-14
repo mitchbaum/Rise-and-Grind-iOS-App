@@ -92,6 +92,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         downIcon.isUserInteractionEnabled = true // Enable user interaction on the UIImageView
         downIcon.addGestureRecognizer(tapGesture)
         
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -111,7 +112,9 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         // user is signed in 
         if Auth.auth().currentUser != nil {
             isSignedIn = true
-            navigationItem.rightBarButtonItems = populateBarBtnItems()
+            navigationItem.rightBarButtonItems = populateBarBtnItems(side: "right")
+            navigationItem.leftBarButtonItems = populateBarBtnItems(side: "left")
+            print("finished with leftBarButtonItems populating")
             
             self.userDefaults.setValue([], forKey: "myKey")
             Task {
@@ -146,25 +149,40 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
        }
     }
     
-    func populateBarBtnItems() -> Array<UIBarButtonItem> {
+    func populateBarBtnItems(side: String) -> Array<UIBarButtonItem> {
         var barbuttonitems: [UIBarButtonItem] = []
-        let more = UIBarButtonItem(
+        if (side == "right") {
+            let more = UIBarButtonItem(
                 image: UIImage(systemName: "square.stack"),
                 style: .plain,
                 target: self,
                 action: #selector(handleAddWorkout)
             )
-        barbuttonitems.append(more)
-        let sortMetric =  userDefaults.object(forKey: "sortMetric")
-        if sortMetric as! String == "Custom" {
-            let reorder = UIBarButtonItem(
+            barbuttonitems.append(more)
+            let sortMetric =  userDefaults.object(forKey: "sortMetric")
+            if sortMetric as! String == "Custom" {
+                let reorder = UIBarButtonItem(
                     image: UIImage(systemName: "arrow.up.arrow.down.square"),
                     style: .plain,
                     target: self,
                     action: #selector(handleReorderWorkout)
                 )
-            barbuttonitems.append(reorder)
+                barbuttonitems.append(reorder)
+            }
+        } else if (side == "left") {
+            Task {
+                if let saveHistoryButton = await checkForWorkoutInHistory() {
+                    print("in here!", saveHistoryButton)
+                    barbuttonitems.append(saveHistoryButton)
+                    self.navigationItem.leftBarButtonItems = barbuttonitems
+                
+                }
+                
+            }
+
         }
+        
+        print("at the bottom")
         
         return barbuttonitems
     }
@@ -249,6 +267,33 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             }
     }
     
+    func findCategoryInHistory() async throws -> Bool {
+        print("findCategoryInHistory")
+        guard let uid = Auth.auth().currentUser?.uid else { throw URLError(.userAuthenticationRequired) }
+        let currentDate = Utilities.timestampToFormattedDate(timeStamp: "\(Date().timeIntervalSince1970)", monthAbbrev: "MMMM")
+        do {
+            let querySnapshot = try await db.collection("Users")
+              .document(uid)
+              .collection("History")
+              .whereField("date", isEqualTo: currentDate)
+              .getDocuments()
+          
+            for document in querySnapshot.documents {
+                let data = document.data()
+                let category = data["category"] as? String ?? ""
+                
+                if category == categories[activeSegment] {
+                    return true
+                }
+            }
+            return false
+
+          } catch {
+              debugPrint("Error in function findCategoryInHistory: \(error)")
+              throw error
+          }
+    }
+    
     private func processSnapshot(snapshot: QuerySnapshot, uid: String, category: String) {
         for document in snapshot.documents {
             let data = document.data()
@@ -270,6 +315,30 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
 
         }
         self.sortExercises()
+    }
+    
+    @MainActor
+    private func checkForWorkoutInHistory() async -> UIBarButtonItem? {
+        let saveHistory = UIBarButtonItem(
+            image: UIImage(named: "square.and.arrow.down.badge.clock"),
+            style: .plain,
+            target: self,
+            action: #selector(handleAddToHistory)
+        )
+        var categoryFound: Bool = false
+        do {
+           try await categoryFound = findCategoryInHistory()
+           if (!categoryFound) {
+               return saveHistory
+           }
+           return nil
+       } catch {
+           print("Failed to find category in history: \(error)")
+           return nil
+       }
+
+        
+        
     }
     
     @objc func handleSignOut() {
@@ -356,11 +425,18 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             settingsController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
+        let recents = UIAlertAction(title: "Recent Workouts", style: .default) { action in
+            let recentsController = RecentsController()
+            let navController = CustomNavigationController(rootViewController: recentsController)
+            recentsController.category = self.categories[self.activeSegment]
+            self.present(navController, animated: true, completion: nil)
+        }
         //alert
         // change color of alert text
         addWorkout.setValue(color, forKey: "titleTextColor")
         addCategory.setValue(color, forKey: "titleTextColor")
         settings.setValue(color, forKey: "titleTextColor")
+        recents.setValue(color, forKey: "titleTextColor")
         
         let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
@@ -369,8 +445,34 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         optionMenu.addAction(addWorkout)
         optionMenu.addAction(addCategory)
         optionMenu.addAction(settings)
+        optionMenu.addAction(recents)
         optionMenu.addAction(cancelAction)
         self.present(optionMenu, animated: true, completion: nil)
+    }
+    
+    @objc func handleWorkoutHistory() {
+        let reorderController = ReorderController()
+        let navController = CustomNavigationController(rootViewController: reorderController)
+        reorderController.delegate = self
+        self.present(navController, animated: true, completion: nil)
+    }
+    
+    @objc func handleAddToHistory() {
+        let db = Firestore.firestore()
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let historyRef = db.collection("Users").document(uid).collection("History").document()
+        let id = historyRef.documentID
+        db.collection("Users").document(uid).collection("History").document(id).setData([
+            "id": id,
+            "timestamp": "\(NSDate().timeIntervalSince1970)",
+            "date": Utilities.timestampToFormattedDate(timeStamp: "\(Date().timeIntervalSince1970)", monthAbbrev: "MMMM"),
+            "category": categories[activeSegment]
+        ])
+        if var leftBarButtonItems = navigationItem.leftBarButtonItems {
+            leftBarButtonItems.removeLast()  // Remove the last item
+            navigationItem.leftBarButtonItems = leftBarButtonItems // Update the navigation item's leftBarButtonItems
+        }
+    
     }
     
     @objc private func handleSignIn() {
@@ -381,7 +483,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }
     
     func refreshTheme() {
-        navigationItem.rightBarButtonItems = populateBarBtnItems() // refresh the barbuttons
+        navigationItem.rightBarButtonItems = populateBarBtnItems(side: "right") // refresh the right barbuttons
         let color = Utilities.loadTheme()
         // Customize navigation bar appearance
         let navBarAppearance = UINavigationBarAppearance()

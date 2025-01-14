@@ -129,6 +129,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		7452FAC02D2617E900BE15C3 /* Workout Recents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Workout Recents"; sourceTree = "<group>"; };
 		74ECB0892CEBE9BB006F59DD /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -255,6 +256,7 @@
 			children = (
 				8045FF28270BDAA600DD3393 /* Helpers */,
 				8045FF1E270BC73A00DD3393 /* Home */,
+				7452FAC02D2617E900BE15C3 /* Workout Recents */,
 				8045FF25270BD43000DD3393 /* Add New */,
 				8045FF29270BE3DC00DD3393 /* Settings */,
 				8045FF18270A685300DD3393 /* RiseAndGrind.entitlements */,
@@ -370,6 +372,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				7452FAC02D2617E900BE15C3 /* Workout Recents */,
 				74ECB0892CEBE9BB006F59DD /* Analytics */,
 			);
 			name = RiseAndGrind;

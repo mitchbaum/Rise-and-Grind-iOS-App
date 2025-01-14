@@ -196,7 +196,6 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func sortContents() {
         analyticsContents.sort(by: {$0.timeStamp ?? "" > $1.timeStamp ?? ""})
-        print(analyticsContents)
         self.tableView.reloadData()
         populateChart()
     }

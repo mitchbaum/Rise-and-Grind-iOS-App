@@ -27,6 +27,7 @@ extension HomeController {
         activeSegment = row
         workoutCategorySelectorTextField.text = categories[row]
         workoutCategorySelectorTextField.resignFirstResponder()
+        navigationItem.leftBarButtonItems = populateBarBtnItems(side: "left")
         fetchExercises()
     }
     
