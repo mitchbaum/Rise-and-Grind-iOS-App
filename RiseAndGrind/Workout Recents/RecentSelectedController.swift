@@ -36,8 +36,6 @@ class RecentSelectedController: UITableViewController {
     
     // when user taps on row bring them into another view
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // whenever user taps on a file cell, push over the information to the employee view controller
-        print("Selected a cell")
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

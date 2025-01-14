@@ -61,7 +61,6 @@ extension RecentsController {
         let date = recents[indexPath.row].date
         let categories = recents[indexPath.row].categories
         
-        
         // Clear any existing labels from the stack view
         cell.categoriesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
@@ -96,10 +95,7 @@ extension RecentsController {
             cell.categoriesStackView.addArrangedSubview(view)
         }
         
-        print("recentd", categories)
-        
-       cell.dateLabel.text = date
-     //   cell.category.text = exercises
+        cell.dateLabel.text = date
         cell.selectionStyle = .none
 
         return cell
@@ -111,8 +107,6 @@ extension RecentsController {
     
     // add some rows to the tableView
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // returns number of rows as number of files
-        print( recents.count)
         return recents.count
     }
     

@@ -305,7 +305,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             let reps = data["reps"] as? Array ?? []
             let note = data["note"] as? String ?? ""
             if (data["hidden"] == nil) {
-                print("hidden not found! doc is ", name, " adding the hidden field and setting to false")
                 db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).updateData(["hidden": false])
             }
             let hidden = data["hidden"] as? Bool ?? false
@@ -379,12 +378,12 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     @objc func refresh(_ sender: AnyObject) {
         print("refreshing")
         Task {
-               do {
-                   try await fetchCategories()
-               } catch {
-                   print("Failed to fetch categories: \(error)")
-               }
+           do {
+               try await fetchCategories()
+           } catch {
+               print("Failed to fetch categories: \(error)")
            }
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.tableView.refreshControl?.endRefreshing()
             print("reloading data after refresh")
@@ -403,17 +402,14 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     
     // function that handles the plus button in top right corner
     @objc func handleAddWorkout() {
-        print("Adding..")
         let color = Utilities.loadTheme()
         let addWorkout = UIAlertAction(title: "New Exercise", style: .default) { action in
-            print("new exercise")
             let newExerciseController = NewExerciseController()
             let navController = CustomNavigationController(rootViewController: newExerciseController)
             newExerciseController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
         let addCategory = UIAlertAction(title: "New Category", style: .default) { action in
-            print("new category")
             let newCategoryController = NewCategoryController()
             let navController = CustomNavigationController(rootViewController: newCategoryController)
             newCategoryController.delegate = self

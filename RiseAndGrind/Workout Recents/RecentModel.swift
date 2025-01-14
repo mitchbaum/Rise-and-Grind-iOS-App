@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 struct Recent {
     var date: String?
     var categories: [RecentCategory]

@@ -37,7 +37,7 @@ class RecentsController: UITableViewController, RecentSelectedControllerDelegate
            do {
                try await fetchRecents()
            } catch {
-               print("Failed to fetch categories: \(error)")
+               print("Failed to fetch recents: \(error)")
            }
         }
     }
@@ -66,9 +66,6 @@ class RecentsController: UITableViewController, RecentSelectedControllerDelegate
             }
             
             recents.sort { Utilities.convertDateToTimestamp(dateString: $0.date!) ?? "" > Utilities.convertDateToTimestamp(dateString: $1.date!) ?? ""}
-
-            // Now you have an array of `recents` populated with fetched data.
-            print("fetched recents",recents)
             tableView.reloadData()
         } catch {
             debugPrint("Error fetching recent exercise: \(error)")
