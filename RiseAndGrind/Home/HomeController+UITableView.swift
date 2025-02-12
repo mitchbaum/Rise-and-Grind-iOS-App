@@ -59,6 +59,20 @@ extension HomeController {
         return exercises.count == 0 ? 150 : 0
     }
     
+    func calculateWeightValue(weight: String) -> String {
+        let weightMetric = userDefaults.object(forKey: "weightMetric")
+        if weightMetric as? Int == 0 {
+            if weight.trimmingCharacters(in: .whitespaces).suffix(2) == ".5" {
+                return "\((Double(weight) ?? 0.0) * 1.0)"
+            } else {
+                return "\((Int((Double(weight) ?? 0.0) * 1.0)))"
+            }
+        } else {
+            return "\((Int((Double(weight) ?? 0.0) * 0.453592)))"
+
+        }
+    }
+    
     // create some cells for the rows
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ExerciseCell.identifier, for: indexPath) as! ExerciseCell
@@ -78,6 +92,49 @@ extension HomeController {
         let weightMetric = userDefaults.object(forKey: "weightMetric")
         var weightArray = [String]()
         var repsArray = [String]()
+        print("weight:", weight, "reps:", reps)
+        var sets: [Set] = []
+        if weight.count == reps.count {
+            sets = zip(weight, reps).map { Set(weight: $0.0 as? String , reps: $0.1 as? String) }
+            print("combined into sets:", sets)
+        }
+        //cell.populateSetsCollectionView(with: sets)
+//        cell.populateSets(with: sets)
+        // Clear any existing labels from the stack view
+        cell.setsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        // Add a label for each exercise
+        sets.forEach { set in
+            let label = UILabel()
+            let view = UIView()
+            // Configure the container view
+            view.layer.masksToBounds = true
+            view.layer.cornerRadius = 5
+            view.backgroundColor = .offWhite
+            view.translatesAutoresizingMaskIntoConstraints = false
+
+            // Configure the label
+            label.text = calculateWeightValue(weight: set.weight!) + " x " + set.reps!
+            label.font = UIFont.systemFont(ofSize: 16)
+            label.textColor = themeColor
+            label.translatesAutoresizingMaskIntoConstraints = false
+
+            // Add the label to the container view
+            view.addSubview(label)
+
+            // Add constraints to center the label inside the container view
+            NSLayoutConstraint.activate([
+                label.topAnchor.constraint(equalTo: view.topAnchor, constant: 5),
+                label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5),
+                label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+                label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            ])
+
+            // Add the container view to the stack view
+            cell.setsStackView.addArrangedSubview(view)
+            
+          
+        }
         for i in weight {
             weightArray.append(i as! String)
         }
@@ -109,17 +166,19 @@ extension HomeController {
         cell.weightXreps.text = choppedString
         let timestamp = NSDate().timeIntervalSince1970
         let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
-        cell.updateLabel.text = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
+        cell.updateLabel.text = timeSinceUpdate
         let components = timeSinceUpdate.components(separatedBy: " ")
         let needsUpdating = ["weeks", "month", "months", "year", "years"]
         if needsUpdating.contains(components[2]) {
             cell.alertView.backgroundColor = .red
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
+            cell.setTextColor = .red
         } else {
             cell.alertView.backgroundColor = themeColor
             cell.updateImageView.tintColor = themeColor
             cell.weightXreps.textColor = themeColor
+            cell.setTextColor = themeColor
             
         }
         
@@ -136,10 +195,9 @@ extension HomeController {
         }
         cell.notes.text = note
         cell.selectionStyle = .none
-
         return cell
     }
-    
+        
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }

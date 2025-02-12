@@ -51,11 +51,10 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         // creates title of files
         navigationItem.title = "My Workouts"
         
-        
-        // register fileCell wiht cellId
-        //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
         tableView.register(ExerciseCell.self, forCellReuseIdentifier: ExerciseCell.identifier)
-        
+
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44
         tableView.backgroundColor = .darkGray
         tableView.tableFooterView = UIView()
         
