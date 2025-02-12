@@ -186,6 +186,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         return barbuttonitems
     }
     func sortExercises() {
+        print("sorting exercises")
         let sortMetric =  userDefaults.object(forKey: "sortMetric")
         if sortMetric as! String == "Name" {
             // ascending
@@ -294,6 +295,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }
     
     private func processSnapshot(snapshot: QuerySnapshot, uid: String, category: String) {
+        print("processing snapshot")
         for document in snapshot.documents {
             let data = document.data()
             let name = data["name"] as? String ?? ""
@@ -379,15 +381,17 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         Task {
            do {
                try await fetchCategories()
+               fetchExercises()
+
+               DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                   self.tableView.refreshControl?.endRefreshing()
+               }
            } catch {
                print("Failed to fetch categories: \(error)")
+               self.tableView.refreshControl?.endRefreshing()
            }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.tableView.refreshControl?.endRefreshing()
-            print("reloading data after refresh")
-            self.tableView.reloadData()
-        }
+        print("down here!")
     }
     
     // function that handles the reorder button in top right
