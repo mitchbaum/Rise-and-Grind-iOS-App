@@ -11,10 +11,12 @@ import UIKit
 import FirebaseAuth
 import Firebase
 
-
+protocol RecentsControllerDelegate {
+     func populateLeftBarButtonItem()
+}
 
 class RecentsController: UITableViewController, RecentSelectedControllerDelegate {
-
+    var delegate: RecentsControllerDelegate?
     let db = Firestore.firestore()
     
     var recents = [Recent]()
@@ -75,7 +77,7 @@ class RecentsController: UITableViewController, RecentSelectedControllerDelegate
     
     
     @objc func handleDone() {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: {self.delegate?.populateLeftBarButtonItem() })
     }
     
     // create alert that will present an error, this can be used anywhere in the code to remove redundant lines of code

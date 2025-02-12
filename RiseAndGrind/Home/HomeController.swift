@@ -14,7 +14,8 @@ import LBTATools
 import JGProgressHUD
 
 
-class HomeController: UITableViewController, newCategoryControllerDelegate, WorkoutControllerDelegate, NewExerciseControllerDelegate, SettingsControllerDelegate, ReorderControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class HomeController: UITableViewController, newCategoryControllerDelegate, WorkoutControllerDelegate, NewExerciseControllerDelegate, SettingsControllerDelegate, ReorderControllerDelegate, RecentsControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+    
     let userDefaults = UserDefaults.standard
     let db = Firestore.firestore()
     
@@ -23,6 +24,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     var catCollectionReference: CollectionReference!
     var exerciseCollectionRef: CollectionReference!
     
+    var timer: Timer?
     
     var exercises = [Exercise]()
     var sets = [4]
@@ -150,7 +152,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                 image: UIImage(systemName: "square.stack"),
                 style: .plain,
                 target: self,
-                action: #selector(handleAddWorkout)
+                action: #selector(handleOpenOptions)
             )
             barbuttonitems.append(more)
             let sortMetric =  userDefaults.object(forKey: "sortMetric")
@@ -166,18 +168,18 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         } else if (side == "left") {
             Task {
                 if let saveHistoryButton = await checkForWorkoutInHistory() {
+                    // workout not in history
                     print("in here!", saveHistoryButton)
                     barbuttonitems.append(saveHistoryButton)
                     self.navigationItem.leftBarButtonItems = barbuttonitems
-                
+                    startTimer(interval: 5.0 * 60.0) // 5 minutes
                 }
-                
             }
-
         }
         
         return barbuttonitems
     }
+    
     func sortExercises() {
         print("sorting exercises")
         let sortMetric =  userDefaults.object(forKey: "sortMetric")
@@ -329,9 +331,20 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
            print("Failed to find category in history: \(error)")
            return nil
        }
-
-        
-        
+    }
+    
+    func startTimer(interval: TimeInterval) {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(saveWorkoutReminderAlert), userInfo: nil, repeats: false)
+    }
+    
+    @objc func saveWorkoutReminderAlert() {
+        let alert = UIAlertController(title: "You Grinding?", message: "Add this workout to your recents?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Skip", style: .cancel, handler: nil ))
+        alert.addAction(UIAlertAction(title: "Add", style: .default, handler: { _ in
+            self.handleAddToHistory()
+        }))
+        present(alert, animated: true, completion: nil)
     }
     
     @objc func handleSignOut() {
@@ -397,7 +410,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }
     
     // function that handles the plus button in top right corner
-    @objc func handleAddWorkout() {
+    @objc func handleOpenOptions() {
         let color = Utilities.loadTheme()
         let addWorkout = UIAlertAction(title: "New Exercise", style: .default) { action in
             let newExerciseController = NewExerciseController()
@@ -420,6 +433,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         let recents = UIAlertAction(title: "Recent Workouts", style: .default) { action in
             let recentsController = RecentsController()
             let navController = CustomNavigationController(rootViewController: recentsController)
+            recentsController.delegate = self
             recentsController.category = self.categories[self.activeSegment]
             self.present(navController, animated: true, completion: nil)
         }
@@ -561,6 +575,11 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
         present(alertController, animated: true, completion: nil)
         return
+    }
+    
+    // this function is only used in the protocol RecentsControllerDelegate to refresh the save workout into recents on "done" button tap if user deletes a recent workout
+    func populateLeftBarButtonItem() {
+        navigationItem.leftBarButtonItems = populateBarBtnItems(side: "left")
     }
     
 
