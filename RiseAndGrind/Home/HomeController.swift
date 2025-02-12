@@ -172,7 +172,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                     print("in here!", saveHistoryButton)
                     barbuttonitems.append(saveHistoryButton)
                     self.navigationItem.leftBarButtonItems = barbuttonitems
-                    startTimer(interval: 10.0 * 1.0) // 5 minutes
+                    startTimer(interval: 5.0 * 60.0) // 5 minutes
                 }
             }
         }
