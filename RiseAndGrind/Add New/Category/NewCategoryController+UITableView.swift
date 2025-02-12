@@ -67,7 +67,6 @@ extension NewCategoryController {
             let category = self.categories[indexPath.row]
             guard let uid = Auth.auth().currentUser?.uid else { return }
             // remove the file from the tableView
-            print("category being deleted is: ", category.name!)
             let deleteAction = UIAlertAction(title: "Delete Category Forever", style: .destructive) { action in
                 self.categories.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .automatic)

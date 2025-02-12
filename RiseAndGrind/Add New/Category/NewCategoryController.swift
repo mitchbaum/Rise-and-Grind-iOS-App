@@ -23,7 +23,7 @@ class NewCategoryController: UITableViewController {
     //create variable to reference the firebase data so we can read, wirte and update it
     let db = Firestore.firestore()
     
-    var categories = [Category]()
+    var categories = [Cat]()
 
     var categoryCollectionReference: CollectionReference!
     
@@ -95,7 +95,7 @@ class NewCategoryController: UITableViewController {
                     let name = data["name"] as? String ?? "No category found"
                     let id = data["id"] as? String ?? "No id found"
                     
-                    let newCategory = Category(name: name, id: id)
+                    let newCategory = Cat(name: name, id: id)
                     self.categories.append(newCategory)
                     
                 }

@@ -51,7 +51,7 @@ class ReorderController: UITableViewController {
         
         // register fileCell wiht cellId
         //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
-        tableView.register(ExerciseCell.self, forCellReuseIdentifier: ExerciseCell.identifier)
+        tableView.register(ReorderCell.self, forCellReuseIdentifier: ReorderCell.identifier)
         
         tableView.backgroundColor = .darkGray
         tableView.separatorColor = .darkGray

@@ -32,68 +32,31 @@ extension ReorderController {
     
     // create some cells for the rows
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ExerciseCell.identifier, for: indexPath) as! ExerciseCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReorderCell.identifier, for: indexPath) as! ReorderCell
         guard let name = exercises[indexPath.row].name else { return cell }
         let themeColor = Utilities.loadTheme()
-        //let timeStamp = exercises[indexPath.row].timeStamp
         cell.name.text = name
-        //"125 x 12  |  130 x 10  |  135 x 8"
-        let weight = exercises[indexPath.row].weight
-        let reps = exercises[indexPath.row].reps
         let note = exercises[indexPath.row].note
-        let weightMetric = userDefaults.object(forKey: "weightMetric")
-        var weightArray = [String]()
-        var repsArray = [String]()
-        for i in weight {
-            weightArray.append(i as! String)
-        }
-        for i in reps {
-            repsArray.append(i as! String)
-        }
-        
-        var weightArrayLen = weightArray.count
-        var repsArrayLen = weightArray.count
-        var weightRepString = ""
-        if weightArrayLen != 0 && repsArrayLen != 0 {
-            cell.weightRepsView.backgroundColor = .offWhite
-            for i in 0...(weightArrayLen - 1) {
-                if weightMetric as? Int == 0 {
-                    weightRepString += "\((Int((Double(weightArray[i]) ?? 0.0) * 1.0))) x \(repsArray[i]) | "
-                } else {
-                    weightRepString += "\((Int((Double(weightArray[i]) ?? 0.0) * 0.453592))) x \(repsArray[i]) | "
-                }
-            }
-
-            
-        }
-        let choppedString = String(weightRepString.dropLast(2))
-        cell.weightXreps.text = choppedString
+    
         let timestamp = NSDate().timeIntervalSince1970
         let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
-        cell.updateLabel.text = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
+        cell.updateLabel.text = timeSinceUpdate
         let components = timeSinceUpdate.components(separatedBy: " ")
         let needsUpdating = ["weeks", "month", "months", "year", "years"]
         if needsUpdating.contains(components[2]) {
             cell.alertView.backgroundColor = .red
             cell.updateImageView.tintColor = .red
-            cell.weightXreps.textColor = .red
         } else {
             cell.alertView.backgroundColor = themeColor
             cell.updateImageView.tintColor = themeColor
-            cell.weightXreps.textColor = themeColor
-            
         }
         
         if exercises[indexPath.row].hidden ?? false {
             cell.eyeImageView.isHidden = false
+            cell.name.leftAnchor.constraint(equalTo: cell.eyeImageView.rightAnchor, constant: 8).isActive = true
         } else {
             cell.eyeImageView.isHidden = true
-        }
-        
-        if weightMetric as! Int == 0 {
-            cell.formatLabel.text = "(LBS x reps)"
-        } else {
-            cell.formatLabel.text = "(KG x reps)"
+            cell.name.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 26).isActive = true
         }
         cell.notes.text = note
 

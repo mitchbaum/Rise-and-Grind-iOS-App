@@ -10,7 +10,9 @@
 		0DE9A24F14CB3E80C6B69B0F /* Pods_RiseAndGrind_RiseAndGrindUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBD5DB76292B39A4B4F5FF1 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */; };
 		54B284124E22B690D533C3AD /* Pods_RiseAndGrindTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D290DB56347AF0EC5C0A3525 /* Pods_RiseAndGrindTests.framework */; };
 		57BECA64EAAC1B9B0747D0C1 /* Pods_RiseAndGrind.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95F0F5E2DEF5C1590DEE2FEE /* Pods_RiseAndGrind.framework */; };
+		746BFBCF2D36151A003E4656 /* SetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746BFBCE2D36151A003E4656 /* SetCell.swift */; };
 		74953C9C2C33591100C51AB1 /* SetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74953C9B2C33591100C51AB1 /* SetModel.swift */; };
+		74EFAAA12D3AE86A00987799 /* ReorderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EFAAA02D3AE86A00987799 /* ReorderCell.swift */; };
 		8010F8002783BEB600929CD6 /* NewExerciseController+UIPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F7FF2783BEB600929CD6 /* NewExerciseController+UIPickerView.swift */; };
 		8010F8062783CBC700929CD6 /* CatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F8052783CBC700929CD6 /* CatModel.swift */; };
 		8010F8082783CD3E00929CD6 /* WorkoutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F8072783CD3E00929CD6 /* WorkoutController.swift */; };
@@ -45,7 +47,6 @@
 		8045FF33270E887700DD3393 /* WeightRepsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8045FF32270E887700DD3393 /* WeightRepsCell.swift */; };
 		805CEC312914630C009CFD0A /* HomeController+UIPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 805CEC302914630C009CFD0A /* HomeController+UIPickerView.swift */; };
 		80604632274B3900009C3D29 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 80604631274B3900009C3D29 /* GoogleService-Info.plist */; };
-		80604634274B3FEF009C3D29 /* CategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80604633274B3FEF009C3D29 /* CategoryModel.swift */; };
 		80604636274C43C4009C3D29 /* NewCategoryController+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80604635274C43C4009C3D29 /* NewCategoryController+UITableView.swift */; };
 		8060463A274C469F009C3D29 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80604639274C469F009C3D29 /* CategoryCell.swift */; };
 		807F1246279FAE32008BFCBE /* ReorderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 807F1245279FAE32008BFCBE /* ReorderController.swift */; };
@@ -77,7 +78,9 @@
 		4AB8AF59FF31240846F685AF /* Pods-RiseAndGrindTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrindTests.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrindTests/Pods-RiseAndGrindTests.debug.xcconfig"; sourceTree = "<group>"; };
 		58C5F2A68CA797CE5E3B610E /* Pods-RiseAndGrind.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.release.xcconfig"; sourceTree = "<group>"; };
 		601E0C0EA97C4F74DEC77E28 /* Pods-RiseAndGrind.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.debug.xcconfig"; sourceTree = "<group>"; };
+		746BFBCE2D36151A003E4656 /* SetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCell.swift; sourceTree = "<group>"; };
 		74953C9B2C33591100C51AB1 /* SetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetModel.swift; sourceTree = "<group>"; };
+		74EFAAA02D3AE86A00987799 /* ReorderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderCell.swift; sourceTree = "<group>"; };
 		8010F7FF2783BEB600929CD6 /* NewExerciseController+UIPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewExerciseController+UIPickerView.swift"; sourceTree = "<group>"; };
 		8010F8052783CBC700929CD6 /* CatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatModel.swift; sourceTree = "<group>"; };
 		8010F8072783CD3E00929CD6 /* WorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutController.swift; sourceTree = "<group>"; };
@@ -119,7 +122,6 @@
 		8045FF32270E887700DD3393 /* WeightRepsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightRepsCell.swift; sourceTree = "<group>"; };
 		805CEC302914630C009CFD0A /* HomeController+UIPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeController+UIPickerView.swift"; sourceTree = "<group>"; };
 		80604631274B3900009C3D29 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		80604633274B3FEF009C3D29 /* CategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModel.swift; sourceTree = "<group>"; };
 		80604635274C43C4009C3D29 /* NewCategoryController+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewCategoryController+UITableView.swift"; sourceTree = "<group>"; };
 		80604639274C469F009C3D29 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		807F1245279FAE32008BFCBE /* ReorderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderController.swift; sourceTree = "<group>"; };
@@ -314,7 +316,7 @@
 				8010F8052783CBC700929CD6 /* CatModel.swift */,
 				8045FF1F270BC75300DD3393 /* ExerciseCell.swift */,
 				8045FF21270BCA0B00DD3393 /* ExerciseModel.swift */,
-				80604633274B3FEF009C3D29 /* CategoryModel.swift */,
+				746BFBCE2D36151A003E4656 /* SetCell.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -350,6 +352,7 @@
 			children = (
 				807F1245279FAE32008BFCBE /* ReorderController.swift */,
 				807F124727A23384008BFCBE /* ReorderController+UITableView.swift */,
+				74EFAAA02D3AE86A00987799 /* ReorderCell.swift */,
 			);
 			path = "Reorder Exercises";
 			sourceTree = "<group>";
@@ -625,11 +628,12 @@
 				8010F8182788F4CB00929CD6 /* ArchiveModel.swift in Sources */,
 				8010F8062783CBC700929CD6 /* CatModel.swift in Sources */,
 				8010F8002783BEB600929CD6 /* NewExerciseController+UIPickerView.swift in Sources */,
+				746BFBCF2D36151A003E4656 /* SetCell.swift in Sources */,
 				80604636274C43C4009C3D29 /* NewCategoryController+UITableView.swift in Sources */,
 				8010F81F27891F4B00929CD6 /* ForgotPasswordController.swift in Sources */,
-				80604634274B3FEF009C3D29 /* CategoryModel.swift in Sources */,
 				8045FF1D270A7F0000DD3393 /* HomeController+UITableView.swift in Sources */,
 				8045FF20270BC75300DD3393 /* ExerciseCell.swift in Sources */,
+				74EFAAA12D3AE86A00987799 /* ReorderCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -125,6 +125,7 @@ class WorkoutController: UITableViewController {
 
         dismiss(animated: true, completion: {
             self.delegate?.fetchExercises()
+            
         })
     }
     
