@@ -23,7 +23,6 @@ extension HomeController {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         UserDefaults.standard.setValue(categories[row], forKey: "selectedCategory")
-        print("in didSelectRow pickerView")
         activeSegment = row
         workoutCategorySelectorTextField.text = categories[row]
         workoutCategorySelectorTextField.resignFirstResponder()

@@ -92,49 +92,12 @@ extension HomeController {
         let weightMetric = userDefaults.object(forKey: "weightMetric")
         var weightArray = [String]()
         var repsArray = [String]()
-        print("weight:", weight, "reps:", reps)
-        var sets: [Set] = []
-        if weight.count == reps.count {
-            sets = zip(weight, reps).map { Set(weight: $0.0 as? String , reps: $0.1 as? String) }
-            print("combined into sets:", sets)
-        }
-        //cell.populateSetsCollectionView(with: sets)
-//        cell.populateSets(with: sets)
-        // Clear any existing labels from the stack view
-        cell.setsStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
-        // Add a label for each exercise
-        sets.forEach { set in
-            let label = UILabel()
-            let view = UIView()
-            // Configure the container view
-            view.layer.masksToBounds = true
-            view.layer.cornerRadius = 5
-            view.backgroundColor = .offWhite
-            view.translatesAutoresizingMaskIntoConstraints = false
-
-            // Configure the label
-            label.text = calculateWeightValue(weight: set.weight!) + " x " + set.reps!
-            label.font = UIFont.systemFont(ofSize: 16)
-            label.textColor = themeColor
-            label.translatesAutoresizingMaskIntoConstraints = false
-
-            // Add the label to the container view
-            view.addSubview(label)
-
-            // Add constraints to center the label inside the container view
-            NSLayoutConstraint.activate([
-                label.topAnchor.constraint(equalTo: view.topAnchor, constant: 5),
-                label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5),
-                label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-                label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
-            ])
-
-            // Add the container view to the stack view
-            cell.setsStackView.addArrangedSubview(view)
-            
-          
-        }
+//        print("weight:", weight, "reps:", reps)
+//        var sets: [Set] = []
+//        if weight.count == reps.count {
+//            sets = zip(weight, reps).map { Set(weight: $0.0 as? String , reps: $0.1 as? String) }
+//            print("combined into sets:", sets)
+//        }
         for i in weight {
             weightArray.append(i as! String)
         }
@@ -173,12 +136,10 @@ extension HomeController {
             cell.alertView.backgroundColor = .red
             cell.updateImageView.tintColor = .red
             cell.weightXreps.textColor = .red
-            cell.setTextColor = .red
         } else {
             cell.alertView.backgroundColor = themeColor
             cell.updateImageView.tintColor = themeColor
             cell.weightXreps.textColor = themeColor
-            cell.setTextColor = themeColor
             
         }
         

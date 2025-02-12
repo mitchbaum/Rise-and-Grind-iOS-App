@@ -52,9 +52,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         navigationItem.title = "My Workouts"
         
         tableView.register(ExerciseCell.self, forCellReuseIdentifier: ExerciseCell.identifier)
-
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44
         tableView.backgroundColor = .darkGray
         tableView.tableFooterView = UIView()
         
@@ -113,8 +110,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             isSignedIn = true
             navigationItem.rightBarButtonItems = populateBarBtnItems(side: "right")
             navigationItem.leftBarButtonItems = populateBarBtnItems(side: "left")
-            print("finished with leftBarButtonItems populating")
-            
             self.userDefaults.setValue([], forKey: "myKey")
             Task {
                do {
@@ -180,8 +175,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             }
 
         }
-        
-        print("at the bottom")
         
         return barbuttonitems
     }
