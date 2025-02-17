@@ -215,7 +215,6 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         self.present(navController, animated: true, completion: nil)
     }
     
-    private let headerHeight: CGFloat = 340
     private let header: UIView = {
         let header = UIView()
         header.backgroundColor = Utilities.loadAppearanceTheme(property: "primary")
@@ -296,7 +295,7 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         category.topAnchor.constraint(equalTo: name.bottomAnchor).isActive = true
         
         
-        let lineGraphController = UIHostingController(rootView: LineGraph(data: lineGraphData).environment(\.colorScheme, .light))
+        let lineGraphController = UIHostingController(rootView: LineGraph(data: lineGraphData))
         guard let lineGraph = lineGraphController.view else {
             return
         }

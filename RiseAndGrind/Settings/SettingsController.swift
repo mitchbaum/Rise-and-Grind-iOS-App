@@ -162,7 +162,7 @@ class SettingsController: UIViewController {
         ]
         let textColor = Utilities.loadAppearanceTheme(property: "text", optionalMode: mode)
         previewNavBarappearance(color: mode == "Dark" ? Utilities.loadAppearanceTheme(property: "secondary", optionalMode: mode) : currThemeColor ?? UIColor.gray)
-        backgroundView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryHeader", optionalMode: mode)
+        backgroundView.backgroundColor = Utilities.loadAppearanceTheme(property: "primary", optionalMode: mode)
         view.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary", optionalMode: mode)
         messageLabel.textColor = textColor
         metricSegmentedControl.setTitleTextAttributes(normalTextAttributes, for: .normal)

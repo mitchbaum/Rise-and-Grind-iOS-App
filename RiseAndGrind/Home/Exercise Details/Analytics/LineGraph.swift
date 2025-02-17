@@ -30,6 +30,7 @@ struct LineGraph: View {
     let HEIGHT: CGFloat = 250
     let CHART_SIZE_IN_SEGMENTS: Int = 5
     
+    let axisColor: Color = UserDefaults.standard.object(forKey: "appearanceTheme") as? String ?? "Light" == "Light" ? Color(UIColor.chartAxisGray) : Color(UIColor.darkGray)
     let bgColor: Color = Color(Utilities.loadAppearanceTheme(property: "primary"))
     
     static var dateFormatter: DateFormatter = {
@@ -106,6 +107,8 @@ struct LineGraph: View {
                     }.background(bgColor)
                         .chartYAxis {
                             AxisMarks(position: .trailing)  { value in
+                                AxisTick() .foregroundStyle(axisColor)
+                                AxisGridLine() .foregroundStyle(axisColor)
                                 AxisValueLabel()
                                     .foregroundStyle(Color(UIColor.lightGray)) // Change label color here
                             } // Y-axis remains fixed
@@ -114,6 +117,8 @@ struct LineGraph: View {
                         .chartXVisibleDomain(length: CHART_SIZE_IN_SEGMENTS)
                         .chartXAxis {
                             AxisMarks()  { value in
+                                AxisTick() .foregroundStyle(axisColor)
+                                AxisGridLine() .foregroundStyle(axisColor)
                                 AxisValueLabel()
                                     .foregroundStyle(Color(UIColor.lightGray)) // Change label color here
                             } // X-axis remains fixed

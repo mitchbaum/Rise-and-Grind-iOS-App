@@ -156,7 +156,7 @@ class OptionsController: UIViewController {
     func setupUI() {
         
         let silverBackgroundView = UIView()
-        silverBackgroundView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryHeader")
+        silverBackgroundView.backgroundColor = Utilities.loadAppearanceTheme(property: "primary")
         silverBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(silverBackgroundView)
         silverBackgroundView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true

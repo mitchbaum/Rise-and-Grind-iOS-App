@@ -19,13 +19,11 @@ extension UIColor {
     static let mattePink = UIColor(red: 138/255, green: 92/255, blue: 109/255, alpha: 1)
     static let maroon = UIColor(red: 102/255, green: 42/255, blue: 42/255, alpha: 1)
     static let offWhite = UIColor(red: 248/255, green: 248/255, blue: 248/255, alpha: 1)
-    
+    static let chartAxisGray = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.4)
     
     // dark mode theme
-    static let dimGray = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.2)
+    static let dimGray = UIColor(red: 40/255, green: 40/255, blue: 40/255, alpha: 1)
     static let offDimGray = UIColor(red: 200/255, green: 200/255, blue: 200/255, alpha: 0.1)
-
-
 
 
 }

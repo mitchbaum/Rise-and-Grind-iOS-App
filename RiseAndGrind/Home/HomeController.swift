@@ -511,7 +511,8 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         
         // light/dark mode appearance
-        view.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
     }
     
     let workoutCategoryPicker: UIPickerView = {

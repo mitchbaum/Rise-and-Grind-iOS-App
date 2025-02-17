@@ -271,9 +271,7 @@ class Utilities {
     
     static func loadAppearanceTheme(property: String, optionalMode: String? = nil) -> UIColor {
         let mode = optionalMode ?? (UserDefaults.standard.object(forKey: "appearanceTheme") as? String ?? "Light")
-        if property == "primary" {
-            return mode == "Light" ? UIColor.white : UIColor.black
-        } else if property == "primaryCell" || property == "primaryHeader"{
+        if property == "primaryCell" || property == "primary"{
             return mode == "Light" ? UIColor.white : UIColor.dimGray
         } else if property == "primaryTopCell" {
             return mode == "Light" ? UIColor.offWhite : UIColor.offDimGray
