@@ -32,13 +32,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().prefersLargeTitles = true
         // creates lighter color shade of red for navigation bar
         // makes navigation bar light red color from the variable we made
-        let colorTheme = Utilities.loadTheme()
+        let appearanceMode = UserDefaults.standard.object(forKey: "appearanceTheme") as? String
+        let colorTheme = appearanceMode == "Dark" ? UIColor.black : Utilities.loadTheme()
         print(colorTheme)
         
         UINavigationBar.appearance().barTintColor = UIColor.lightBlue
         // makes text "cancel" button white color
         UINavigationBar.appearance().tintColor = .white
-        UIWindow.appearance().overrideUserInterfaceStyle = .light
         
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()

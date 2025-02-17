@@ -269,5 +269,28 @@ class Utilities {
         return Color(color)
     }
     
+    static func loadAppearanceTheme(property: String, optionalMode: String? = nil) -> UIColor {
+        let mode = optionalMode ?? (UserDefaults.standard.object(forKey: "appearanceTheme") as? String ?? "Light")
+        if property == "primary" {
+            return mode == "Light" ? UIColor.white : UIColor.black
+        } else if property == "primaryCell" || property == "primaryHeader"{
+            return mode == "Light" ? UIColor.white : UIColor.dimGray
+        } else if property == "primaryTopCell" {
+            return mode == "Light" ? UIColor.offWhite : UIColor.offDimGray
+        } else if property == "secondary" {
+            return mode == "Light" ? UIColor.darkGray : UIColor.black
+        } else if property == "text" {
+            return mode == "Light" ? UIColor.black : UIColor.white
+        } else if property == "accent" {
+            return self.loadTheme()
+        }
+        
+        
+        guard let array = UserDefaults.standard.object(forKey: "theme") as? [CGFloat], array.count == 4 else { return UIColor.lightBlue }
+        let color = UIColor(red: array[0], green: array[1], blue: array[2], alpha: array[3])
+        
+        return color
+    }
+    
     
 }

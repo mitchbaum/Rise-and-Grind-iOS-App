@@ -30,6 +30,8 @@ struct LineGraph: View {
     let HEIGHT: CGFloat = 250
     let CHART_SIZE_IN_SEGMENTS: Int = 5
     
+    let bgColor: Color = Color(Utilities.loadAppearanceTheme(property: "primary"))
+    
     static var dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateFormat = "MM/dd/yy"
@@ -99,14 +101,23 @@ struct LineGraph: View {
                                     spacing: 8) {
                             Text(formatPointNumber(key: data.dataKey, num: getYValue(dataModel: dataModel)))
                                 .font(.system(size: 10))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(UIColor.lightGray))
                         }
-                    }.background(Color.white)
+                    }.background(bgColor)
                         .chartYAxis {
-                            AxisMarks(position: .trailing) // Y-axis remains fixed
+                            AxisMarks(position: .trailing)  { value in
+                                AxisValueLabel()
+                                    .foregroundStyle(Color(UIColor.lightGray)) // Change label color here
+                            } // Y-axis remains fixed
                         }
                         .chartScrollableAxes(.horizontal)
                         .chartXVisibleDomain(length: CHART_SIZE_IN_SEGMENTS)
+                        .chartXAxis {
+                            AxisMarks()  { value in
+                                AxisValueLabel()
+                                    .foregroundStyle(Color(UIColor.lightGray)) // Change label color here
+                            } // X-axis remains fixed
+                        }
                         .onChange(of: data.list) { view in
                             DispatchQueue.main.async {
                                 if let graphStartDate = elementFromEnd(data: reverse(data:data.list))?.createdAt {
@@ -120,7 +131,7 @@ struct LineGraph: View {
                             view.chartScrollPosition(initialX: scrollPosition)
                         }
                 
-            }.background(Color.white)
+            }.background(bgColor)
                 .frame(height: HEIGHT) // Set height for the scrolling area
                 
         

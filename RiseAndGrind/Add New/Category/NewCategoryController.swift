@@ -35,8 +35,8 @@ class NewCategoryController: UITableViewController {
     
         navigationItem.title = "New Category"
         navigationItem.largeTitleDisplayMode = .never
-        tableView.backgroundColor = .darkGray
-        tableView.separatorColor = .darkGray
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
         tableView.tableFooterView = UIView()
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
         
@@ -106,22 +106,12 @@ class NewCategoryController: UITableViewController {
     }
     
     
-    
-    let nameLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Name"
-        label.textColor = .black
-        // enable autolayout
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     let nameTextField: UITextField = {
         let textField = UITextField()
-        textField.attributedPlaceholder = NSAttributedString(string: "Tap to edit",
+        textField.attributedPlaceholder = NSAttributedString(string: "Title",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .black
-        textField.backgroundColor = UIColor.white
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
+        textField.tintColor = Utilities.loadTheme()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
@@ -131,21 +121,15 @@ class NewCategoryController: UITableViewController {
     
     
     private func setupUI() {
-        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 82))
-        header.backgroundColor = .white
-        let headerLabel = UILabel(frame: header.bounds)
-        header.addSubview(headerLabel)
+        let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 92))
+        header.backgroundColor = Utilities.loadAppearanceTheme(property: "primary")
+        let headerTextField = UILabel(frame: header.bounds)
+        header.addSubview(headerTextField)
         
-        // add and position name label
-        header.addSubview(nameLabel)
-        nameLabel.topAnchor.constraint(equalTo: headerLabel.topAnchor, constant: 16).isActive = true
-        nameLabel.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 16).isActive = true
-        nameLabel.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        nameLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         header.addSubview(nameTextField)
-        nameTextField.topAnchor.constraint(equalTo: header.topAnchor, constant: 16).isActive = true
-        nameTextField.leftAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
+        nameTextField.topAnchor.constraint(equalTo: headerTextField.topAnchor, constant: 16).isActive = true
+        nameTextField.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 16).isActive = true
         nameTextField.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -16).isActive = true
         nameTextField.heightAnchor.constraint(equalToConstant: 50).isActive = true
     

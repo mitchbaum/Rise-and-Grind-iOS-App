@@ -35,6 +35,7 @@ extension ReorderController {
         let cell = tableView.dequeueReusableCell(withIdentifier: ReorderCell.identifier, for: indexPath) as! ReorderCell
         guard let name = exercises[indexPath.row].name else { return cell }
         let themeColor = Utilities.loadTheme()
+        let textColor = Utilities.loadAppearanceTheme(property: "text")
         cell.name.text = name
         let note = exercises[indexPath.row].note
     
@@ -59,6 +60,12 @@ extension ReorderController {
             cell.name.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 26).isActive = true
         }
         cell.notes.text = note
+        
+        // appearance light/dark mode
+        cell.name.textColor = textColor
+        cell.notes.textColor = textColor
+        cell.cardView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
 
         return cell
     }

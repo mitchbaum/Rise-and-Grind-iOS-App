@@ -69,6 +69,7 @@ extension AnalyticsController {
         let weight = analyticsContents[indexPath.row].weight
         let reps = analyticsContents[indexPath.row].reps
         let weightMetric = userDefaults.object(forKey: "weightMetric")
+        let textColor = Utilities.loadAppearanceTheme(property: "text")
         var weightArray = [String]()
         var repsArray = [String]()
         for i in weight {
@@ -107,6 +108,11 @@ extension AnalyticsController {
         }
         
         cell.archiveLabel.text = analyticsContents[indexPath.row].archive ? "Archive" : ""
+        
+        // appearance light/dark mode
+        cell.weightXreps.textColor = textColor
+        cell.cardView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
 
         return cell
     }

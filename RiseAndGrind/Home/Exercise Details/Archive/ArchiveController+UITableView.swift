@@ -43,6 +43,7 @@ extension ArchiveController {
     // create some cells for the rows
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ArchiveCell.identifier, for: indexPath) as! ArchiveCell
+        let textColor = Utilities.loadAppearanceTheme(property: "text")
 //        let weight = sets[indexPath.row]
 //        cell.weightLabel.text = weight
         let weight = contents[indexPath.row].weight
@@ -82,6 +83,12 @@ extension ArchiveController {
             cell.formatLabel.text = "(KG x reps)"
         }
         cell.notes.text = note
+        
+        // appearance light/dark mode
+        cell.weightXreps.textColor = textColor
+        cell.notes.textColor = textColor
+        cell.cardView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
 
         return cell
     }

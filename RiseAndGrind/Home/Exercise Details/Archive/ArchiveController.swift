@@ -40,8 +40,8 @@ class ArchiveController: UITableViewController {
 
         tableView.register(ArchiveCell.self, forCellReuseIdentifier: ArchiveCell.identifier)
         
-        tableView.backgroundColor = .darkGray
-        tableView.separatorColor = .darkGray
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
         tableView.tableFooterView = UIView()
 
         

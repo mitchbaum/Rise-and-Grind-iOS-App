@@ -23,7 +23,7 @@ class RecentSelectedController: UITableViewController {
         super.viewDidLoad()
     
         navigationItem.largeTitleDisplayMode = .never
-        view.backgroundColor = UIColor.darkGray
+        view.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "RecentSelectedCell")
         
@@ -44,8 +44,9 @@ class RecentSelectedController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecentSelectedCell", for: indexPath)
         cell.textLabel?.text = items[indexPath.row].category
         cell.selectionStyle = .none
-        cell.backgroundColor = .white
-        cell.textLabel?.textColor = .black
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.textLabel?.textColor = Utilities.loadAppearanceTheme(property: "text")
+        
         return cell
     }
     

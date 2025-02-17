@@ -27,7 +27,7 @@ class OptionsController: UIViewController {
     
         navigationItem.title = "Chart Options"
         navigationItem.largeTitleDisplayMode = .never
-        view.backgroundColor = UIColor.darkGray
+        view.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         
         let save = UIBarButtonItem(title: NSString(string: "Done") as String, style: .plain, target: self, action: #selector(handleDone))
         
@@ -109,13 +109,13 @@ class OptionsController: UIViewController {
     
     
     let archivedDataLabel: UILabel = {
-       let label = UILabel()
-       label.text = "Include Archived Data Points"
-       label.textColor = .black
-       // enable autolayout
-       label.translatesAutoresizingMaskIntoConstraints = false
+        let label = UILabel()
+        label.text = "Include Archived Data Points"
+        label.textColor = Utilities.loadAppearanceTheme(property: "text")
+        // enable autolayout
+        label.translatesAutoresizingMaskIntoConstraints = false
        
-       return label
+        return label
     }()
 
     let archivedDataSwitch: UISwitch = {
@@ -130,7 +130,7 @@ class OptionsController: UIViewController {
     let dataTypeLabel: UILabel = {
         let label = UILabel()
         label.text = "Data Type:"
-        label.textColor = .black
+        label.textColor = Utilities.loadAppearanceTheme(property: "text")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -147,7 +147,7 @@ class OptionsController: UIViewController {
         // changes text color to black for selected button text
         sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         // changes text color to black for non selected button text
-        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: Utilities.loadAppearanceTheme(property: "text")], for: .normal)
         sc.addTarget(self, action: #selector(dataTypeChanged(sender:)), for: .valueChanged)
 
         return sc
@@ -156,7 +156,7 @@ class OptionsController: UIViewController {
     func setupUI() {
         
         let silverBackgroundView = UIView()
-        silverBackgroundView.backgroundColor = UIColor.white
+        silverBackgroundView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryHeader")
         silverBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(silverBackgroundView)
         silverBackgroundView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true

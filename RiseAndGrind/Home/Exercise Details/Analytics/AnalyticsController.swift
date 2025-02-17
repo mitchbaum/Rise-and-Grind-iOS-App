@@ -218,7 +218,7 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     private let headerHeight: CGFloat = 340
     private let header: UIView = {
         let header = UIView()
-        header.backgroundColor = .white
+        header.backgroundColor = Utilities.loadAppearanceTheme(property: "primary")
         header.translatesAutoresizingMaskIntoConstraints = false
         return header
     }()
@@ -226,9 +226,9 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
     let tableView: UITableView = {
         let table = UITableView()
         table.register(AnalyticsCell.self, forCellReuseIdentifier: AnalyticsCell.identifier)
+        table.separatorColor = Utilities.loadAppearanceTheme(property: "secondary")
+        table.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         table.translatesAutoresizingMaskIntoConstraints = false
-        table.backgroundColor = .darkGray
-        table.separatorColor = .darkGray
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
@@ -237,7 +237,7 @@ class AnalyticsController: UIViewController, UITableViewDelegate, UITableViewDat
         let label = UILabel()
         label.text = "Exercise Name"
         label.font = UIFont.boldSystemFont(ofSize: 22)
-        label.textColor = .black
+        label.textColor = Utilities.loadAppearanceTheme(property: "text")
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         //label.backgroundColor = .yellow

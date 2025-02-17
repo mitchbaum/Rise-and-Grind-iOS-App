@@ -53,8 +53,8 @@ class ReorderController: UITableViewController {
         //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
         tableView.register(ReorderCell.self, forCellReuseIdentifier: ReorderCell.identifier)
         
-        tableView.backgroundColor = .darkGray
-        tableView.separatorColor = .darkGray
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
         tableView.tableFooterView = UIView()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))

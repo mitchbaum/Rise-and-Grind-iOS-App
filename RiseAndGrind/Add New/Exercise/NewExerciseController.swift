@@ -41,21 +41,16 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         // creates title of files
         navigationItem.title = "New Exercise"
         
-        // register fileCell wiht cellId
-        //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
         tableView.register(WeightRepsCell.self, forCellReuseIdentifier: WeightRepsCell.identifier)
-        
-        tableView.backgroundColor = .darkGray
-        tableView.separatorColor = .darkGray
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
         tableView.tableFooterView = UIView()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(handleAdd))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         
         categoryCollectionReference = Firestore.firestore().collection("Category")
-        print(categories)
         fetchCategories()
-        print(categories)
         
         categorySelectorTextField.inputView = categoryPicker
         categoryPicker.delegate = self
@@ -167,8 +162,8 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Title",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .black
-        textField.backgroundColor = UIColor.white
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
+        textField.tintColor = Utilities.loadTheme()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
@@ -182,7 +177,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Select category",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .black
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
         textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
@@ -203,11 +198,11 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Note",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .black
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
+        textField.tintColor = Utilities.loadTheme()
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
         textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
-        textField.tintColor = UIColor.clear
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -216,15 +211,20 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
     let addButton: UIButton = {
         let button = UIButton()
         let color = Utilities.loadTheme()
+        let appearanceTheme = UserDefaults.standard.object(forKey: "appearanceTheme")
         //button.backgroundColor = UIColor.red
-        button.layer.borderWidth = 2
-        button.layer.borderColor = color.cgColor
-        button.layer.cornerRadius = 10
-        button.setImage(UIImage(named: "add"), for: .normal)
-        button.setTitleColor(color, for: .normal)
-        button.backgroundColor = color
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 32.0)
+//        button.layer.borderWidth = 2
+//        button.layer.borderColor = color.cgColor
+//        button.layer.cornerRadius = 10
+        button.setImage(UIImage(systemName: "plus.app.fill"), for: .normal)
+        button.tintColor = color
+        //button.setTitleColor(color, for: .normal)
+       // button.backgroundColor = color
+//        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 32.0)
         button.addTarget(nil, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
         // enable autolayout
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -235,7 +235,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
     func setupUI() {
         
         let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 242))
-        header.backgroundColor = .white
+        header.backgroundColor = Utilities.loadAppearanceTheme(property: "primary")
 
         let headerTextField = UITextField(frame: header.bounds)
         let workoutSC = UISegmentedControl(frame: header.bounds)
@@ -272,9 +272,9 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         
         header.addSubview(addButton)
         addButton.topAnchor.constraint(equalTo: notesTextField.bottomAnchor, constant: 16).isActive = true
-        addButton.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -8).isActive = true
-        addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        addButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        addButton.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -12).isActive = true
+        addButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        addButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
         
         
         tableView.tableHeaderView = header

@@ -34,7 +34,7 @@ class WeightRepsCell: UITableViewCell {
     let weightLabel: UILabel = {
         let label = UILabel()
         label.text = "Weight"
-        label.textColor = .black
+        label.textColor = Utilities.loadAppearanceTheme(property: "text")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -45,12 +45,9 @@ class WeightRepsCell: UITableViewCell {
         
         textField.attributedPlaceholder = NSAttributedString(string: "LBS",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .black
-        //textField.layer.borderWidth = 1
-        //textField.layer.cornerRadius = 5
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 1)
         textField.setLeftPaddingPoints(4)
-        textField.backgroundColor = UIColor.white
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = UIKeyboardType.decimalPad
@@ -60,7 +57,7 @@ class WeightRepsCell: UITableViewCell {
     let xLabel: UILabel = {
         let label = UILabel()
         label.text = "x"
-        label.textColor = .black
+        label.textColor = Utilities.loadAppearanceTheme(property: "text")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -68,7 +65,7 @@ class WeightRepsCell: UITableViewCell {
     let repsLabel: UILabel = {
         let label = UILabel()
         label.text = "Reps"
-        label.textColor = .black
+        label.textColor = Utilities.loadAppearanceTheme(property: "text")
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -76,10 +73,9 @@ class WeightRepsCell: UITableViewCell {
     let repsTextField: UITextField = {
         let textField = UITextField()
         textField.keyboardType = UIKeyboardType.decimalPad
-        textField.textColor = .black
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 1)
         textField.setLeftPaddingPoints(4)
-        textField.backgroundColor = UIColor.white
         // enable autolayout, without this constraints wont load properly
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -87,7 +83,7 @@ class WeightRepsCell: UITableViewCell {
     
     let cardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
         view.layer.cornerRadius = 5
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -96,7 +92,7 @@ class WeightRepsCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         // color of table view cell
-        backgroundColor = .darkGray
+        backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         
         addSubview(cardView)
         cardView.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true

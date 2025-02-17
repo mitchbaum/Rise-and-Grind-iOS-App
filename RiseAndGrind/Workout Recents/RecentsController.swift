@@ -28,12 +28,13 @@ class RecentsController: UITableViewController, RecentSelectedControllerDelegate
     
         navigationItem.title = "Recent Workouts"
         navigationItem.largeTitleDisplayMode = .never
-        view.backgroundColor = UIColor.darkGray
         
         let done = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(handleDone))
         navigationItem.rightBarButtonItems = [done]
         
         tableView.register(RecentCell.self, forCellReuseIdentifier: RecentCell.identifier)
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
 
         Task {
            do {

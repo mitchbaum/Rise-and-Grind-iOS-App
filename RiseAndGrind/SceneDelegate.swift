@@ -20,10 +20,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let homeController = HomeController()
             let navController = CustomNavigationController(rootViewController: homeController)
             window.rootViewController = navController
-            
             self.window = window
+            updateWindowAppearance()
             window.makeKeyAndVisible()
         }
+    }
+    
+    func updateWindowAppearance() {
+        window?.overrideUserInterfaceStyle = UserDefaults.standard.object(forKey: "appearanceTheme") as? String == "Light" ? .light : .dark
     }
     
 }

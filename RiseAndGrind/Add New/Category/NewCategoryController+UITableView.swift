@@ -17,7 +17,6 @@ extension NewCategoryController {
     // when user taps on row bring them into another view
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // whenever user taps on a file cell, push over the information to the employee view controller
-        print("Selected a cell")
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -46,8 +45,14 @@ extension NewCategoryController {
 //        let weight = sets[indexPath.row]
 //        cell.weightLabel.text = weight
         let category = categories[indexPath.row]
+        let textColor = Utilities.loadAppearanceTheme(property: "text")
         cell.nameLabel.text = category.name
         cell.selectionStyle = .none
+        
+        // appearance light/dark mode
+        cell.nameLabel.textColor = textColor
+        cell.cardView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         return cell
     }
     
@@ -107,7 +112,7 @@ extension NewCategoryController {
         // make headers refelct what goes information goes into the sections
 
         if section == 0 {
-            label.text = "Current Categories:"
+            label.text = "Current Categories (swipe to delete)"
         }
         
 

@@ -56,7 +56,8 @@ class WorkoutController: UITableViewController {
         //tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellId")
         tableView.register(WeightRepsCell.self, forCellReuseIdentifier: WeightRepsCell.identifier)
         
-        tableView.backgroundColor = .darkGray
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
         tableView.tableFooterView = UIView()
 //        tableView.setEditing(true, animated: true)
         
@@ -277,8 +278,7 @@ class WorkoutController: UITableViewController {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Title",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .darkGray
-        textField.backgroundColor = UIColor.white
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
@@ -293,7 +293,7 @@ class WorkoutController: UITableViewController {
         let textField = UITextField()
         textField.attributedPlaceholder = NSAttributedString(string: "Select category",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .darkGray
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
         textField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
@@ -310,7 +310,7 @@ class WorkoutController: UITableViewController {
         let color = Utilities.loadTheme()
         textField.attributedPlaceholder = NSAttributedString(string: "Note",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
-        textField.textColor = .black
+        textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.setLeftPaddingPoints(5)
         textField.setRightPaddingPoints(5)
         textField.addLine(position: .bottom, color: color, width: 0.5)
@@ -323,16 +323,13 @@ class WorkoutController: UITableViewController {
     let addButton: UIButton = {
         let button = UIButton()
         let color = Utilities.loadTheme()
-        //button.backgroundColor = UIColor.red
-        button.layer.borderWidth = 2
-        button.layer.borderColor = color.cgColor
-        button.layer.cornerRadius = 10
-        button.setImage(UIImage(named: "add"), for: .normal)
-        button.setTitleColor(color, for: .normal)
-        button.backgroundColor = color
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 32.0)
+        let appearanceTheme = UserDefaults.standard.object(forKey: "appearanceTheme")
+        button.setImage(UIImage(systemName: "plus.app.fill"), for: .normal)
+        button.tintColor = color
         button.addTarget(nil, action: #selector(handleButtonPressed(sender:)), for: .touchUpInside)
-        // enable autolayout
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -358,7 +355,8 @@ class WorkoutController: UITableViewController {
     let openArchiveButton: UIButton = {
         let button = UIButton()
         let color = Utilities.loadTheme()
-        button.backgroundColor = .white
+        let appearanceTheme = UserDefaults.standard.object(forKey: "appearanceTheme") as? String
+        button.backgroundColor = appearanceTheme == "Light" ? UIColor.white : nil
         //button.tintColor = .lightBlue
         
         button.setTitle("Open Archive", for: .normal)
@@ -379,7 +377,8 @@ class WorkoutController: UITableViewController {
     let openAnalyticsButton: UIButton = {
         let button = UIButton()
         let color = Utilities.loadTheme()
-        button.backgroundColor = .white
+        let appearanceTheme = UserDefaults.standard.object(forKey: "appearanceTheme") as? String
+        button.backgroundColor = appearanceTheme == "Light" ? UIColor.white : nil
         //button.tintColor = .lightBlue
         
         button.setTitle("Open Analytics", for: .normal)
@@ -408,7 +407,7 @@ class WorkoutController: UITableViewController {
         // changes text color to black for selected button text
         sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
         // changes text color to black for non selected button text
-        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: .normal)
+        sc.setTitleTextAttributes([NSAttributedString.Key.foregroundColor: Utilities.loadAppearanceTheme(property: "text")], for: .normal)
         
         sc.addTarget(self, action: #selector(toggleEditing(sender:)), for: .valueChanged)
 
@@ -420,7 +419,7 @@ class WorkoutController: UITableViewController {
     func setupUI() {
         
         let header = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 350))
-        header.backgroundColor = .white
+        header.backgroundColor = Utilities.loadAppearanceTheme(property: "primary")
 
         let headerTextField = UITextField(frame: header.bounds)
         //let workoutSC = UISegmentedControl(frame: header.bounds)
@@ -466,9 +465,9 @@ class WorkoutController: UITableViewController {
         
         header.addSubview(addButton)
         addButton.topAnchor.constraint(equalTo: notesTextField.bottomAnchor, constant: 16).isActive = true
-        addButton.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -8).isActive = true
-        addButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        addButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        addButton.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -12).isActive = true
+        addButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        addButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
         
         header.addSubview(archiveThisButton)
         archiveThisButton.topAnchor.constraint(equalTo: notesTextField.bottomAnchor, constant: 16).isActive = true

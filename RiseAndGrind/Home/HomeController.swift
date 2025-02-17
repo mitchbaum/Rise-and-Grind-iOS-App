@@ -54,7 +54,8 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         navigationItem.title = "My Workouts"
         
         tableView.register(ExerciseCell.self, forCellReuseIdentifier: ExerciseCell.identifier)
-        tableView.backgroundColor = .darkGray
+        tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
+        tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
         tableView.tableFooterView = UIView()
         
 
@@ -169,7 +170,6 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             Task {
                 if let saveHistoryButton = await checkForWorkoutInHistory() {
                     // workout not in history
-                    print("in here!", saveHistoryButton)
                     barbuttonitems.append(saveHistoryButton)
                     self.navigationItem.leftBarButtonItems = barbuttonitems
                     startTimer(interval: 5.0 * 60.0) // 5 minutes
@@ -264,6 +264,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     
     func findCategoryInHistory() async throws -> Bool {
         print("findCategoryInHistory")
+        timer?.invalidate()
         guard let uid = Auth.auth().currentUser?.uid else { throw URLError(.userAuthenticationRequired) }
         let currentDate = Utilities.timestampToFormattedDate(timeStamp: "\(Date().timeIntervalSince1970)", monthAbbrev: "MMMM")
         do {
@@ -334,6 +335,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }
     
     func startTimer(interval: TimeInterval) {
+        print("starting timer...")
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(saveWorkoutReminderAlert), userInfo: nil, repeats: false)
     }
@@ -366,6 +368,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 Utilities.setThemeColor(color: UIColor.lightBlue)
                 appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.lightBlue)
+                self.tableView.backgroundColor = .darkGray
                 
             } catch let err {
                 self.hud.dismiss(animated: true)
@@ -448,6 +451,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
         
+        
         optionMenu.addAction(addWorkout)
         optionMenu.addAction(addCategory)
         optionMenu.addAction(settings)
@@ -491,19 +495,23 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     
     func refreshTheme() {
         navigationItem.rightBarButtonItems = populateBarBtnItems(side: "right") // refresh the right barbuttons
-        let color = Utilities.loadTheme()
+        let appearanceMode = UserDefaults.standard.object(forKey: "appearanceTheme") as? String
+        let color = appearanceMode == "Dark" ? UIColor.black : Utilities.loadTheme()
         // Customize navigation bar appearance
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.backgroundColor =  color
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor : UIColor.white] //portrait title
         // modifty regular text attributes on view controller as white color. There is a bug where if you scroll down the table view the "files" title at the top turns back to the black default
         navBarAppearance.titleTextAttributes = [.foregroundColor : UIColor.white] //landscape title
-        downIcon.tintColor = color
+        downIcon.tintColor = Utilities.loadTheme()
         workoutCategorySelectorTextField.addLine(position: .bottom, color: Utilities.loadTheme(), width: 0.5)
         
         // Apply the customized appearance to the navigation bar
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+        
+        // light/dark mode appearance
+        view.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
     }
     
     let workoutCategoryPicker: UIPickerView = {

@@ -77,6 +77,7 @@ extension HomeController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ExerciseCell.identifier, for: indexPath) as! ExerciseCell
         let themeColor = Utilities.loadTheme()
+        let textColor = Utilities.loadAppearanceTheme(property: "text")
         // this if statement seemed to fix the refresh srash bug. No idea why or how.
         if exercises.count == 0{
             //fetchExercises()
@@ -109,7 +110,6 @@ extension HomeController {
         var repsArrayLen = weightArray.count
         var weightRepString = ""
         if weightArrayLen != 0 && repsArrayLen != 0 {
-            cell.weightRepsView.backgroundColor = .offWhite
             for i in 0...(weightArrayLen - 1) {
                 if weightMetric as? Int == 0 {
                     // checks if weight is double or int
@@ -156,6 +156,13 @@ extension HomeController {
         }
         cell.notes.text = note
         cell.selectionStyle = .none
+        
+        // appearance light/dark mode
+        cell.name.textColor = textColor
+        cell.notes.textColor = textColor
+        cell.cardView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.weightRepsView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryTopCell")
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         return cell
     }
         

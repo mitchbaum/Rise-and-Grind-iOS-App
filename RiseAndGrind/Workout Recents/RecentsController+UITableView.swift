@@ -58,6 +58,7 @@ extension RecentsController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RecentCell.identifier, for: indexPath) as! RecentCell
         let themeColor = Utilities.loadTheme()
+        let textColor = Utilities.loadAppearanceTheme(property: "text")
         let date = recents[indexPath.row].date
         let categories = recents[indexPath.row].categories
         
@@ -71,7 +72,7 @@ extension RecentsController {
             // Configure the container view
             view.layer.masksToBounds = true
             view.layer.cornerRadius = 5
-            view.backgroundColor = .offWhite
+            view.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryTopCell")
             view.translatesAutoresizingMaskIntoConstraints = false
 
             // Configure the label
@@ -97,6 +98,11 @@ extension RecentsController {
         
         cell.dateLabel.text = date
         cell.selectionStyle = .none
+        
+        // appearance light/dark mode
+        cell.dateLabel.textColor = textColor
+        cell.cardView.backgroundColor = Utilities.loadAppearanceTheme(property: "primaryCell")
+        cell.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
 
         return cell
     }
