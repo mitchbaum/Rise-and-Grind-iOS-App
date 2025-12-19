@@ -33,7 +33,7 @@ class NewCategoryController: UITableViewController {
             tableView.sectionHeaderTopPadding = 0
         }
     
-        navigationItem.title = "New Category"
+        navigationItem.title = "Category Manager"
         navigationItem.largeTitleDisplayMode = .never
         tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
@@ -108,7 +108,7 @@ class NewCategoryController: UITableViewController {
     
     let nameTextField: UITextField = {
         let textField = UITextField()
-        textField.attributedPlaceholder = NSAttributedString(string: "Title",
+        textField.attributedPlaceholder = NSAttributedString(string: "New Category",
                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         textField.textColor = Utilities.loadAppearanceTheme(property: "text")
         textField.tintColor = Utilities.loadTheme()

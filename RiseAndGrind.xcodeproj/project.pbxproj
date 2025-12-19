@@ -3,14 +3,21 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0DE9A24F14CB3E80C6B69B0F /* Pods_RiseAndGrind_RiseAndGrindUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FBD5DB76292B39A4B4F5FF1 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */; };
-		54B284124E22B690D533C3AD /* Pods_RiseAndGrindTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D290DB56347AF0EC5C0A3525 /* Pods_RiseAndGrindTests.framework */; };
-		57BECA64EAAC1B9B0747D0C1 /* Pods_RiseAndGrind.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95F0F5E2DEF5C1590DEE2FEE /* Pods_RiseAndGrind.framework */; };
+		32DAAC34F7C200FDBB86B602 /* Pods_RiseAndGrindTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 15B1ABB3A82CBFDF6A94D69E /* Pods_RiseAndGrindTests.framework */; };
+		6D8D1D76A9CC0CB580E81489 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A7C885F15AB7BECAC19EA /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */; };
 		74953C9C2C33591100C51AB1 /* SetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74953C9B2C33591100C51AB1 /* SetModel.swift */; };
+		74E343D32EF4E5300026389D /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343D22EF4E5300026389D /* FirebaseAnalytics */; };
+		74E343D52EF4E5300026389D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343D42EF4E5300026389D /* FirebaseAuth */; };
+		74E343D72EF4E5300026389D /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343D62EF4E5300026389D /* FirebaseCore */; };
+		74E343D92EF4E5300026389D /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343D82EF4E5300026389D /* FirebaseDatabase */; };
+		74E343DB2EF4E5300026389D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343DA2EF4E5300026389D /* FirebaseFirestore */; };
+		74E343DD2EF4E5300026389D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343DC2EF4E5300026389D /* FirebaseStorage */; };
+		74E343E02EF4E6830026389D /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343DF2EF4E6830026389D /* JGProgressHUD */; };
+		74E343E32EF4E6CF0026389D /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 74E343E22EF4E6CF0026389D /* IQKeyboardManagerSwift */; };
 		74EFAAA12D3AE86A00987799 /* ReorderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74EFAAA02D3AE86A00987799 /* ReorderCell.swift */; };
 		8010F8002783BEB600929CD6 /* NewExerciseController+UIPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F7FF2783BEB600929CD6 /* NewExerciseController+UIPickerView.swift */; };
 		8010F8062783CBC700929CD6 /* CatModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8010F8052783CBC700929CD6 /* CatModel.swift */; };
@@ -70,15 +77,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1F91F25759D682CE12BFA4B1 /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		2FBD5DB76292B39A4B4F5FF1 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrind_RiseAndGrindUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		304FD42FB1AE7502FFB5A905 /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig"; sourceTree = "<group>"; };
-		431C2C5C421378973389A289 /* Pods-RiseAndGrindTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrindTests.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrindTests/Pods-RiseAndGrindTests.release.xcconfig"; sourceTree = "<group>"; };
-		4AB8AF59FF31240846F685AF /* Pods-RiseAndGrindTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrindTests.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrindTests/Pods-RiseAndGrindTests.debug.xcconfig"; sourceTree = "<group>"; };
-		58C5F2A68CA797CE5E3B610E /* Pods-RiseAndGrind.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.release.xcconfig"; sourceTree = "<group>"; };
-		601E0C0EA97C4F74DEC77E28 /* Pods-RiseAndGrind.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.debug.xcconfig"; sourceTree = "<group>"; };
+		00DE8624A82BF72666DC1F52 /* Pods-RiseAndGrindTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrindTests.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrindTests/Pods-RiseAndGrindTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0FC694E11B742D0AE0A7373B /* Pods_RiseAndGrind.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrind.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		15B1ABB3A82CBFDF6A94D69E /* Pods_RiseAndGrindTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrindTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		338A7C885F15AB7BECAC19EA /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrind_RiseAndGrindUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		35B3F88DB0150470CEDD4A92 /* Pods-RiseAndGrindTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrindTests.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrindTests/Pods-RiseAndGrindTests.release.xcconfig"; sourceTree = "<group>"; };
+		44C7BCCF4CCC0B098B891182 /* Pods-RiseAndGrind.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.release.xcconfig"; sourceTree = "<group>"; };
 		74953C9B2C33591100C51AB1 /* SetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetModel.swift; sourceTree = "<group>"; };
 		74EFAAA02D3AE86A00987799 /* ReorderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderCell.swift; sourceTree = "<group>"; };
+		7FDBBDEFD6DD7EBF37D3EDBB /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		8010F7FF2783BEB600929CD6 /* NewExerciseController+UIPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NewExerciseController+UIPickerView.swift"; sourceTree = "<group>"; };
 		8010F8052783CBC700929CD6 /* CatModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatModel.swift; sourceTree = "<group>"; };
 		8010F8072783CD3E00929CD6 /* WorkoutController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkoutController.swift; sourceTree = "<group>"; };
@@ -124,13 +131,21 @@
 		80604639274C469F009C3D29 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		807F1245279FAE32008BFCBE /* ReorderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderController.swift; sourceTree = "<group>"; };
 		807F124727A23384008BFCBE /* ReorderController+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReorderController+UITableView.swift"; sourceTree = "<group>"; };
-		95F0F5E2DEF5C1590DEE2FEE /* Pods_RiseAndGrind.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrind.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D290DB56347AF0EC5C0A3525 /* Pods_RiseAndGrindTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RiseAndGrindTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1ACD1966AC452E0BEA82D6E /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig"; sourceTree = "<group>"; };
+		E8ABE484F496410D5F11FD09 /* Pods-RiseAndGrind.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RiseAndGrind.debug.xcconfig"; path = "Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		7452FAC02D2617E900BE15C3 /* Workout Recents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Workout Recents"; sourceTree = "<group>"; };
-		74ECB0892CEBE9BB006F59DD /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
+		7452FAC02D2617E900BE15C3 /* Workout Recents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Workout Recents";
+			sourceTree = "<group>";
+		};
+		74ECB0892CEBE9BB006F59DD /* Analytics */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Analytics;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,8 +153,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74E343D92EF4E5300026389D /* FirebaseDatabase in Frameworks */,
 				8045FF1B270A685A00DD3393 /* CloudKit.framework in Frameworks */,
-				57BECA64EAAC1B9B0747D0C1 /* Pods_RiseAndGrind.framework in Frameworks */,
+				74E343D72EF4E5300026389D /* FirebaseCore in Frameworks */,
+				74E343D32EF4E5300026389D /* FirebaseAnalytics in Frameworks */,
+				74E343E32EF4E6CF0026389D /* IQKeyboardManagerSwift in Frameworks */,
+				74E343DD2EF4E5300026389D /* FirebaseStorage in Frameworks */,
+				74E343D52EF4E5300026389D /* FirebaseAuth in Frameworks */,
+				74E343E02EF4E6830026389D /* JGProgressHUD in Frameworks */,
+				74E343DB2EF4E5300026389D /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,7 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54B284124E22B690D533C3AD /* Pods_RiseAndGrindTests.framework in Frameworks */,
+				32DAAC34F7C200FDBB86B602 /* Pods_RiseAndGrindTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,7 +177,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0DE9A24F14CB3E80C6B69B0F /* Pods_RiseAndGrind_RiseAndGrindUITests.framework in Frameworks */,
+				6D8D1D76A9CC0CB580E81489 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,12 +187,12 @@
 		37A7C8020DE4BCD8B0E7FCEA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				601E0C0EA97C4F74DEC77E28 /* Pods-RiseAndGrind.debug.xcconfig */,
-				58C5F2A68CA797CE5E3B610E /* Pods-RiseAndGrind.release.xcconfig */,
-				1F91F25759D682CE12BFA4B1 /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */,
-				304FD42FB1AE7502FFB5A905 /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */,
-				4AB8AF59FF31240846F685AF /* Pods-RiseAndGrindTests.debug.xcconfig */,
-				431C2C5C421378973389A289 /* Pods-RiseAndGrindTests.release.xcconfig */,
+				E8ABE484F496410D5F11FD09 /* Pods-RiseAndGrind.debug.xcconfig */,
+				44C7BCCF4CCC0B098B891182 /* Pods-RiseAndGrind.release.xcconfig */,
+				7FDBBDEFD6DD7EBF37D3EDBB /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */,
+				A1ACD1966AC452E0BEA82D6E /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */,
+				00DE8624A82BF72666DC1F52 /* Pods-RiseAndGrindTests.debug.xcconfig */,
+				35B3F88DB0150470CEDD4A92 /* Pods-RiseAndGrindTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -295,9 +317,9 @@
 			isa = PBXGroup;
 			children = (
 				8045FF1A270A685A00DD3393 /* CloudKit.framework */,
-				95F0F5E2DEF5C1590DEE2FEE /* Pods_RiseAndGrind.framework */,
-				2FBD5DB76292B39A4B4F5FF1 /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */,
-				D290DB56347AF0EC5C0A3525 /* Pods_RiseAndGrindTests.framework */,
+				0FC694E11B742D0AE0A7373B /* Pods_RiseAndGrind.framework */,
+				338A7C885F15AB7BECAC19EA /* Pods_RiseAndGrind_RiseAndGrindUITests.framework */,
+				15B1ABB3A82CBFDF6A94D69E /* Pods_RiseAndGrindTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -361,11 +383,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8045FF0F270A682700DD3393 /* Build configuration list for PBXNativeTarget "RiseAndGrind" */;
 			buildPhases = (
-				EE88DF65573D69B415FEE151 /* [CP] Check Pods Manifest.lock */,
 				8045FEDE270A682000DD3393 /* Sources */,
 				8045FEDF270A682000DD3393 /* Frameworks */,
 				8045FEE0270A682000DD3393 /* Resources */,
-				19EB09DF0DC4B69E6C8FACE5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -384,7 +404,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8045FF12270A682700DD3393 /* Build configuration list for PBXNativeTarget "RiseAndGrindTests" */;
 			buildPhases = (
-				64C7EA216AD5C08181EE8F14 /* [CP] Check Pods Manifest.lock */,
+				E45F7477843FE28B6DBA8C29 /* [CP] Check Pods Manifest.lock */,
 				8045FEF7270A682700DD3393 /* Sources */,
 				8045FEF8270A682700DD3393 /* Frameworks */,
 				8045FEF9270A682700DD3393 /* Resources */,
@@ -403,11 +423,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8045FF15270A682700DD3393 /* Build configuration list for PBXNativeTarget "RiseAndGrindUITests" */;
 			buildPhases = (
-				445A77E3D7AD1DF900EDFA4D /* [CP] Check Pods Manifest.lock */,
+				4CAAC284B193F36D9AB22943 /* [CP] Check Pods Manifest.lock */,
 				8045FF02270A682700DD3393 /* Sources */,
 				8045FF03270A682700DD3393 /* Frameworks */,
 				8045FF04270A682700DD3393 /* Resources */,
-				37B3B65A4A9AC82929014DB5 /* [CP] Embed Pods Frameworks */,
+				19FE173ECCE8128169BFB85E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -442,7 +462,6 @@
 				};
 			};
 			buildConfigurationList = 8045FEDD270A682000DD3393 /* Build configuration list for PBXProject "RiseAndGrind" */;
-			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -450,6 +469,12 @@
 				Base,
 			);
 			mainGroup = 8045FED9270A682000DD3393;
+			packageReferences = (
+				74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				74E343DE2EF4E6830026389D /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
+				74E343E12EF4E6CF0026389D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
+			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 8045FEE3270A682000DD3393 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -490,24 +515,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		19EB09DF0DC4B69E6C8FACE5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RiseAndGrind/Pods-RiseAndGrind-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		37B3B65A4A9AC82929014DB5 /* [CP] Embed Pods Frameworks */ = {
+		19FE173ECCE8128169BFB85E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -515,16 +523,20 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RiseAndGrind-RiseAndGrindUITests/Pods-RiseAndGrind-RiseAndGrindUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		445A77E3D7AD1DF900EDFA4D /* [CP] Check Pods Manifest.lock */ = {
+		4CAAC284B193F36D9AB22943 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -546,7 +558,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		64C7EA216AD5C08181EE8F14 /* [CP] Check Pods Manifest.lock */ = {
+		E45F7477843FE28B6DBA8C29 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -562,28 +574,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-RiseAndGrindTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EE88DF65573D69B415FEE151 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RiseAndGrind-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -802,7 +792,7 @@
 		};
 		8045FF10270A682700DD3393 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 601E0C0EA97C4F74DEC77E28 /* Pods-RiseAndGrind.debug.xcconfig */;
+			baseConfigurationReference = E8ABE484F496410D5F11FD09 /* Pods-RiseAndGrind.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -818,6 +808,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.5;
+				PODS_XCFRAMEWORKS_BUILD_DIR = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mitchbaumgartner.RiseAndGrind;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -828,7 +819,7 @@
 		};
 		8045FF11270A682700DD3393 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 58C5F2A68CA797CE5E3B610E /* Pods-RiseAndGrind.release.xcconfig */;
+			baseConfigurationReference = 44C7BCCF4CCC0B098B891182 /* Pods-RiseAndGrind.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -844,6 +835,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.5;
+				PODS_XCFRAMEWORKS_BUILD_DIR = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mitchbaumgartner.RiseAndGrind;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -854,7 +846,7 @@
 		};
 		8045FF13270A682700DD3393 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4AB8AF59FF31240846F685AF /* Pods-RiseAndGrindTests.debug.xcconfig */;
+			baseConfigurationReference = 00DE8624A82BF72666DC1F52 /* Pods-RiseAndGrindTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -876,7 +868,7 @@
 		};
 		8045FF14270A682700DD3393 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 431C2C5C421378973389A289 /* Pods-RiseAndGrindTests.release.xcconfig */;
+			baseConfigurationReference = 35B3F88DB0150470CEDD4A92 /* Pods-RiseAndGrindTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -898,7 +890,7 @@
 		};
 		8045FF16270A682700DD3393 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1F91F25759D682CE12BFA4B1 /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */;
+			baseConfigurationReference = 7FDBBDEFD6DD7EBF37D3EDBB /* Pods-RiseAndGrind-RiseAndGrindUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -918,7 +910,7 @@
 		};
 		8045FF17270A682700DD3393 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 304FD42FB1AE7502FFB5A905 /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */;
+			baseConfigurationReference = A1ACD1966AC452E0BEA82D6E /* Pods-RiseAndGrind-RiseAndGrindUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -976,6 +968,76 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.7.0;
+			};
+		};
+		74E343DE2EF4E6830026389D /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
+		74E343E12EF4E6CF0026389D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		74E343D22EF4E5300026389D /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		74E343D42EF4E5300026389D /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		74E343D62EF4E5300026389D /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		74E343D82EF4E5300026389D /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		74E343DA2EF4E5300026389D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		74E343DC2EF4E5300026389D /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343D12EF4E5300026389D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		74E343DF2EF4E6830026389D /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343DE2EF4E6830026389D /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
+		};
+		74E343E22EF4E6CF0026389D /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 74E343E12EF4E6CF0026389D /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		8045FEEE270A682100DD3393 /* RiseAndGrind.xcdatamodeld */ = {

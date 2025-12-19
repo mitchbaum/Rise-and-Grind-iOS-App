@@ -6,16 +6,7 @@ target 'RiseAndGrind' do
   use_frameworks!
 
   # Pods for RiseAndGrind
-  pod 'Firebase/Auth'
-  pod 'Firebase/Core'
-  pod 'Firebase/Firestore'
-  pod 'FirebaseFirestoreSwift'
-  pod 'JGProgressHUD'
-  pod 'Firebase/Database'
-  pod 'Firebase/Storage'
   pod 'LBTATools'
-  pod 'IQKeyboardManagerSwift'
-  pod 'Firebase/Analytics'
 
   target 'RiseAndGrindTests' do
     inherit! :search_paths
@@ -39,7 +30,7 @@ post_install do |installer|
       end
     end
 	target.build_configurations.each do |config|
-      config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "11.0"
+      config.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "13.0"
     end
   end
 end

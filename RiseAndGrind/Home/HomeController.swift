@@ -10,7 +10,6 @@ import FirebaseAuth
 import Firebase
 import FirebaseDatabase
 import SwiftUI
-import LBTATools
 import JGProgressHUD
 
 
@@ -415,13 +414,13 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     // function that handles the plus button in top right corner
     @objc func handleOpenOptions() {
         let color = Utilities.loadTheme()
-        let addWorkout = UIAlertAction(title: "New Exercise", style: .default) { action in
+        let addWorkout = UIAlertAction(title: "Create Exercise", style: .default) { action in
             let newExerciseController = NewExerciseController()
             let navController = CustomNavigationController(rootViewController: newExerciseController)
             newExerciseController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
-        let addCategory = UIAlertAction(title: "New Category", style: .default) { action in
+        let addCategory = UIAlertAction(title: "Category Manager", style: .default) { action in
             let newCategoryController = NewCategoryController()
             let navController = CustomNavigationController(rootViewController: newCategoryController)
             newCategoryController.delegate = self

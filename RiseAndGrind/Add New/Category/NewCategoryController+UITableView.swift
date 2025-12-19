@@ -112,7 +112,7 @@ extension NewCategoryController {
         // make headers refelct what goes information goes into the sections
 
         if section == 0 {
-            label.text = "Current Categories (swipe to delete)"
+            label.text = "Existing Categories (swipe to delete)"
         }
         
 

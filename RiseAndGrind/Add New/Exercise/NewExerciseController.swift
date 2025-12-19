@@ -39,7 +39,7 @@ class NewExerciseController: UITableViewController, UIPickerViewDelegate, UIPick
         // Do any additional setup after loading the view.
         
         // creates title of files
-        navigationItem.title = "New Exercise"
+        navigationItem.title = "Create Exercise"
         
         tableView.register(WeightRepsCell.self, forCellReuseIdentifier: WeightRepsCell.identifier)
         tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
