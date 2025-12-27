@@ -118,17 +118,17 @@ class SettingsController: UIViewController {
             Utilities.setThemeColor(color: UIColor.lightBlue)
             appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.lightBlue)
         } else if themeControl.selectedSegmentIndex == 1 {
-            Utilities.setThemeColor(color: UIColor.sageGreen)
-            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.sageGreen)
+            Utilities.setThemeColor(color: UIColor.green)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.green)
         } else if themeControl.selectedSegmentIndex == 2 {
-            Utilities.setThemeColor(color: UIColor.lilac)
-            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.lilac)
+            Utilities.setThemeColor(color: UIColor.purple)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.purple)
         } else if themeControl.selectedSegmentIndex == 3 {
-            Utilities.setThemeColor(color: UIColor.mattePink)
-            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.mattePink)
+            Utilities.setThemeColor(color: UIColor.pink)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.pink)
         } else {
-            Utilities.setThemeColor(color: UIColor.maroon)
-            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.maroon)
+            Utilities.setThemeColor(color: UIColor.orange)
+            appDelegate.updateGlobalNavigationBarAppearance(color: UIColor.orange)
         }
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let sceneDelegate = scene.delegate as? SceneDelegate {
@@ -318,16 +318,16 @@ class SettingsController: UIViewController {
     
     let themeControl: UISegmentedControl = {
         let activeSegment = Utilities.loadTheme()
-        let types = ["💎","🌲","😈", "🎟️", "👞"]
+        let types = ["💎","🌲","😈", "💄", "🍊"]
         let sc = UISegmentedControl(items: types)
         // default as first item
         if activeSegment as UIColor == UIColor.lightBlue {
             sc.selectedSegmentIndex = 0
-        } else if activeSegment as UIColor == UIColor.sageGreen {
+        } else if activeSegment as UIColor == UIColor.green {
             sc.selectedSegmentIndex = 1
-        } else if activeSegment as UIColor == UIColor.lilac {
+        } else if activeSegment as UIColor == UIColor.purple {
             sc.selectedSegmentIndex = 2
-        } else if activeSegment as UIColor == UIColor.mattePink {
+        } else if activeSegment as UIColor == UIColor.pink {
             sc.selectedSegmentIndex = 3
         } else {
             sc.selectedSegmentIndex = 4
@@ -347,13 +347,13 @@ class SettingsController: UIViewController {
         case 0:
             previewTheme(color: UIColor.lightBlue)
         case 1:
-            previewTheme(color: UIColor.sageGreen)
+            previewTheme(color: UIColor.green)
         case 2:
-            previewTheme(color: UIColor.lilac)
+            previewTheme(color: UIColor.purple)
         case 3:
-            previewTheme(color: UIColor.mattePink)
+            previewTheme(color: UIColor.pink)
         case 4:
-            previewTheme(color: UIColor.maroon)
+            previewTheme(color: UIColor.orange)
         default:
             break
         }
