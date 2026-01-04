@@ -65,8 +65,7 @@ extension RecentsController {
         // Clear any existing labels from the stack view
         cell.categoriesStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
-        // Add a label for each exercise
-        categories.forEach { exercise in
+        categories.forEach { savedRecent in
             let label = UILabel()
             let view = UIView()
             // Configure the container view
@@ -76,7 +75,7 @@ extension RecentsController {
             view.translatesAutoresizingMaskIntoConstraints = false
 
             // Configure the label
-            label.text = exercise.category
+            label.text = savedRecent.category
             label.font = UIFont.systemFont(ofSize: 16)
             label.textColor = themeColor
             label.translatesAutoresizingMaskIntoConstraints = false

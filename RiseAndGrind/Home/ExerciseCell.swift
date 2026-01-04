@@ -8,7 +8,8 @@
 import UIKit
 class ExerciseCell: UITableViewCell  {
     static let identifier = "ExerciseCell"
-    
+    var linkToLabelConstraint: NSLayoutConstraint!
+    var linkToEyeConstraint: NSLayoutConstraint!
     // exercise name
     let name: UILabel = {
         let label = UILabel()
@@ -31,6 +32,15 @@ class ExerciseCell: UITableViewCell  {
         //imageView.layer.cornerRadius = 30 // this value needs to be half the size of the height to make the image circular
         imageView.clipsToBounds = true
 //        imageView.layer.borderWidth = 0.8
+        return imageView
+    }()
+    
+    let linkImageView: UIImageView = {
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+        let image = UIImage(systemName: "link", withConfiguration: symbolConfig)?.withRenderingMode(.alwaysTemplate)
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = .lightGray
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -136,19 +146,26 @@ class ExerciseCell: UITableViewCell  {
         addSubview(name)
         name.leftAnchor.constraint(equalTo: leftAnchor, constant: 26).isActive = true
         name.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
-        name.rightAnchor.constraint(equalTo: rightAnchor, constant: -90).isActive = true
+        name.rightAnchor.constraint(equalTo: rightAnchor, constant: -120).isActive = true
     
         
         addSubview(formatLabel)
-        //formatLabel.leftAnchor.constraint(equalTo: name.rightAnchor, constant: 8).isActive = true
         formatLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
         formatLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -16).isActive = true
+        
+        addSubview(linkImageView)
+        linkImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
+        linkImageView.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        linkImageView.widthAnchor.constraint(equalToConstant: 15).isActive = true
         
         addSubview(eyeImageView)
         eyeImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16).isActive = true
         eyeImageView.rightAnchor.constraint(equalTo: formatLabel.leftAnchor, constant: -8).isActive = true
         eyeImageView.heightAnchor.constraint(equalToConstant: 15).isActive = true
         eyeImageView.widthAnchor.constraint(equalToConstant: 15).isActive = true
+        
+        linkToEyeConstraint = linkImageView.rightAnchor.constraint(equalTo: eyeImageView.leftAnchor, constant: -8)
+        linkToLabelConstraint = linkImageView.rightAnchor.constraint(equalTo: formatLabel.leftAnchor, constant: -8)
     
         addSubview(weightRepsView)
         weightRepsView.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 5).isActive = true

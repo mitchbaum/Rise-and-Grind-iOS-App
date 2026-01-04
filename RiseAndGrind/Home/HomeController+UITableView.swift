@@ -22,10 +22,9 @@ extension HomeController {
         workoutController.delegate = self
 
         workoutController.nameTextField.text = exercise.name
-        workoutController.categorySelectorTextField.text = exercise.category
+        workoutController.originCategory = exercise.category ?? ""
         workoutController.lastUpdatedTimestamp = exercise.timeStamp ?? ""
 
-        
         let navController = CustomNavigationController(rootViewController: workoutController)
         
         // push into new viewcontroller
@@ -87,6 +86,8 @@ extension HomeController {
         //let timeStamp = exercises[indexPath.row].timeStamp
         cell.name.text = name
         //"125 x 12  |  130 x 10  |  135 x 8"
+        let isLinkedExercise = exercises[indexPath.row].linkedExercise != nil
+
         let weight = exercises[indexPath.row].weight
         let reps = exercises[indexPath.row].reps
         let note = exercises[indexPath.row].note
@@ -142,12 +143,26 @@ extension HomeController {
             cell.weightXreps.textColor = themeColor
             
         }
+        cell.linkImageView.isHidden = true
+        let isHidden = isLinkedExercise ? exercises[indexPath.row].linkedExercise?.categories.first(where: { $0.category == workoutCategorySelectorTextField.text})?.hidden : exercises[indexPath.row].hidden ?? false
         
-        if exercises[indexPath.row].hidden ?? false {
+        if isHidden ?? false {
             cell.eyeImageView.isHidden = false
+            if isLinkedExercise {
+                cell.linkImageView.isHidden = false
+                cell.linkToLabelConstraint?.isActive = false
+                cell.linkToEyeConstraint?.isActive = true
+            }
         } else {
             cell.eyeImageView.isHidden = true
+            if isLinkedExercise {
+                cell.linkImageView.isHidden = false
+                cell.linkToEyeConstraint?.isActive = false
+                cell.linkToLabelConstraint?.isActive = true
+            }
         }
+        
+
         
         if weightMetric as! Int == 0 {
             cell.formatLabel.text = "(LBS x reps)"
@@ -183,54 +198,52 @@ extension HomeController {
         let exercise = self.exercises[indexPath.row]
         let category = exercise.category
         let name = exercise.name
-        let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
-
-        if exercise.hidden ?? true {
-            let action = UITableViewRowAction(style: .normal, title: "Show") { (_, indexPath) in
-                let hideAction = UIAlertAction(title: "Show Exercise", style: .default) { (action) in
-                    self.exercises[indexPath.row].hidden = false
-                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : false])
-                    self.tableView.reloadData()
-                }
-                let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-                optionMenu.addAction(hideAction)
-                optionMenu.addAction(cancelAction)
-                self.present(optionMenu, animated: true, completion: nil)
-
-                
+        var isHidden = exercise.hidden ?? true
+        var docRef = self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!)
+        var updatingLinkedExercise = false
+        var categoriesForFirestore: Any = []
+        if exercise.linkedExercise != nil {
+            updatingLinkedExercise = true
+            isHidden = exercise.linkedExercise?.categories.first(where: { $0.category == workoutCategorySelectorTextField.text })?.hidden ?? false
+            docRef = self.db.collection("Users").document(uid).collection("LinkedExercises").document(exercise.linkedExercise?.id ?? "")
+            var updatedHiddenCategories: [LinkedInfo] = exercise.linkedExercise?.categories ?? []
+            for index in updatedHiddenCategories.indices {
+                if updatedHiddenCategories[index].category != workoutCategorySelectorTextField.text { continue }
+                updatedHiddenCategories[index].hidden = !isHidden
             }
-            // change color of delete button
-            action.backgroundColor = themeColor
+            categoriesForFirestore = updatedHiddenCategories.map { info in [ "category": info.category, "location": info.location, "hidden": info.hidden ] }
+        }
+        let actionTitle = isHidden ? "Show" : "Hide"
+        let action = UITableViewRowAction(style: isHidden ? .normal : .destructive, title: actionTitle) { (_, indexPath) in
+            let hideAction = UIAlertAction(title: actionTitle + " Exercise", style: isHidden ? .default : .destructive) { (action) in
+                if updatingLinkedExercise {
+                    guard let index = self.exercises[indexPath.row].linkedExercise?.categories.firstIndex(where: { $0.category == self.workoutCategorySelectorTextField.text }) else { return }
+                    self.exercises[indexPath.row].linkedExercise?.categories[index].hidden = !isHidden
+                    docRef.updateData(["categories" : categoriesForFirestore])
+                } else {
+                    self.exercises[indexPath.row].hidden = !isHidden
+                    docRef.updateData(["hidden" : !isHidden])
+
+                }
+                self.tableView.reloadData()
+            }
+            let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+            optionMenu.addAction(hideAction)
+            optionMenu.addAction(cancelAction)
+            self.present(optionMenu, animated: true, completion: nil)
 
             
-            // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
-            return [action]
-        } else {
-            let action = UITableViewRowAction(style: .destructive, title: "Hide") { (_, indexPath) in
-
-                
-                let hideAction = UIAlertAction(title: "Hide Exercise", style: .destructive) { (action) in
-                    self.exercises[indexPath.row].hidden = true
-                    self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).updateData(["hidden" : true])
-                    if !showHidden {
-                        self.exercises.remove(at: indexPath.row)
-                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                    }
-                    self.tableView.reloadData()
-                }
-                let optionMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-                optionMenu.addAction(hideAction)
-                optionMenu.addAction(cancelAction)
-                self.present(optionMenu, animated: true, completion: nil)
-
-                
-            }
-            action.backgroundColor = themeColor
-            return [action]
         }
+        // change color of delete button
+        action.backgroundColor = themeColor
+
         
+        // this puts the action buttons in the row the user swipes so user can actually see the buttons to delete or edit
+        return [action]
+        
+
+
     }
 
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -238,17 +251,24 @@ extension HomeController {
         let exercise = self.exercises[indexPath.row]
         let category = exercise.category
         let name = exercise.name
+        let isLinkedExercise = self.exercises[indexPath.row].linkedExercise != nil
 
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
-            // Remove the exercise from the array
-            self.exercises.remove(at: indexPath.row)
             let deleteActionAlert = UIAlertAction(title: "Delete Forever", style: .destructive) { (action) in
 
+                if isLinkedExercise {
+                    self.db.collection("Users").document(uid).collection("LinkedExercises").document(self.exercises[indexPath.row].linkedExercise?.id ?? "").delete { error in
+                        if let error = error {
+                            print("Error deleting linked exercise document: \(error)")
+                        }
+                    }
+                }
                 self.db.collection("Users").document(uid).collection("Category").document(category!).collection("Exercises").document(name!).delete { error in
                     if let error = error {
-                        print("Error removing document: \(error)")
+                        print("Error deleting exercise document: \(error)")
                     } else {
                         // Delete the row from the table view
+                        self.exercises.remove(at: indexPath.row)
                         tableView.deleteRows(at: [indexPath], with: .fade)
                         completionHandler(true)
                     }

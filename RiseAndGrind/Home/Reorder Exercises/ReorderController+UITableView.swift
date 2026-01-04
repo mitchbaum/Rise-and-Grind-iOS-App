@@ -38,6 +38,7 @@ extension ReorderController {
         let textColor = Utilities.loadAppearanceTheme(property: "text")
         cell.name.text = name
         let note = exercises[indexPath.row].note
+        let isLinkedExercise = exercises[indexPath.row].linkedExercise != nil
     
         let timestamp = NSDate().timeIntervalSince1970
         let timeSinceUpdate = Utilities.timestampConversion(timeStamp: exercises[indexPath.row].timeStamp ?? "\(timestamp)").timeAgoDisplay()
@@ -51,14 +52,15 @@ extension ReorderController {
             cell.alertView.backgroundColor = themeColor
             cell.updateImageView.tintColor = themeColor
         }
-        
-        if exercises[indexPath.row].hidden ?? false {
+        let isHidden = isLinkedExercise ? exercises[indexPath.row].linkedExercise?.categories.first(where: { $0.category == category})?.hidden : exercises[indexPath.row].hidden ?? false
+        if isHidden ?? false {
             cell.eyeImageView.isHidden = false
             cell.name.leftAnchor.constraint(equalTo: cell.eyeImageView.rightAnchor, constant: 8).isActive = true
         } else {
             cell.eyeImageView.isHidden = true
             cell.name.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 26).isActive = true
         }
+
         cell.notes.text = note
         
         // appearance light/dark mode

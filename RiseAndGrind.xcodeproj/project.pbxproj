@@ -141,6 +141,11 @@
 			path = "Workout Recents";
 			sourceTree = "<group>";
 		};
+		74E344282F084A640026389D /* Linked Exercises */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Linked Exercises";
+			sourceTree = "<group>";
+		};
 		74ECB0892CEBE9BB006F59DD /* Analytics */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Analytics;
@@ -221,6 +226,7 @@
 		8010F80B2786822500929CD6 /* Exercise Details */ = {
 			isa = PBXGroup;
 			children = (
+				74E344282F084A640026389D /* Linked Exercises */,
 				74ECB0892CEBE9BB006F59DD /* Analytics */,
 				8010F8102788EB1600929CD6 /* Archive */,
 				8010F8072783CD3E00929CD6 /* WorkoutController.swift */,
@@ -393,6 +399,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				7452FAC02D2617E900BE15C3 /* Workout Recents */,
+				74E344282F084A640026389D /* Linked Exercises */,
 				74ECB0892CEBE9BB006F59DD /* Analytics */,
 			);
 			name = RiseAndGrind;

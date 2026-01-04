@@ -17,4 +17,5 @@ struct Exercise {
     var reps: [Any]
     var note: String?
     var hidden: Bool?
+    var linkedExercise: LinkedExercise?
 }

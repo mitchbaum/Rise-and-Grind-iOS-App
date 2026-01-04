@@ -28,7 +28,7 @@ class ReorderController: UITableViewController {
     
     var exercises = [Exercise]()
     
-    let category = UserDefaults.standard.object(forKey: "selectedCategory")
+    let category = UserDefaults.standard.object(forKey: "selectedCategory") as! String
     
     // add loading HUD status for when fetching data from server
     let hud: JGProgressHUD = {
@@ -72,24 +72,39 @@ class ReorderController: UITableViewController {
         // dispatch tracks the completion of asynchronous tasks. Needed to prevent dismissal of viewcontroller while reordering is in progress
         let dispatchGroup = DispatchGroup()
         for (i, exercise) in exercises.enumerated() {
-            // Enter the dispatch group
             dispatchGroup.enter()
-            print("name = \(String(describing: exercise.name)) | location =  \(String(describing: exercise.location))")
-            db.collection("Users").document(uid).collection("Category").document(category as! String).collection("Exercises").document(exercise.name ?? "").updateData(["location" : i]) { error in
-                if let error = error {
-                    print("Error updating document's order: \(error)")
-                } else {
-                    // Delete the row from the table view
-                    print("done reordering exercise.")
-                    print("index =", i)
+            if exercise.linkedExercise != nil {
+                var updatedLocationCategories: [LinkedInfo] = exercise.linkedExercise?.categories ?? []
+                for index in updatedLocationCategories.indices {
+                    if updatedLocationCategories[index].category != category { continue }
+                    updatedLocationCategories[index].location = i
                 }
+                let categoriesForFirestore = updatedLocationCategories.map { info in
+                    [
+                        "category": info.category,
+                        "location": info.location,
+                        "hidden": info.hidden
+                    ]
+                }
+                db.collection("Users").document(uid).collection("LinkedExercises").document(exercise.linkedExercise?.id ?? "").updateData(["categories" : categoriesForFirestore])
                 dispatchGroup.leave()
+            } else {
+                db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(exercise.name ?? "").updateData(["location" : i]) { error in
+                    if let error = error {
+                        print("Error updating document's order: \(error)")
+                    } else {
+                        // Delete the row from the table view
+                        print("done reordering exercise.")
+                        print("index =", i)
+                    }
+                    dispatchGroup.leave()
+                }
             }
+            
             
         }
 
         dispatchGroup.notify(queue: .main) {
-            print("dismissing")
             self.dismiss(animated: true, completion: {self.delegate?.fetchExercises() })
         }
     }

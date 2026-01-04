@@ -180,13 +180,16 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
     }
     
     func sortExercises() {
-        print("sorting exercises")
         let sortMetric =  userDefaults.object(forKey: "sortMetric")
         if sortMetric as! String == "Name" {
             // ascending
             exercises.sort(by: {$0.name ?? "" < $1.name ?? ""})
         } else if sortMetric as! String == "Custom" {
-            exercises.sort(by: {$0.location ?? 0 < $1.location ?? 0})
+            exercises.sort {
+                let lhsLocation = $0.linkedExercise?.categories.first(where: { $0.category == workoutCategorySelectorTextField.text })?.location ?? $0.location ?? 0
+                let rhsLocation = $1.linkedExercise?.categories.first(where: { $0.category == workoutCategorySelectorTextField.text })?.location ?? $1.location ?? 0
+                return lhsLocation < rhsLocation
+            }
 
         } else {
             // last modified
@@ -231,34 +234,95 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
         print("fetching exercises")
         exercises = []
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        if categories.count != 0 {
-            if activeSegment >= 0 && activeSegment >= categories.count {
-                activeSegment = 0
-            }
-            workoutCategorySelectorTextField.text = categories[activeSegment]
-            UserDefaults.standard.setValue(categories[activeSegment], forKey: "selectedCategory")
-            let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
-            self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(categories[activeSegment]).collection("Exercises")
-                if showHidden {
-                    self.exerciseCollectionRef.getDocuments { (snapshot, error) in
-                        if let err = error {
-                            debugPrint("Error fetching exercises: \(err)")
-                        } else {
-                            guard let snap = snapshot else { return }
-                            self.processSnapshot(snapshot: snap, uid: uid, category: self.categories[self.activeSegment])
-                        }
+        if categories.count == 0 { return }
+        if activeSegment >= 0 && activeSegment >= categories.count { activeSegment = 0 }
+        workoutCategorySelectorTextField.text = categories[activeSegment]
+        UserDefaults.standard.setValue(categories[activeSegment], forKey: "selectedCategory")
+        let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
+        self.exerciseCollectionRef = db.collection("Users").document(uid).collection("Category").document(categories[activeSegment]).collection("Exercises")
+            if showHidden {
+                self.exerciseCollectionRef.getDocuments { (snapshot, error) in
+                    if let err = error {
+                        debugPrint("Error fetching exercises: \(err)")
+                    } else {
+                        guard let snap = snapshot else { return }
+                        self.processSnapshot(snapshot: snap, uid: uid, category: self.categories[self.activeSegment], linkedExercise: nil)
                     }
-                } else {
-                    self.exerciseCollectionRef.whereField("hidden", isNotEqualTo: true).getDocuments { (snapshot, error) in
-                        if let err = error {
-                            debugPrint("Error fetching exercises: \(err)")
-                        } else {
-                            guard let snap = snapshot else { return }
-                            self.processSnapshot(snapshot: snap, uid: uid, category: self.categories[self.activeSegment])
-                        }
+                }
+            } else {
+                self.exerciseCollectionRef.whereField("hidden", isNotEqualTo: true).getDocuments { (snapshot, error) in
+                    if let err = error {
+                        debugPrint("Error fetching exercises: \(err)")
+                    } else {
+                        guard let snap = snapshot else { return }
+                        self.processSnapshot(snapshot: snap, uid: uid, category: self.categories[self.activeSegment], linkedExercise: nil)
                     }
                 }
             }
+        Task {
+           do {
+               try await fetchLinkedExercises()
+           } catch {
+               print("Failed to fetch linked exercises in home controller: \(error)")
+           }
+        }
+        
+    }
+    
+    func fetchLinkedExercises() async throws {
+        var linked: [LinkedExercise] = []
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let showHidden = userDefaults.object(forKey: "showHidden") as? Bool ?? true
+        do {
+            let snapshot = try await db.collection("Users").document(uid).collection("LinkedExercises").getDocuments()
+
+            let filtered = snapshot.documents.filter { doc in
+                let categoriesDicts = doc.data()["categories"] as? [[String: Any]] ?? []
+                return categoriesDicts.contains { $0["category"] as? String == categories[activeSegment] }
+            }
+
+            for document in filtered {
+                let data = document.data()
+
+                let id = data["id"] as? String
+                let exerciseName = data["exerciseName"] as? String
+                let originCategory = data["originCategory"] as? String
+                let categoriesDicts = data["categories"] as? [[String: Any]] ?? []
+                // Map dictionaries to LinkedInfo structs
+                let categories: [LinkedInfo] = categoriesDicts.compactMap { dict in
+                    guard let category = dict["category"] as? String,
+                          let location = dict["location"] as? Int,
+                          let hidden = dict["hidden"] as? Bool else { return nil }
+                    return LinkedInfo(category: category, location: location, hidden: hidden)
+                }
+                let exercise = LinkedExercise(id: id, exerciseName: exerciseName, originCategory: originCategory, categories: categories)
+                linked.append(exercise)
+                
+            }
+            
+            for linkedExercise in linked {
+                let linkedExerciseSnapshot = db.collection("Users").document(uid).collection("Category").document(linkedExercise.originCategory ?? "").collection("Exercises").whereField("name", isEqualTo: linkedExercise.exerciseName ?? "")
+                let isHidden = linkedExercise.categories.first(where: { $0.category == workoutCategorySelectorTextField.text })?.hidden ?? false
+                do {
+                    let snapshot = try await linkedExerciseSnapshot.getDocuments()
+                    if !showHidden { // dont show hidden ones
+                        if !isHidden {
+                            self.processSnapshot(snapshot: snapshot, uid: uid, category: linkedExercise.originCategory ?? "", linkedExercise: linkedExercise)
+                        }
+                    } else {
+                        self.processSnapshot(snapshot: snapshot, uid: uid, category: linkedExercise.originCategory ?? "", linkedExercise: linkedExercise)
+                    }
+                } catch {
+                    debugPrint("Error fetching exercise using linked values: \(error)")
+                }
+            }
+        } catch {
+            debugPrint("Error fetching linked categories: \(error)")
+            throw error
+        }
+            
+
+        
     }
     
     func findCategoryInHistory() async throws -> Bool {
@@ -289,7 +353,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
           }
     }
     
-    private func processSnapshot(snapshot: QuerySnapshot, uid: String, category: String) {
+    private func processSnapshot(snapshot: QuerySnapshot, uid: String, category: String, linkedExercise: LinkedExercise?) {
         print("processing snapshot")
         for document in snapshot.documents {
             let data = document.data()
@@ -304,10 +368,13 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
                 db.collection("Users").document(uid).collection("Category").document(category).collection("Exercises").document(name).updateData(["hidden": false])
             }
             let hidden = data["hidden"] as? Bool ?? false
-             
-            let newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note, hidden: hidden)
+            var newExercise: Exercise
+            if linkedExercise != nil {
+                newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note, hidden: hidden, linkedExercise: linkedExercise)
+            } else {
+                newExercise = Exercise(name: name, category: category, timeStamp: timeStamp, location: location, weight: weight, reps: reps, note: note, hidden: hidden, linkedExercise: nil)
+            }
             self.exercises.append(newExercise)
-
         }
         self.sortExercises()
     }
