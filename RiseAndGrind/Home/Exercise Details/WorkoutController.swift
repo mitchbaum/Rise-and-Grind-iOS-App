@@ -87,7 +87,7 @@ class WorkoutController: UITableViewController, LinkedExercisesControllerDelegat
     func fetchLinkedCategories() async throws {
         linkedCategories = []
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let documentRef = db.collection("Users").document(uid).collection("LinkedExercises").whereField("originCategory", isEqualTo: originCategory)
+        let documentRef = db.collection("Users").document(uid).collection("LinkedExercises").whereField("originCategory", isEqualTo: originCategory).whereField("exerciseName", isEqualTo: nameTextField.text!)
         do {
             let snapshot = try await documentRef.getDocuments()
             for document in snapshot.documents {
@@ -551,8 +551,8 @@ class WorkoutController: UITableViewController, LinkedExercisesControllerDelegat
         header.addSubview(addButton)
         addButton.topAnchor.constraint(equalTo: archiveThisButton.bottomAnchor, constant: 8).isActive = true
         addButton.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -12).isActive = true
-        addButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        addButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        addButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        addButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
         
         header.addSubview(openArchiveButton)
         openArchiveButton.topAnchor.constraint(equalTo: notesTextField.bottomAnchor, constant: 16).isActive = true

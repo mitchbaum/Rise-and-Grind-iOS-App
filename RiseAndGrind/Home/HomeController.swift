@@ -487,7 +487,7 @@ class HomeController: UITableViewController, newCategoryControllerDelegate, Work
             newExerciseController.delegate = self
             self.present(navController, animated: true, completion: nil)
         }
-        let addCategory = UIAlertAction(title: "Category Manager", style: .default) { action in
+        let addCategory = UIAlertAction(title: "Workout Manager", style: .default) { action in
             let newCategoryController = NewCategoryController()
             let navController = CustomNavigationController(rootViewController: newCategoryController)
             newCategoryController.delegate = self

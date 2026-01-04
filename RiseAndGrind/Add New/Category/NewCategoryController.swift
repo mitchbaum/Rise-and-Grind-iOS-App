@@ -33,7 +33,7 @@ class NewCategoryController: UITableViewController {
             tableView.sectionHeaderTopPadding = 0
         }
     
-        navigationItem.title = "Category Manager"
+        navigationItem.title = "Workout Manager"
         navigationItem.largeTitleDisplayMode = .never
         tableView.backgroundColor = Utilities.loadAppearanceTheme(property: "secondary")
         tableView.separatorColor =  Utilities.loadAppearanceTheme(property: "secondary")
